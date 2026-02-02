@@ -1,0 +1,35 @@
+.collapsible {
+    border: 1px solid var(--color-border);
+    border-radius: 0;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.collapsible-header {
+    padding: 12px 16px;
+    background: var(--color-border);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.collapsible-header:hover {
+    background: var(--color-muted);
+}
+
+.collapsible-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.collapsible-icon {
+    font-size: 0.8rem;
+}
+
+.collapsible-content {
+    padding: 16px;
+    background: var(--color-bg);
+}

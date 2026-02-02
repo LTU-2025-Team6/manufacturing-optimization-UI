@@ -1,0 +1,58 @@
+.strategy-card {
+    margin: 20px 0;
+}
+
+.strategy-header {
+    background: var(--color-border);
+    padding: 20px;
+    border-radius: 0;
+    margin-bottom: 20px;
+}
+
+.strategy-header h2 {
+    margin: 0 0 8px 0;
+    color: var(--color-accent);
+}
+
+.strategy-header p {
+    margin: 0 0 16px 0;
+    color: var(--color-muted);
+}
+
+.strategy-metrics-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.metric {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.metric-label {
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-accent);
+}
+
+.strategy-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}

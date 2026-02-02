@@ -1,0 +1,65 @@
+.layout {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    background: var(--color-bg);
+    color: var(--color-fg);
+}
+
+header {
+    background: var(--color-accent);
+    color: var(--color-bg);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.branding {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: var(--color-bg);
+}
+
+h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0!important;
+    letter-spacing: 0.02em;
+}
+
+nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+nav a {
+    color: var(--color-bg);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0;
+    transition: background 0.2s;
+}
+
+nav a.active,
+nav a:hover {
+    background: var(--color-fg);
+}
+
+main {
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+footer {
+    border-top: 2px solid var(--color-border);
+    color: var(--color-muted);
+    text-align: center;
+    font-size: 0.95rem;
+    padding: 0.5rem 0;
+}

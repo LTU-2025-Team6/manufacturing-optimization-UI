@@ -1,0 +1,32 @@
+.strategy-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.strategy-selector-item {
+    border: 2px solid var(--color-border);
+    border-radius: 0;
+    padding: 16px;
+    transition: border-color 0.3s;
+}
+
+.strategy-selector-item.selected {
+    border-color: var(--color-accent);
+    background: var(--color-border);
+}
+
+.strategy-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.strategy-selector-header h3 {
+    margin: 0;
+    color: var(--color-accent);
+    font-size: 1.2rem;
+}

@@ -1,0 +1,33 @@
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    display: inline-block;
+    text-align: center;
+    text-transform: none;
+    white-space: nowrap;
+    direction: ltr;
+}
+
+.small {
+    font-size: 10.8rem;
+}
+
+
+.medium {
+    font-size: 1.6rem;
+}
+
+.large {
+    font-size: 2.5rem;
+}
+
+.extra-large {
+    font-size: 6rem;
+}
+
+.loader {
+    animation: spin 1s linear infinite;
+}
