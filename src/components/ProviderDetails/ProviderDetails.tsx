@@ -12,8 +12,8 @@ export default function ProviderDetails({ provider }: ProviderDetailsProps) {
             <h2>{provider.name}</h2>
             <p><strong>ID:</strong> {provider.id}</p>
             <p><strong>Type:</strong> {provider.type}</p>
-            <p><strong>Status:</strong> <span className={provider.enabled ? 'status-success' : 'status-error'}>
-                {provider.enabled ? 'Active' : 'Inactive'}
+            <p><strong>Status:</strong> <span className={provider.isRunning ? 'status-success' : 'status-error'}>
+                {provider.isRunning ? 'Active' : 'Inactive'}
             </span></p>
 
             <Card title="Technical Capabilities">
@@ -84,6 +84,25 @@ export default function ProviderDetails({ provider }: ProviderDetailsProps) {
                         ? (provider.processCapabilities.reduce((acc, c) => acc + c.costPerHour, 0) / provider.processCapabilities.length).toFixed(2)
                         : '0.00'
                 }/hour</p>
+            </Card>
+
+            <Card title="Working Hours">
+                <p><strong>Working Days:</strong> {provider.workingHours.is24x7 ? '24x7' : provider.workingHours.workingDays.join(', ')}</p>
+                {!provider.workingHours.is24x7 && (
+                    <p><strong>Daily Hours:</strong> {provider.workingHours.workDayStartHour}:00 - {provider.workingHours.workDayEndHour}:00</p>
+                )}
+                {provider.workingHours.breaks.length > 0 && (
+                    <div>
+                        <strong>Break Periods:</strong>
+                        <ul>
+                            {provider.workingHours.breaks.map((brk, index) => (
+                                <li key={index}>
+                                    <b>{brk.name}</b>: {brk.startHour}:{brk.startMinute.toString().padStart(2, '0')} for {brk.durationMinutes} minutes
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </Card>
         </div>
     );

@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import ProviderListPage from "./pages/ProviderListPage/ProviderListPage";
+import ProviderDetailsPage from "./pages/ProviderDetailsPage/ProviderDetailsPage";
 import RequestOptimizationPage from "./pages/RequestOptimizationPage/RequestOptimizationPage";
 import PlanPage from "./pages/PlanPage/PlanPage";
 import HomePage from "./pages/HomePage/HomePage";
@@ -17,7 +18,12 @@ export const AppRouter = createBrowserRouter([
             },
             {
                 path: 'providers',
-                element: <ProviderListPage /> },
+                element: <ProviderListPage />
+            },
+            {
+                path: 'providers/:id',
+                element: <ProviderDetailsPage />
+            },
             {
                 path: 'optimization-request',
                 element: <RequestOptimizationPage />
