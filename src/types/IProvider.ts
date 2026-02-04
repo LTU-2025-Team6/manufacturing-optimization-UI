@@ -72,3 +72,8 @@ export interface IUpdateBreakPeriodRequest {
     durationMinutes: number;
     name: string;
 }
+
+export interface IProviderScheduleRequest {
+    start: string;
+    end: string;
+}

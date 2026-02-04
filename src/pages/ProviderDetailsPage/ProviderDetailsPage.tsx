@@ -17,6 +17,7 @@ import Alert from '../../components/Alert/Alert';
 import Collapsible from '../../components/Collapsible/Collapsible';
 import ProcessCapabilitiesEditor from '../../components/ProcessCapabilitiesEditor/ProcessCapabilitiesEditor';
 import BreakPeriodsEditor from '../../components/BreakPeriodsEditor/BreakPeriodsEditor';
+import ProviderScheduleView from '../../components/ProviderScheduleView/ProviderScheduleView';
 import './ProviderDetailsPage.css';
 
 const ProviderDetailsPage = (): ReactElement => {
@@ -172,7 +173,7 @@ const ProviderDetailsPage = (): ReactElement => {
                     )}
                 </Alert>
             )}
-            
+
             <DataState 
                 loading={loading} 
                 error={error} 

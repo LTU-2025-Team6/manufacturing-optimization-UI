@@ -1,5 +1,7 @@
 import { useApi } from './useApi';
 import { IProvider, IProviderPreview, IUpdateProviderRequest } from '../../types/IProvider';
+import { IProviderScheduleRequest } from '../../types/IProviderScheduleRequest';
+import { IProviderDayScheduleDto } from '../../types/IProviderSchedule';
 
 export function useGetProviders() {
     const { data, loading, error, callApi: callApiBase } = useApi<IProviderPreview[]>();
@@ -43,6 +45,19 @@ export function useToggleProvider() {
             url: `/api/providers/${id}`, 
             method: 'PATCH',
             body: { isRunning }
+        });
+    };
+
+    return { data, loading, error, callApi };
+}
+
+export function useGetProviderSchedule() {
+    const { data, loading, error, callApi: callApiBase } = useApi<IProviderDayScheduleDto[]>();
+
+    const callApi = (id: string, request: IProviderScheduleRequest) => {
+        return callApiBase({ 
+            url: `/api/providers/${id}/schedule?start=${request.startDate}&end=${request.endDate}`, 
+            method: 'GET'
         });
     };
 

@@ -3,6 +3,7 @@ import { parseDuration } from '../../utils/durationParser';
 import Collapsible from '../Collapsible/Collapsible';
 import Timeline from '../Timeline/Timeline';
 import Card from '../Card/Card';
+import { IProviderScheduleSegment } from '../../types/IProviderSchedule';
 import './StrategyCard.css';
 
 interface StrategyCardProps {
@@ -10,6 +11,24 @@ interface StrategyCardProps {
 }
 
 export default function StrategyCard({ strategy }: StrategyCardProps) {
+    // Create combined timeline segments - one segment per step
+    const getCombinedTimelineSegments = (): IProviderScheduleSegment[] => {
+        return strategy.steps
+            .filter(step => step.allocatedSchedule?.segments && step.allocatedSchedule.segments.length > 0)
+            .sort((a, b) => a.stepNumber - b.stepNumber)
+            .map(step => {
+                const segments = step.allocatedSchedule!.segments.filter(s => s.segmentType.toLowerCase() === 'workingtime');
+                const startTimes = segments.map(s => new Date(s.startTime).getTime());
+                const endTimes = segments.map(s => new Date(s.endTime).getTime());
+                
+                return {
+                    startTime: new Date(Math.min(...startTimes)).toISOString(),
+                    endTime: new Date(Math.max(...endTimes)).toISOString(),
+                    segmentType: `WorkingTime-Step${step.stepNumber}`
+                };
+            });
+    };
+
     return (
         <div className="strategy-card">
             {/* Header with key metrics */}
@@ -41,7 +60,25 @@ export default function StrategyCard({ strategy }: StrategyCardProps) {
             {/* Collapsible sections */}
             <div className="strategy-sections">
                 <Collapsible title="Timeline & Scheduling" defaultOpen={true}>
-                    <Timeline steps={strategy.steps} />
+                    <div style={{ marginBottom: '2rem' }}>
+                        <h4 style={{ marginBottom: '0.5rem' }}>Combined Overview</h4>
+                        <Timeline segments={getCombinedTimelineSegments()} />
+                    </div>
+
+                    <h4 style={{ marginTop: '2rem', marginBottom: '1rem' }}>Individual Steps</h4>
+                    {strategy.steps.map((step) => (
+                        step.allocatedSchedule?.segments ? (
+                            <div key={step.id} style={{ marginBottom: '1.5rem' }}>
+                                <h4 style={{ marginBottom: '0.5rem' }}>
+                                    Step {step.stepNumber}: {step.process}
+                                    <small style={{ marginLeft: '0.5rem', fontWeight: 'normal', color: 'var(--color-text-secondary)' }}>
+                                        {step.selectedProviderName}
+                                    </small>
+                                </h4>
+                                <Timeline segments={step.allocatedSchedule.segments} />
+                            </div>
+                        ) : null
+                    ))}
                 </Collapsible>
 
                 <Collapsible title={`Process Steps (${strategy.steps.length})`} defaultOpen={false}>
