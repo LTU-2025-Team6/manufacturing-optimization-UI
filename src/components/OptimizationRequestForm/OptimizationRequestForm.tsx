@@ -1,31 +1,8 @@
 import { useState, useEffect } from 'react';
 import { IOptimizationRequest } from '../../types/IOptimizationRequest';
 import { generateRandomRequest } from '../../utils/requestGenerator';
+import { toLocalDateTimeInput, fromLocalDateTimeInput } from '../../utils/dateTimeUtils';
 import Button from '../Button/Button';
-
-function toInputDateTime(value: string) {
-    if (!value) return '';
-    const date = new Date(value);
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
-
-function fromInputDateTime(value: string): string {
-    if (!value) return '';
-    // datetime-local возвращает "YYYY-MM-DDTHH:mm" в локальном времени
-    // Нужно явно указать, что это локальное время, а не UTC
-    // Добавляем секунды для полного формата
-    const localDateString = value.length === 16 ? value + ':00' : value;
-    const date = new Date(localDateString);
-    
-    // Проверяем, что дата валидна
-    if (isNaN(date.getTime())) {
-        console.error('Invalid date:', value);
-        return '';
-    }
-    
-    return date.toISOString();
-}
 
 function createEmptyRequest(): IOptimizationRequest {
     return {
@@ -190,8 +167,8 @@ export default function OptimizationRequestForm({ request, onChange }: Props) {
                         <td>
                             <input
                                 type="datetime-local"
-                                value={toInputDateTime(localRequest.constraints.timeWindow.startTime)}
-                                onChange={e => handleChange('constraints.timeWindow.startTime', fromInputDateTime(e.target.value))}
+                                value={toLocalDateTimeInput(localRequest.constraints.timeWindow.startTime)}
+                                onChange={e => handleChange('constraints.timeWindow.startTime', fromLocalDateTimeInput(e.target.value))}
                             />
                         </td>
                     </tr>
@@ -200,8 +177,8 @@ export default function OptimizationRequestForm({ request, onChange }: Props) {
                         <td>
                             <input
                                 type="datetime-local"
-                                value={toInputDateTime(localRequest.constraints.timeWindow.endTime)}
-                                onChange={e => handleChange('constraints.timeWindow.endTime', fromInputDateTime(e.target.value))}
+                                value={toLocalDateTimeInput(localRequest.constraints.timeWindow.endTime)}
+                                onChange={e => handleChange('constraints.timeWindow.endTime', fromLocalDateTimeInput(e.target.value))}
                             />
                         </td>
                     </tr>

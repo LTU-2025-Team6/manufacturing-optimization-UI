@@ -142,6 +142,36 @@
     background: var(--color-accent);
 }
 
+/* Conflict segments - red with pattern */
+.timeline-bar-conflict {
+    background: repeating-linear-gradient(
+        45deg,
+        #F44336,
+        #F44336 8px,
+        rgba(244, 67, 54, 0.8) 8px,
+        rgba(244, 67, 54, 0.8) 16px
+    );
+    border: 2px solid #D32F2F;
+    box-shadow: 0 0 8px rgba(244, 67, 54, 0.5);
+    z-index: 10;
+}
+
+.timeline-bar-conflict .timeline-bar-text {
+    text-shadow: 
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
+        0 0 4px rgba(0, 0, 0, 0.8);
+    font-weight: 700;
+}
+
+.timeline-bar-conflict:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 0 12px rgba(244, 67, 54, 0.7);
+    z-index: 15;
+}
+
 .timeline-bar-break {
     background: repeating-linear-gradient(
         45deg,

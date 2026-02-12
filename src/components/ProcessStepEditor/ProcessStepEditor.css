@@ -1,0 +1,487 @@
+.process-step-editor {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background: var(--color-background);
+    transition: all 0.2s ease;
+}
+
+.process-step-editor.modified {
+    border-left: 4px solid var(--color-warning);
+}
+
+.process-step-editor.invalid {
+    border-left: 4px solid var(--color-error);
+}
+
+.step-editor-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.step-editor-header:hover {
+    background-color: var(--color-surface);
+}
+
+.step-number {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    min-width: 80px;
+}
+
+.step-process-name {
+    flex: 1;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.step-provider-badge {
+    padding: 0.25rem 0.75rem;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    border-radius: 12px;
+    font-size: 0.875rem;
+}
+
+.modified-indicator {
+    padding: 0.25rem 0.5rem;
+    background: var(--color-warning-light);
+    color: var(--color-warning);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.error-indicator {
+    padding: 0.25rem 0.5rem;
+    background: var(--color-error-light);
+    color: var(--color-error);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Editor Body */
+.step-editor-body {
+    padding: 1rem;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.step-details-section,
+.current-timeline-section,
+.schedule-range-section,
+.provider-selection-section {
+    margin-bottom: 1.5rem;
+}
+
+.step-details-section h4,
+.current-timeline-section h4,
+.schedule-range-section h4,
+.provider-selection-section h4 {
+    margin-bottom: 0.75rem;
+    color: var(--color-text-primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.detail-label {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+/* Current Timeline Section */
+.current-timeline-section {
+    background: var(--color-background);
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+}
+
+.timeline-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.timeline-range {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.modified-badge {
+    padding: 0.25rem 0.5rem;
+    background: var(--color-warning-light);
+    color: var(--color-warning);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.timeline-container {
+    background: var(--color-surface);
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+}
+
+.no-timeline {
+    color: var(--color-text-secondary);
+    font-style: italic;
+    margin: 0;
+}
+
+/* Schedule Range Section */
+.schedule-range-section {
+    background: var(--color-background);
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+}
+
+.schedule-range-inputs {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.range-input-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+    min-width: 180px;
+}
+
+.range-input-compact label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.range-input-compact input[type="datetime-local"] {
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-family: inherit;
+}
+
+.range-input-compact input[type="datetime-local"]:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* Schedule Editor */
+.time-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.time-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.time-input-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.time-input-group input[type="datetime-local"] {
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-family: inherit;
+}
+
+.time-input-group input[type="datetime-local"]:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.time-display {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+.schedule-warning {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: var(--color-error-light);
+    color: var(--color-error);
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+/* Alternatives */
+.alternatives-list {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--color-background);
+    border-radius: 8px;
+}
+
+.alternatives-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    background: var(--color-background);
+    border-radius: 8px;
+    color: var(--color-text-secondary);
+    justify-content: center;
+}
+
+.alternatives-list h5 {
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+}
+
+.alternative-card {
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+    background: var(--color-surface);
+    transition: all 0.2s ease;
+}
+
+.alternative-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.alternative-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    gap: 0.75rem;
+}
+
+.alternative-metrics {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    flex-wrap: wrap;
+}
+
+.alternative-schedule {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.schedule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.schedule-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.schedule-time-range {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+.alternative-timeline {
+    background: var(--color-background);
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+}
+
+.alternative-slots {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.slots-label {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.time-slot {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    border-radius: 4px;
+    display: inline-block;
+    margin-right: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.no-alternatives {
+    padding: 1rem;
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+/* Section hint */
+.section-hint {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin: -0.5rem 0 1rem 0;
+    font-style: italic;
+}
+
+/* Alternative card selected state */
+.alternative-card.selected {
+    border-color: var(--color-primary);
+    background: var(--color-primary-light);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Current provider card */
+.alternative-card.current-provider {
+    border-color: var(--color-success, #28a745);
+    background: var(--color-success-light, #d4edda);
+}
+
+.alternative-card.current-provider:hover {
+    border-color: var(--color-success, #28a745);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+}
+
+/* Current badge */
+.current-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--color-success, #28a745);
+    color: white;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.current-badge .material-icon {
+    font-size: 14px;
+}
+
+/* Validation status */
+.validation-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+}
+
+.validation-status.valid {
+    background: var(--color-success-light, #d4edda);
+    color: var(--color-success, #155724);
+}
+
+.validation-status.invalid {
+    background: var(--color-error-light);
+    color: var(--color-error);
+}
+
+/* Time selection */
+.time-selection {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--color-surface);
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+}
+
+.time-selection label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.time-selection input[type="datetime-local"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-family: inherit;
+}
+
+.time-selection input[type="datetime-local"]:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.validating-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+/* Confirm button */
+.alternative-schedule .button {
+    margin-top: 1rem;
+    width: 100%;
+}

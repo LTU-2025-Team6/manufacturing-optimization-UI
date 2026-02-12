@@ -1,6 +1,7 @@
 import { ReactElement, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { IOptimizationPlan } from '../../types/IOptimizationPlan';
+import { formatDateTime } from '../../utils/dateTimeUtils';
 import StrategyCard from '../../components/StrategyCard/StrategyCard';
 import Alert from '../../components/Alert/Alert';
 import Loading from '../../components/loading/Loading';
@@ -82,7 +83,7 @@ export default function PlanView(): ReactElement {
             <p><strong>Plan ID:</strong> {plan.id}</p>
             <p><strong>Request ID:</strong> {plan.requestId}</p>
             <p><strong>Status:</strong> <span className="status-success">{plan.status}</span></p>
-            <p><strong>Created:</strong> {new Date(plan.createdAt).toLocaleString()}</p>
+            <p><strong>Created:</strong> {formatDateTime(plan.createdAt, { year: 'numeric' })}</p>
             
             <StrategyCard strategy={plan.selectedStrategy} />
 

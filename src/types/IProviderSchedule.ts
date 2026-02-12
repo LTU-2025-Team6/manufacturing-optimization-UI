@@ -1,6 +1,6 @@
 export interface IProviderSchedule {
-    startTime: string;
-    endTime: string;
+    startWorkingTime: string;
+    endWorkingTime: string;
     segments: IProviderScheduleSegment[];
 }
 

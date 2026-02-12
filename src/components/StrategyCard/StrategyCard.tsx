@@ -1,5 +1,6 @@
 import { IOptimizationStrategy } from '../../types/IOptimizationStrategy';
 import { parseDuration } from '../../utils/durationParser';
+import { formatDateTime } from '../../utils/dateTimeUtils';
 import Collapsible from '../Collapsible/Collapsible';
 import Timeline from '../Timeline/Timeline';
 import Card from '../Card/Card';
@@ -11,6 +12,34 @@ interface StrategyCardProps {
 }
 
 export default function StrategyCard({ strategy }: StrategyCardProps) {
+    strategy.steps.sort((a, b) => a.stepNumber - b.stepNumber); 
+
+    // Calculate overall time range for all steps
+    const getOverallTimeRange = (): { start: string; end: string } | undefined => {
+        const stepsWithSchedule = strategy.steps.filter(
+            step => step.allocatedSchedule?.segments && step.allocatedSchedule.segments.length > 0
+        );
+        
+        if (stepsWithSchedule.length === 0) return undefined;
+        
+        const allTimes = stepsWithSchedule.flatMap(step => 
+            step.allocatedSchedule!.segments.map(s => ({
+                start: new Date(s.startTime).getTime(),
+                end: new Date(s.endTime).getTime()
+            }))
+        );
+        
+        const minTime = Math.min(...allTimes.map(t => t.start));
+        const maxTime = Math.max(...allTimes.map(t => t.end));
+        
+        return {
+            start: new Date(minTime).toISOString(),
+            end: new Date(maxTime).toISOString()
+        };
+    };
+
+    const overallTimeRange = getOverallTimeRange();
+
     // Create combined timeline segments - one segment per step
     const getCombinedTimelineSegments = (): IProviderScheduleSegment[] => {
         return strategy.steps
@@ -75,7 +104,10 @@ export default function StrategyCard({ strategy }: StrategyCardProps) {
                                         {step.selectedProviderName}
                                     </small>
                                 </h4>
-                                <Timeline segments={step.allocatedSchedule.segments} />
+                                <Timeline 
+                                    segments={step.allocatedSchedule.segments} 
+                                    timeRange={overallTimeRange}
+                                />
                             </div>
                         ) : null
                     ))}
@@ -105,7 +137,7 @@ export default function StrategyCard({ strategy }: StrategyCardProps) {
                                     <td>{step.estimate.emissionsKgCO2.toFixed(2)} kg</td>
                                     <td>
                                         {step.allocatedSchedule ? (
-                                            <small>{new Date(step.allocatedSchedule.startTime).toLocaleString()}</small>
+                                            <small>{formatDateTime(step.allocatedSchedule.startWorkingTime)}</small>
                                         ) : (
                                             <span className="text-muted">Not scheduled</span>
                                         )}

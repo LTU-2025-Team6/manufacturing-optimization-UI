@@ -1,6 +1,6 @@
 import { useApi } from './useApi';
 import { IOptimizationRequest } from '../../types/IOptimizationRequest';
-import { IOptimizationPlan } from '../../types/IOptimizationPlan';
+import { IOptimizationPlan, IOptimizationPlanPreview, IConfirmStrategyResponse } from '../../types/IOptimizationPlan';
 
 const API_URL = '/api/optimization-requests';
 
@@ -19,6 +19,16 @@ export function useSelectStrategy() {
 
     const callApi = (requestId: string, strategyId: string) => {
         return callApiBase({ url: `${API_URL}/${requestId}/strategy`, method: 'PUT', body: strategyId });
+    };
+
+    return { data, loading, error, callApi };
+}
+
+export function useConfirmStrategy() {
+    const { data, loading, error, callApi: callApiBase } = useApi<IConfirmStrategyResponse>();
+
+    const callApi = (strategyId: string) => {
+        return callApiBase({ url: `/api/strategies/${strategyId}/confirm`, method: 'POST' });
     };
 
     return { data, loading, error, callApi };
