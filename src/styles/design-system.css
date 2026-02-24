@@ -17,26 +17,31 @@
     --ds-color-border-strong: #adb5bd;
     
     --ds-color-success-bg: #e8f5e9;
+    --ds-color-success-bg-strong: #c8e6c9;
     --ds-color-success-border: #a5d6a7;
     --ds-color-success-text: #2e7d32;
     --ds-color-success-text-strong: #1b5e20;
     
     --ds-color-error-bg: #ffebee;
+    --ds-color-error-bg-strong: #ffcdd2;
     --ds-color-error-border: #ef9a9a;
     --ds-color-error-text: #c62828;
     --ds-color-error-text-strong: #b71c1c;
     
     --ds-color-warning-bg: #fff3e0;
+    --ds-color-warning-bg-strong: #ffe0b2;
     --ds-color-warning-border: #ffb74d;
     --ds-color-warning-text: #e65100;
     --ds-color-warning-text-strong: #bf360c;
     
     --ds-color-info-bg: #e3f2fd;
+    --ds-color-info-bg-strong: #bbdefb;
     --ds-color-info-border: #64b5f6;
     --ds-color-info-text: #1565c0;
     --ds-color-info-text-strong: #0d47a1;
     
     --ds-color-process-bg: #f3e5f5;
+    --ds-color-process-bg-strong: #e1bee7;
     --ds-color-process-border: #ba68c8;
     --ds-color-process-text: #6a1b9a;
     --ds-color-process-text-strong: #4a148c;
@@ -147,26 +152,31 @@
     --ds-color-border-strong: #495057;
     
     --ds-color-success-bg: #1a3325;
+    --ds-color-success-bg-strong: #234a32;
     --ds-color-success-border: #2e5940;
     --ds-color-success-text: #66bb6a;
     --ds-color-success-text-strong: #81c784;
     
     --ds-color-error-bg: #3d1f1f;
+    --ds-color-error-bg-strong: #5a2e2e;
     --ds-color-error-border: #6b3535;
     --ds-color-error-text: #ef5350;
     --ds-color-error-text-strong: #ff6b6b;
     
     --ds-color-warning-bg: #3d2f1f;
+    --ds-color-warning-bg-strong: #5a442e;
     --ds-color-warning-border: #6b5335;
     --ds-color-warning-text: #ffa726;
     --ds-color-warning-text-strong: #ffb74d;
     
     --ds-color-info-bg: #1a2842;
+    --ds-color-info-bg-strong: #233a5e;
     --ds-color-info-border: #2e4766;
     --ds-color-info-text: #42a5f5;
     --ds-color-info-text-strong: #64b5f6;
     
     --ds-color-process-bg: #2d1f3d;
+    --ds-color-process-bg-strong: #3e2e5a;
     --ds-color-process-border: #4d356b;
     --ds-color-process-text: #ab47bc;
     --ds-color-process-text-strong: #ba68c8;
@@ -202,26 +212,31 @@
     --ds-color-border-strong: #495057;
     
     --ds-color-success-bg: #1a3325;
+    --ds-color-success-bg-strong: #234a32;
     --ds-color-success-border: #2e5940;
     --ds-color-success-text: #66bb6a;
     --ds-color-success-text-strong: #81c784;
     
     --ds-color-error-bg: #3d1f1f;
+    --ds-color-error-bg-strong: #5a2e2e;
     --ds-color-error-border: #6b3535;
     --ds-color-error-text: #ef5350;
     --ds-color-error-text-strong: #ff6b6b;
 
     --ds-color-warning-bg: #3d2f1f;
+    --ds-color-warning-bg-strong: #5a442e;
     --ds-color-warning-border: #6b5335;
     --ds-color-warning-text: #ffa726;
     --ds-color-warning-text-strong: #ffb74d;
     
     --ds-color-info-bg: #1a2842;
+    --ds-color-info-bg-strong: #233a5e;
     --ds-color-info-border: #2e4766;
     --ds-color-info-text: #42a5f5;
     --ds-color-info-text-strong: #64b5f6;
     
     --ds-color-process-bg: #2d1f3d;
+    --ds-color-process-bg-strong: #3e2e5a;
     --ds-color-process-border: #4d356b;
     --ds-color-process-text: #ab47bc;
     --ds-color-process-text-strong: #ba68c8;

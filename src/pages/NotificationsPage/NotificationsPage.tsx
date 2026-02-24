@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactElement } from 'react';
 import { useGetAllNotifications, useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/api/notificationApi';
 import { INotification, NotificationType } from '../../types/INotification';
+import { formatDateTime } from '../../utils/dateTimeUtils';
 import MaterialIcon from '../../components/MaterialIcon/MaterialIcon';
 import Card from '../../components/Card/Card';
 import Button from '../../components/Button/Button';
@@ -93,17 +94,6 @@ const NotificationsPage = (): ReactElement => {
         return 'info';
     };
 
-    const formatDate = (dateString: string): string => {
-        const date = new Date(dateString);
-        return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
     const unreadCount = notifications.filter(n => !n.isRead).length;
 
     if (loading && !data) {
@@ -161,7 +151,7 @@ const NotificationsPage = (): ReactElement => {
                                             <div className="notification-list-content">
                                                 <div className="notification-list-title">{notification.title}</div>
                                                 <div className="notification-list-time">
-                                                    {formatDate(notification.createdAt)}
+                                                    {formatDateTime(notification.createdAt, { year: 'numeric' })}
                                                 </div>
                                             </div>
                                             {!notification.isRead && (
@@ -194,7 +184,7 @@ const NotificationsPage = (): ReactElement => {
                                             </span>
                                             <span className="notification-detail-separator">•</span>
                                             <span className="notification-detail-time">
-                                                {formatDate(selectedNotification.createdAt)}
+                                                {formatDateTime(selectedNotification.createdAt, { year: 'numeric' })}
                                             </span>
                                             {selectedNotification.source && (
                                                 <>
