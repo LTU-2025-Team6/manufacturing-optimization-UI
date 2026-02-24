@@ -9,7 +9,7 @@ interface MaterialIconProps {
 }
 
 const MaterialIcon = ({ icon = 'emoticon', size = 'M', className, loader }: MaterialIconProps): ReactElement => {
-    const classes = ['material-symbols-outlined'];
+    const classes = ['material-symbols-outlined', 'material-icon'];
     const sizeMap = {
         'S': 'small',
         'M': 'medium',
