@@ -1,0 +1,294 @@
+/* ============================================
+   NOTIFICATION HUB CONTAINER
+   Takes full height of parent sidebar
+   ============================================ */
+
+.notification-hub {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ============================================
+   COLLAPSED STATE - Minimal view (60px width)
+   ============================================ */
+
+.notification-hub-collapsed {
+    width: 100%;
+    height: 100%;
+    background: var(--color-surface);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1rem;
+}
+
+.notification-hub-toggle {
+    position: relative;
+    background: transparent;
+    color: var(--color-fg);
+    border: none;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.notification-hub-toggle:hover {
+    background: var(--color-hover);
+    transform: scale(1.05);
+}
+
+.notification-hub-toggle:active {
+    transform: scale(0.95);
+}
+
+.notification-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border-radius: 10px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   EXPANDED STATE - Full notification panel
+   ============================================ */
+
+.notification-hub-panel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg);
+}
+
+.notification-hub-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--color-surface);
+    flex-shrink: 0;
+}
+
+.notification-hub-header h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-fg);
+}
+
+.notification-hub-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-button {
+    background: transparent;
+    border: none;
+    color: var(--color-fg);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.action-button:hover {
+    background: var(--color-hover);
+    transform: scale(1.1);
+}
+
+.action-button:active {
+    transform: scale(0.95);
+}
+
+/* ============================================
+   NOTIFICATION LIST - Scrollable area
+   This is the key part that takes remaining space
+   ============================================ */
+
+.notification-list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+}
+
+.notification-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    color: var(--color-fg-subtle);
+    height: 100%;
+}
+
+.notification-empty p {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   NOTIFICATION ITEMS - Individual entries
+   ============================================ */
+
+.notification-item {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.notification-item:hover {
+    background: var(--color-hover);
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item.unread {
+    background: rgba(59, 130, 246, 0.05);
+}
+
+/* ============================================
+   NOTIFICATION ANIMATION - Staggered appearance
+   ============================================ */
+
+.notification-hidden {
+    opacity: 0;
+    transform: translateX(20px);
+    max-height: 0;
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.notification-visible {
+    animation: slideInNotification 0.3s ease-out forwards;
+}
+
+@keyframes slideInNotification {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+        max-height: 100px;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+    }
+}
+
+/* ============================================
+   NOTIFICATION CONTENT
+   ============================================ */
+
+.notification-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 2px;
+}
+
+.notification-item.type-info .notification-icon {
+    color: #3b82f6;
+}
+
+.notification-item.type-success .notification-icon {
+    color: #10b981;
+}
+
+.notification-item.type-warning .notification-icon {
+    color: #f59e0b;
+}
+
+.notification-item.type-error .notification-icon {
+    color: #ef4444;
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-fg);
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+}
+
+.notification-meta {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--color-fg-subtle);
+}
+
+.notification-source {
+    font-style: italic;
+}
+
+.notification-unread-dot {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #3b82f6;
+    margin-top: 6px;
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+.notification-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notification-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
+}
+
+.notification-list::-webkit-scrollbar-thumb:hover {
+    background: var(--color-fg-subtle);
+}

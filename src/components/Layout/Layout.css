@@ -1,10 +1,54 @@
-.layout {
-    min-height: 100vh;
+/* ============================================
+   TOP-LEVEL LAYOUT - TWO COLUMN GRID
+   ============================================ */
+
+.app-container {
     display: grid;
-    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr 380px;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
     background: var(--color-bg);
     color: var(--color-fg);
+    transition: grid-template-columns 0.3s ease;
 }
+
+/* When notification hub is collapsed */
+.app-container.hub-collapsed {
+    grid-template-columns: 1fr 60px;
+}
+
+/* When on notifications page - hide sidebar */
+.app-container.hide-hub {
+    grid-template-columns: 1fr;
+}
+
+/* ============================================
+   MAIN WORKSPACE COLUMN (LEFT)
+   ============================================ */
+
+.main-workspace {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* ============================================
+   NOTIFICATION SIDEBAR COLUMN (RIGHT)
+   ============================================ */
+
+.notification-sidebar {
+    height: 100vh;
+    overflow: hidden;
+    border-left: 1px solid var(--color-border);
+    background: var(--color-bg);
+}
+
+/* ============================================
+   HEADER - Navigation bar
+   ============================================ */
 
 header {
     background: var(--color-accent);
@@ -13,6 +57,8 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 64px;
+    flex-shrink: 0;
 }
 
 .branding {
@@ -49,12 +95,21 @@ nav a:hover {
     background: var(--color-fg);
 }
 
+/* ============================================
+   MAIN CONTENT AREA
+   ============================================ */
+
 main {
+    flex: 1;
     padding: 2rem;
     max-width: 900px;
     margin: 0 auto;
     width: 100%;
 }
+
+/* ============================================
+   FOOTER
+   ============================================ */
 
 footer {
     border-top: 2px solid var(--color-border);
@@ -62,4 +117,41 @@ footer {
     text-align: center;
     font-size: 0.95rem;
     padding: 0.5rem 0;
+    flex-shrink: 0;
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+.main-workspace::-webkit-scrollbar {
+    width: 8px;
+}
+
+.main-workspace::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.main-workspace::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 4px;
+}
+
+.main-workspace::-webkit-scrollbar-thumb:hover {
+    background: var(--color-fg-subtle);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    .app-container,
+    .app-container.hub-collapsed {
+        grid-template-columns: 1fr;
+    }
+    
+    .notification-sidebar {
+        display: none;
+    }
 }

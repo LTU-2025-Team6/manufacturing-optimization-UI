@@ -7,6 +7,7 @@ import HomePage from "./pages/HomePage/HomePage";
 import App from "./App";
 import PlanListPage from "./pages/PlanListPage/PlanListPage";
 import StrategyEditPage from "./pages/StrategyEditPage/StrategyEditPage";
+import NotificationsPage from "./pages/NotificationsPage/NotificationsPage";
 
 export const AppRouter = createBrowserRouter([
     {
@@ -41,6 +42,10 @@ export const AppRouter = createBrowserRouter([
             {
                 path: 'plan/:requestId/edit',
                 element: <StrategyEditPage />
+            },
+            {
+                path: 'notifications',
+                element: <NotificationsPage />
             },
         ],
     }
