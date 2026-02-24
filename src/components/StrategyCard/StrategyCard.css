@@ -1,58 +1,63 @@
 .strategy-card {
-    margin: 20px 0;
+    margin: var(--ds-space-5) 0;
 }
 
 .strategy-header {
-    background: var(--color-border);
-    padding: 20px;
-    border-radius: 0;
-    margin-bottom: 20px;
+    background: var(--ds-color-bg-secondary);
+    padding: var(--ds-space-5);
+    border-radius: var(--ds-radius-lg);
+    margin-bottom: var(--ds-space-5);
+    border: 1px solid var(--ds-color-border-default);
 }
 
 .strategy-header h2 {
-    margin: 0 0 8px 0;
-    color: var(--color-accent);
+    margin: 0 0 var(--ds-space-2) 0;
+    color: var(--ds-color-accent-primary);
+    font-size: var(--ds-font-size-2xl);
+    font-weight: var(--ds-font-weight-bold);
 }
 
 .strategy-header p {
-    margin: 0 0 16px 0;
-    color: var(--color-muted);
+    margin: 0 0 var(--ds-space-4) 0;
+    color: var(--ds-color-text-tertiary);
+    font-size: var(--ds-font-size-base);
 }
 
 .strategy-metrics-summary {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 16px;
-    margin-top: 16px;
+    gap: var(--ds-space-4);
+    margin-top: var(--ds-space-4);
 }
 
 .metric {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--ds-space-1);
 }
 
 .metric-label {
-    font-size: 0.85rem;
-    color: var(--color-muted);
+    font-size: var(--ds-font-size-sm);
+    color: var(--ds-color-text-tertiary);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.05em;
+    font-weight: var(--ds-font-weight-medium);
 }
 
 .metric-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-accent);
+    font-size: var(--ds-font-size-2xl);
+    font-weight: var(--ds-font-weight-bold);
+    color: var(--ds-color-accent-primary);
 }
 
 .strategy-sections {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--ds-space-3);
 }
 
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 16px;
+    gap: var(--ds-space-4);
 }

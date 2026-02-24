@@ -14,8 +14,13 @@ const Layout = (): ReactElement => {
             <div className="main-workspace">
                 <header>
                     <a className='branding' href="/">
-                        <MaterialIcon className="text-gradient" icon="factory" size="XL" />
-                        <h1 className="text-gradient">ManufacturingEngine</h1>
+                        <svg className="logo" viewBox="0 0 268 85.6" xmlns="http://www.w3.org/2000/svg" aria-label="Manufacturing Optimization Engine Logo">
+                            <path d="m206.8,83.6v-26.4l-34.64-10.89L167.63.69l-.07-.69-.62.27-6.89,2.98-.24.1-.02.25-2.94,37.88-35.55-11.18-.36-.11-34.94,15.37v-7.51h-13.14v13.29l-19.53,8.59v23.65H0v2h55.33v-24.35l64.67-28.45v52.8h148v-2h-61.2Zm-84.8-39.66l36.43,9.9v10.67l-36.43-7.06v-13.52Zm0-.01v-11.3l36.43,11.46v9.3l-36.43-9.46Zm82.8,28.56c-1.73-1.02-3.75-1.62-5.93-1.62-1.41,0-2.76.26-4,.71l-35.43-6.86v-10.6l45.37,12.33v6.04Zm-82.8-15.01l36.43,7.49v9.68l-36.43-3.68v-13.5Zm37.43,7.7l34.03,7c-2.31,1.2-4.13,3.15-5.12,5.5l-28.91-2.92v-9.58Zm28.62,13.26c-.34,1.02-.52,2.11-.52,3.23,0,.66.07,1.31.2,1.93h-28.3v-8.4l28.62,3.23Zm16.75-13.01l-45.37-11.78v-9.24l45.37,14.27v6.76ZM160.6,3.93l6.09-2.48,3.44,44.21-13.25-4.17,3.73-37.56Zm-85.74,36.13h9.14v6.39l-9.14,4.02v-10.41Zm47.14,30.91l36.43,4.11v8.51h-36.43v-12.62Zm-38.35-7.8l5-2.2v23.62h-5v-21.42Zm10.4-4.58l5-2.2v13.99h-5v-11.79Zm-20.4,8.98l5-2.2v19.22h-5v-17.02Z"/>
+                        </svg>
+                        <div className="branding-text">
+                            <span className="branding-title">MOE</span>
+                            <span className="branding-subtitle">Manufacturing Optimization Engine</span>
+                        </div>
                     </a>
                     
                     <nav>

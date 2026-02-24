@@ -8,9 +8,9 @@
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background: var(--color-bg);
-    color: var(--color-fg);
-    transition: grid-template-columns 0.3s ease;
+    background: var(--ds-color-bg-primary);
+    color: var(--ds-color-text-primary);
+    transition: grid-template-columns var(--ds-transition-base);
 }
 
 /* When notification hub is collapsed */
@@ -42,8 +42,8 @@
 .notification-sidebar {
     height: 100vh;
     overflow: hidden;
-    border-left: 1px solid var(--color-border);
-    background: var(--color-bg);
+    border-left: 1px solid var(--ds-color-border-default);
+    background: var(--ds-color-bg-primary);
 }
 
 /* ============================================
@@ -51,48 +51,90 @@
    ============================================ */
 
 header {
-    background: var(--color-accent);
-    color: var(--color-bg);
-    padding: 0 2rem;
+    background: var(--ds-color-accent-primary);
+    color: white;
+    padding: 0 var(--ds-space-8);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 64px;
+    height: 120px;
     flex-shrink: 0;
+    box-shadow: var(--ds-shadow-sm);
 }
 
 .branding {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: var(--ds-space-3);
     text-decoration: none;
-    color: var(--color-bg);
+    color: white;
+    transition: opacity var(--ds-transition-fast);
 }
 
-h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0!important;
+.branding:hover {
+    opacity: 0.9;
+}
+
+/* Logo styling with design system colors */
+.branding .logo {
+    height: 60px;
+    width: auto;
+    fill: white;
+    opacity: 0.95;
+    transition: all var(--ds-transition-fast);
+    flex-shrink: 0;
+}
+
+.branding:hover .logo {
+    opacity: 1;
+}
+
+/* Branding text container */
+.branding-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    line-height: 1;
+}
+
+.branding-title {
+    font-size: var(--ds-font-size-xl);
+    font-weight: var(--ds-font-weight-bold);
+    color: white;
     letter-spacing: 0.02em;
+    line-height: 1.1;
+}
+
+.branding-subtitle {
+    font-size: var(--ds-font-size-xs);
+    font-weight: var(--ds-font-weight-normal);
+    color: rgba(255, 255, 255, 0.75);
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+    margin-top: 2px;
 }
 
 nav {
     display: flex;
-    gap: 1.5rem;
+    gap: var(--ds-space-6);
 }
 
 nav a {
-    color: var(--color-bg);
+    color: white;
     text-decoration: none;
-    font-weight: 500;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0;
-    transition: background 0.2s;
+    font-weight: var(--ds-font-weight-medium);
+    font-size: var(--ds-font-size-sm);
+    padding: var(--ds-space-2) var(--ds-space-3);
+    border-radius: var(--ds-radius-md);
+    transition: background var(--ds-transition-fast);
 }
 
-nav a.active,
+nav a.active {
+    background: rgba(255, 255, 255, 0.15);
+}
+
 nav a:hover {
-    background: var(--color-fg);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 /* ============================================
@@ -101,8 +143,8 @@ nav a:hover {
 
 main {
     flex: 1;
-    padding: 2rem;
-    max-width: 900px;
+    padding: var(--ds-space-8);
+    max-width: var(--ds-container-lg);
     margin: 0 auto;
     width: 100%;
 }
@@ -112,11 +154,11 @@ main {
    ============================================ */
 
 footer {
-    border-top: 2px solid var(--color-border);
-    color: var(--color-muted);
+    border-top: 1px solid var(--ds-color-border-default);
+    color: var(--ds-color-text-secondary);
     text-align: center;
-    font-size: 0.95rem;
-    padding: 0.5rem 0;
+    font-size: var(--ds-font-size-sm);
+    padding: var(--ds-space-3) 0;
     flex-shrink: 0;
 }
 
@@ -133,12 +175,12 @@ footer {
 }
 
 .main-workspace::-webkit-scrollbar-thumb {
-    background: var(--color-border);
-    border-radius: 4px;
+    background: var(--ds-color-border-default);
+    border-radius: var(--ds-radius-sm);
 }
 
 .main-workspace::-webkit-scrollbar-thumb:hover {
-    background: var(--color-fg-subtle);
+    background: var(--ds-color-border-strong);
 }
 
 /* ============================================

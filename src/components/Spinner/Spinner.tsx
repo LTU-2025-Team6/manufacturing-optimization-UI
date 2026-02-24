@@ -10,8 +10,8 @@ export default function Spinner({ size = 'medium' }: { size?: 'small' | 'medium'
             display: 'inline-block', 
             width: sizeMap[size], 
             height: sizeMap[size],
-            border: '3px solid var(--color-border)',
-            borderTop: '3px solid var(--color-accent)',
+            border: '3px solid var(--ds-color-border-default)',
+            borderTop: '3px solid var(--ds-color-accent-primary)',
             borderRadius: '50%',
             animation: 'spin 1s linear infinite'
         }} />

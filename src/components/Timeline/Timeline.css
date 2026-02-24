@@ -5,19 +5,19 @@
 .timeline-header {
     display: flex;
     justify-content: space-between;
-    font-size: 0.85rem;
-    color: var(--color-muted);
-    margin-bottom: 8px;
+    font-size: var(--ds-font-size-sm);
+    color: var(--ds-color-text-tertiary);
+    margin-bottom: var(--ds-space-2);
     padding: 0 200px 0 0;
 }
 
 .timeline-combined {
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 16px;
-    padding-bottom: 16px;
-    border-bottom: 2px solid var(--color-border);
+    gap: var(--ds-space-4);
+    margin-bottom: var(--ds-space-4);
+    padding-bottom: var(--ds-space-4);
+    border-bottom: 2px solid var(--ds-color-border-default);
 }
 
 .timeline-label-combined {
@@ -25,30 +25,30 @@
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    font-size: 0.9rem;
+    font-size: var(--ds-font-size-sm);
 }
 
 .timeline-label-combined strong {
-    font-size: 0.95rem;
-    color: var(--color-accent);
-    font-weight: 700;
+    font-size: var(--ds-font-size-base);
+    color: var(--ds-color-accent-primary);
+    font-weight: var(--ds-font-weight-bold);
 }
 
 .timeline-label-combined span {
-    font-size: 0.8rem;
-    color: var(--color-muted);
+    font-size: var(--ds-font-size-xs);
+    color: var(--ds-color-text-tertiary);
 }
 
 .timeline-container {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--ds-space-2);
 }
 
 .timeline-row {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: var(--ds-space-4);
 }
 
 .timeline-label {
@@ -56,21 +56,21 @@
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    font-size: 0.9rem;
+    font-size: var(--ds-font-size-sm);
 }
 
 .timeline-label strong {
-    font-size: 0.85rem;
-    color: var(--color-accent);
+    font-size: var(--ds-font-size-sm);
+    color: var(--ds-color-accent-primary);
 }
 
 .timeline-label span {
-    font-weight: 600;
+    font-weight: var(--ds-font-weight-semibold);
 }
 
 .timeline-label small {
-    font-size: 0.75rem;
-    color: var(--color-muted);
+    font-size: var(--ds-font-size-xs);
+    color: var(--ds-color-text-tertiary);
 }
 
 .timeline-row-gap {
@@ -82,40 +82,40 @@
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    font-size: 0.85rem;
-    color: var(--color-warning);
+    font-size: var(--ds-font-size-sm);
+    color: var(--ds-color-warning-text-strong);
     font-style: italic;
 }
 
 .timeline-label-gap span {
-    font-weight: 600;
+    font-weight: var(--ds-font-weight-semibold);
 }
 
 .timeline-label-gap small {
-    font-size: 0.75rem;
-    color: var(--color-muted);
+    font-size: var(--ds-font-size-xs);
+    color: var(--ds-color-text-tertiary);
 }
 
 .timeline-track {
     flex: 1;
     height: 40px;
-    background: var(--color-border);
-    border-radius: 0;
+    background: var(--ds-color-border-default);
+    border-radius: var(--ds-radius-sm);
     position: relative;
 }
 
 .timeline-bar {
     position: absolute;
     height: 100%;
-    border-radius: 0;
+    border-radius: var(--ds-radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: var(--ds-font-size-xs);
+    font-weight: var(--ds-font-weight-semibold);
     cursor: pointer;
-    transition: filter 0.2s;
+    transition: filter var(--ds-transition-fast);
 }
 
 .timeline-bar:hover {
@@ -123,36 +123,36 @@
 }
 
 .timeline-bar-process {
-    background: var(--color-accent);
+    background: var(--ds-color-accent-primary);
 }
 
 .timeline-bar-gap {
     background: repeating-linear-gradient(
         45deg,
-        var(--color-warning),
-        var(--color-warning) 10px,
-        rgba(var(--color-warning-rgb, 255, 193, 7), 0.7) 10px,
-        rgba(var(--color-warning-rgb, 255, 193, 7), 0.7) 20px
+        var(--ds-color-warning-bg-strong),
+        var(--ds-color-warning-bg-strong) 10px,
+        var(--ds-color-warning-bg) 10px,
+        var(--ds-color-warning-bg) 20px
     );
-    border: 1px dashed var(--color-warning);
+    border: 1px dashed var(--ds-color-warning-border);
 }
 
 /* Segment type specific styles */
 .timeline-bar-workingtime {
-    background: var(--color-accent);
+    background: var(--ds-color-accent-primary);
 }
 
 /* Conflict segments - red with pattern */
 .timeline-bar-conflict {
     background: repeating-linear-gradient(
         45deg,
-        #F44336,
-        #F44336 8px,
-        rgba(244, 67, 54, 0.8) 8px,
-        rgba(244, 67, 54, 0.8) 16px
+        var(--ds-color-error-bg-strong),
+        var(--ds-color-error-bg-strong) 8px,
+        var(--ds-color-error-bg) 8px,
+        var(--ds-color-error-bg) 16px
     );
-    border: 2px solid #D32F2F;
-    box-shadow: 0 0 8px rgba(244, 67, 54, 0.5);
+    border: 2px solid var(--ds-color-error-border);
+    box-shadow: 0 0 8px var(--ds-color-error-bg-strong);
     z-index: 10;
 }
 
@@ -163,52 +163,52 @@
         -1px 1px 0 #000,
         1px 1px 0 #000,
         0 0 4px rgba(0, 0, 0, 0.8);
-    font-weight: 700;
+    font-weight: var(--ds-font-weight-bold);
 }
 
 .timeline-bar-conflict:hover {
     filter: brightness(1.1);
-    box-shadow: 0 0 12px rgba(244, 67, 54, 0.7);
+    box-shadow: 0 0 12px var(--ds-color-error-bg-strong);
     z-index: 15;
 }
 
 .timeline-bar-break {
     background: repeating-linear-gradient(
         45deg,
-        #FFC107,
-        #FFC107 10px,
-        rgba(255, 193, 7, 0.7) 10px,
-        rgba(255, 193, 7, 0.7) 20px
+        var(--ds-color-warning-bg-strong),
+        var(--ds-color-warning-bg-strong) 10px,
+        var(--ds-color-warning-bg) 10px,
+        var(--ds-color-warning-bg) 20px
     );
-    border: 1px dashed #FFC107;
+    border: 1px dashed var(--ds-color-warning-border);
 }
 
 .timeline-bar-freespace {
     background: repeating-linear-gradient(
         45deg,
-        #9E9E9E,
-        #9E9E9E 8px,
-        rgba(158, 158, 158, 0.5) 8px,
-        rgba(158, 158, 158, 0.5) 16px
+        var(--ds-color-border-strong),
+        var(--ds-color-border-strong) 8px,
+        var(--ds-color-border-subtle) 8px,
+        var(--ds-color-border-subtle) 16px
     );
-    border: 1px dashed #9E9E9E;
+    border: 1px dashed var(--ds-color-border-default);
     opacity: 0.8;
 }
 
 .timeline-bar-occupied {
     background: repeating-linear-gradient(
         45deg,
-        #F44336,
-        #F44336 10px,
-        rgba(244, 67, 54, 0.7) 10px,
-        rgba(244, 67, 54, 0.7) 20px
+        var(--ds-color-error-bg-strong),
+        var(--ds-color-error-bg-strong) 10px,
+        var(--ds-color-error-bg) 10px,
+        var(--ds-color-error-bg) 20px
     );
-    border: 1px dashed #F44336;
+    border: 1px dashed var(--ds-color-error-border);
 }
 
 .timeline-bar-text {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding: 0 8px;
+    padding: 0 var(--ds-space-2);
 }

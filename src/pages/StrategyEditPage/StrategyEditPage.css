@@ -1,10 +1,10 @@
 .strategy-edit-page {
     min-height: 100vh;
-    background: var(--color-background);
+    background: var(--ds-color-bg-primary);
 }
 
 .strategy-edit-page-error {
     max-width: 800px;
-    margin: 4rem auto;
-    padding: 2rem;
+    margin: var(--ds-space-16) auto;
+    padding: var(--ds-space-8);
 }

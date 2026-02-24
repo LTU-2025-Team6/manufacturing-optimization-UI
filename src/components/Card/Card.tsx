@@ -1,20 +1,19 @@
 import { ReactNode } from 'react';
+import './Card.css';
 
 interface CardProps {
     title?: string;
     children: ReactNode;
+    variant?: 'default' | 'elevated' | 'flat';
 }
 
-export default function Card({ title, children }: CardProps) {
+export default function Card({ title, children, variant = 'default' }: CardProps) {
+    const variantClass = variant === 'default' ? '' : `card-${variant}`;
+    
     return (
-        <div style={{ 
-            border: '1px solid var(--color-border)', 
-            borderRadius: '4px', 
-            padding: '16px',
-            marginBottom: '16px'
-        }}>
-            {title && <h3 style={{ marginTop: 0 }}>{title}</h3>}
-            {children}
+        <div className={`card ${variantClass}`.trim()}>
+            {title && <h3 className="card-title">{title}</h3>}
+            <div className="card-content">{children}</div>
         </div>
     );
 }

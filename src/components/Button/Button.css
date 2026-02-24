@@ -1,46 +1,75 @@
+/* ============================================
+   BUTTON COMPONENT
+   Использует дизайн-систему
+   ============================================ */
+
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
 .btn {
-  border-radius: 0;
+  border-radius: var(--ds-radius-md);
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
+  padding: var(--ds-space-3) var(--ds-space-5);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-medium);
+  font-family: var(--ds-font-family-base);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--ds-transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-2);
+  line-height: 1;
 }
 
 .btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .btn-primary {
-  border: 1px solid var(--color-fg);
+  background: var(--ds-color-accent-primary);
+  color: white;
+  border-color: var(--ds-color-accent-primary);
 }
 
 .btn-primary:hover:not(:disabled) {
-  filter: brightness(1.1);
+  background: var(--ds-color-accent-primary-hover);
+  border-color: var(--ds-color-accent-primary-hover);
+}
+
+.btn-primary:active:not(:disabled) {
+  background: var(--ds-color-accent-primary-active);
+  border-color: var(--ds-color-accent-primary-active);
 }
 
 .btn-secondary {
-  border: 1px solid var(--color-border);
-  color: var(--color-fg);
+  background: transparent;
+  border-color: var(--ds-color-border-default);
+  color: var(--ds-color-text-primary);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  border: 1px solid var(--color-muted);
+  background: var(--ds-color-surface-hover);
+  border-color: var(--ds-color-border-strong);
+}
+
+.btn-secondary:active:not(:disabled) {
+  background: var(--ds-color-surface-active);
 }
 
 .btn-danger {
-  border: 1px solid var(--color-error);
-  color: #fff;
+  background: var(--ds-color-error-text);
+  color: white;
+  border-color: var(--ds-color-error-text);
 }
 
 .btn-danger:hover:not(:disabled) {
+  background: var(--ds-color-error-text-strong);
+  border-color: var(--ds-color-error-text-strong);
+}
+
+.btn-danger:active:not(:disabled) {
   filter: brightness(1.1);
 }

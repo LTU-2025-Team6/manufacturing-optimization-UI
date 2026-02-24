@@ -1,16 +1,22 @@
+/* ============================================
+   ALERT COMPONENT
+   Использует дизайн-систему
+   ============================================ */
+
 .alert {
-    margin-top: 24px;
-    padding: 16px;
-    border-radius: 0;
-    border: 2px solid;
+    margin-top: var(--ds-space-6);
+    padding: var(--ds-space-4);
+    border-radius: var(--ds-radius-lg);
+    border: 1px solid;
 }
 
 .alert-title {
-    margin: 0 0 8px 0;
+    margin: 0 0 var(--ds-space-2) 0;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 1.1rem;
+    gap: var(--ds-space-2);
+    font-size: var(--ds-font-size-md);
+    font-weight: var(--ds-font-weight-semibold);
 }
 
 .alert-icon {
@@ -19,48 +25,70 @@
 
 .alert-content {
     margin: 0;
+    font-size: var(--ds-font-size-sm);
+    line-height: var(--ds-line-height-relaxed);
 }
 
 .alert-content > p {
-    margin: 0;
+    margin: 0 0 var(--ds-space-2) 0;
+}
+
+.alert-content > p:last-child {
+    margin-bottom: 0;
 }
 
 /* Success variant */
 .alert-success {
-    border-color: var(--color-success);
-    background-color: rgba(76, 175, 80, 0.05);
+    background: var(--ds-color-success-bg);
+    border-color: var(--ds-color-success-border);
 }
 
 .alert-success .alert-title {
-    color: var(--color-success);
+    color: var(--ds-color-success-text-strong);
+}
+
+.alert-success .alert-content {
+    color: var(--ds-color-success-text);
 }
 
 /* Error variant */
 .alert-error {
-    border-color: var(--color-danger);
-    background-color: rgba(244, 67, 54, 0.05);
+    background: var(--ds-color-error-bg);
+    border-color: var(--ds-color-error-border);
 }
 
 .alert-error .alert-title {
-    color: var(--color-danger);
+    color: var(--ds-color-error-text-strong);
+}
+
+.alert-error .alert-content {
+    color: var(--ds-color-error-text);
 }
 
 /* Warning variant */
 .alert-warning {
-    border-color: var(--color-warning);
-    background-color: rgba(255, 152, 0, 0.05);
+    background: var(--ds-color-warning-bg);
+    border-color: var(--ds-color-warning-border);
 }
 
 .alert-warning .alert-title {
-    color: var(--color-warning);
+    color: var(--ds-color-warning-text-strong);
+}
+
+.alert-warning .alert-content {
+    color: var(--ds-color-warning-text);
 }
 
 /* Info variant */
 .alert-info {
-    border-color: var(--color-accent);
-    background-color: rgba(33, 150, 243, 0.05);
+    background: var(--ds-color-info-bg);
+    border-color: var(--ds-color-info-border);
 }
 
 .alert-info .alert-title {
-    color: var(--color-accent);
+    color: var(--ds-color-info-text-strong);
+}
+
+.alert-info .alert-content {
+    color: var(--ds-color-info-text);
 }

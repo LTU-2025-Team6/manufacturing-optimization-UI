@@ -2,7 +2,7 @@
     font-family: 'Material Symbols Outlined';
     font-weight: 400;
     font-style: normal;
-    font-size: 24px;
+    font-size: var(--ds-font-size-2xl);
     line-height: 1;
     display: inline-block;
     text-align: center;
@@ -12,16 +12,15 @@
 }
 
 .small {
-    font-size: 1rem;
+    font-size: var(--ds-font-size-base);
 }
 
-
 .medium {
-    font-size: 1.6rem;
+    font-size: var(--ds-font-size-xl);
 }
 
 .large {
-    font-size: 2.5rem;
+    font-size: var(--ds-font-size-3xl);
 }
 
 .extra-large {
@@ -30,4 +29,10 @@
 
 .loader {
     animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }

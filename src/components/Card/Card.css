@@ -1,0 +1,48 @@
+/* ============================================
+   CARD COMPONENT
+   Использует дизайн-систему
+   ============================================ */
+
+.card {
+    background: var(--ds-color-surface);
+    border: 1px solid var(--ds-color-border-subtle);
+    border-radius: var(--ds-radius-lg);
+    padding: var(--ds-space-6);
+    margin-bottom: var(--ds-space-4);
+    box-shadow: var(--ds-shadow-sm);
+    transition: box-shadow var(--ds-transition-fast);
+}
+
+.card:hover {
+    box-shadow: var(--ds-shadow-md);
+}
+
+.card-title {
+    margin: 0 0 var(--ds-space-4) 0;
+    font-size: var(--ds-font-size-lg);
+    font-weight: var(--ds-font-weight-semibold);
+    color: var(--ds-color-text-primary);
+}
+
+.card-content {
+    color: var(--ds-color-text-primary);
+}
+
+/* Варианты карточек */
+.card-elevated {
+    box-shadow: var(--ds-shadow-md);
+}
+
+.card-elevated:hover {
+    box-shadow: var(--ds-shadow-lg);
+}
+
+.card-flat {
+    border: none;
+    box-shadow: none;
+    background: var(--ds-color-bg-secondary);
+}
+
+.card-flat:hover {
+    background: var(--ds-color-bg-tertiary);
+}

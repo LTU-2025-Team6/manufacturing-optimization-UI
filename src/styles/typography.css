@@ -1,0 +1,181 @@
+body {
+    font-family: var(--ds-font-family-base);
+    font-size: var(--ds-font-size-base);
+    line-height: var(--ds-line-height-normal);
+    color: var(--ds-color-text-primary);
+    font-weight: var(--ds-font-weight-normal);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 var(--ds-space-4) 0;
+    font-weight: var(--ds-font-weight-semibold);
+    line-height: var(--ds-line-height-tight);
+    color: var(--ds-color-text-primary);
+}
+
+h1 {
+    font-size: var(--ds-font-size-3xl);
+    font-weight: var(--ds-font-weight-bold);
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    font-size: var(--ds-font-size-2xl);
+    font-weight: var(--ds-font-weight-bold);
+    letter-spacing: -0.01em;
+}
+
+h3 {
+    font-size: var(--ds-font-size-xl);
+}
+
+h4 {
+    font-size: var(--ds-font-size-lg);
+}
+
+h5 {
+    font-size: var(--ds-font-size-md);
+}
+
+h6 {
+    font-size: var(--ds-font-size-base);
+    font-weight: var(--ds-font-weight-medium);
+}
+
+
+
+p {
+    margin: 0 0 var(--ds-space-4) 0;
+    line-height: var(--ds-line-height-relaxed);
+}
+
+p:last-child {
+    margin-bottom: 0;
+}
+
+strong, b {
+    font-weight: var(--ds-font-weight-semibold);
+}
+
+em, i {
+    font-style: italic;
+}
+
+code {
+    font-family: var(--ds-font-family-mono);
+    font-size: 0.9em;
+    padding: var(--ds-space-1) var(--ds-space-2);
+    background: var(--ds-color-bg-tertiary);
+    border-radius: var(--ds-radius-sm);
+}
+
+
+.text-xs { font-size: var(--ds-font-size-xs); }
+.text-sm { font-size: var(--ds-font-size-sm); }
+.text-base { font-size: var(--ds-font-size-base); }
+.text-md { font-size: var(--ds-font-size-md); }
+.text-lg { font-size: var(--ds-font-size-lg); }
+.text-xl { font-size: var(--ds-font-size-xl); }
+.text-2xl { font-size: var(--ds-font-size-2xl); }
+.text-3xl { font-size: var(--ds-font-size-3xl); }
+
+.font-normal { font-weight: var(--ds-font-weight-normal); }
+.font-medium { font-weight: var(--ds-font-weight-medium); }
+.font-semibold { font-weight: var(--ds-font-weight-semibold); }
+.font-bold { font-weight: var(--ds-font-weight-bold); }
+
+.text-primary { color: var(--ds-color-text-primary); }
+.text-secondary { color: var(--ds-color-text-secondary); }
+.text-tertiary { color: var(--ds-color-text-tertiary); }
+.text-disabled { color: var(--ds-color-text-disabled); }
+
+.text-success { color: var(--ds-color-success-text); }
+.text-error { color: var(--ds-color-error-text); }
+.text-warning { color: var(--ds-color-warning-text); }
+.text-info { color: var(--ds-color-info-text); }
+.text-process { color: var(--ds-color-process-text); }
+
+.leading-tight { line-height: var(--ds-line-height-tight); }
+.leading-snug { line-height: var(--ds-line-height-snug); }
+.leading-normal { line-height: var(--ds-line-height-normal); }
+.leading-relaxed { line-height: var(--ds-line-height-relaxed); }
+
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.text-uppercase { text-transform: uppercase; letter-spacing: 0.05em; }
+.text-capitalize { text-transform: capitalize; }
+.text-truncate { 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+ul, ol {
+    margin: 0 0 var(--ds-space-4) 0;
+    padding-left: var(--ds-space-6);
+}
+
+li {
+    margin-bottom: var(--ds-space-2);
+    line-height: var(--ds-line-height-relaxed);
+}
+
+.list-none {
+    list-style: none;
+    padding-left: 0;
+}
+
+
+a {
+    color: var(--ds-color-accent-primary);
+    text-decoration: none;
+    transition: color var(--ds-transition-fast);
+}
+
+a:hover {
+    color: var(--ds-color-accent-primary-hover);
+}
+
+a:active {
+    color: var(--ds-color-accent-primary-active);
+}
+
+
+.label {
+    display: inline-block;
+    font-size: var(--ds-font-size-xs);
+    font-weight: var(--ds-font-weight-medium);
+    padding: var(--ds-space-1) var(--ds-space-3);
+    border-radius: var(--ds-radius-md);
+    line-height: 1;
+}
+
+.label-success {
+    background: var(--ds-color-success-bg);
+    color: var(--ds-color-success-text-strong);
+}
+
+.label-error {
+    background: var(--ds-color-error-bg);
+    color: var(--ds-color-error-text-strong);
+}
+
+.label-warning {
+    background: var(--ds-color-warning-bg);
+    color: var(--ds-color-warning-text-strong);
+}
+
+.label-info {
+    background: var(--ds-color-info-bg);
+    color: var(--ds-color-info-text-strong);
+}
+
+.label-process {
+    background: var(--ds-color-process-bg);
+    color: var(--ds-color-process-text-strong);
+}
