@@ -1,12 +1,29 @@
 import { useEffect, useState, useRef, type ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGetTwoWeekNotifications, useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/api/notificationApi';
+import { useGetNotificationsSince, useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/api/notificationApi';
 import { INotification, NotificationType } from '../../types/INotification';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import './NotificationHub.css';
 
 const POLL_INTERVAL = 1000; // 1 second
 const STAGGER_DELAY = 80; // milliseconds between each notification appearance
+const SESSION_START_KEY = 'notificationSessionStartTime';
+
+/**
+ * Get or initialize session start time
+ * This timestamp marks when the user started this session and is used to fetch only new notifications
+ */
+const getSessionStartTime = (): string => {
+    const existing = sessionStorage.getItem(SESSION_START_KEY);
+    if (existing) {
+        return existing;
+    }
+    
+    // Initialize with current time in UTC ISO format
+    const now = new Date().toISOString();
+    sessionStorage.setItem(SESSION_START_KEY, now);
+    return now;
+};
 
 interface NotificationHubProps {
     isCollapsed: boolean;
@@ -15,17 +32,18 @@ interface NotificationHubProps {
 
 const NotificationHub = ({ isCollapsed, onToggleCollapse }: NotificationHubProps): ReactElement => {
     const navigate = useNavigate();
-    const { data, callApi } = useGetTwoWeekNotifications();
+    const { data, callApi } = useGetNotificationsSince();
     const { callApi: markAsRead } = useMarkNotificationAsRead();
     const { callApi: markAllAsRead } = useMarkAllNotificationsAsRead();
     const [notifications, setNotifications] = useState<INotification[]>([]);
     const [visibleNotifications, setVisibleNotifications] = useState<Set<string>>(new Set());
     const shownNotificationsRef = useRef<Set<string>>(new Set());
     const isFirstLoadRef = useRef(true);
+    const sessionStartTime = useRef(getSessionStartTime());
 
     // Initial load
     useEffect(() => {
-        callApi();
+        callApi(sessionStartTime.current);
     }, []);
 
     // Update notifications when data changes
@@ -70,7 +88,7 @@ const NotificationHub = ({ isCollapsed, onToggleCollapse }: NotificationHubProps
     // Polling for new notifications
     useEffect(() => {
         const interval = setInterval(() => {
-            callApi();
+            callApi(sessionStartTime.current);
         }, POLL_INTERVAL);
 
         return () => clearInterval(interval);
