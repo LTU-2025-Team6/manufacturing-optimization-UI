@@ -176,8 +176,8 @@
     background: repeating-linear-gradient(
         45deg,
         var(--ds-color-warning-bg-strong),
-        var(--ds-color-warning-bg-strong) 10px,
-        var(--ds-color-warning-bg) 10px,
+        var(--ds-color-warning-bg-strong),
+        var(--ds-color-warning-bg) 20px,
         var(--ds-color-warning-bg) 20px
     );
     border: 1px dashed var(--ds-color-warning-border);
@@ -187,9 +187,9 @@
     background: repeating-linear-gradient(
         45deg,
         var(--ds-color-border-strong),
-        var(--ds-color-border-strong) 8px,
-        var(--ds-color-border-subtle) 8px,
-        var(--ds-color-border-subtle) 16px
+        var(--ds-color-border-strong),
+        var(--ds-color-border-subtle) 20px,
+        var(--ds-color-border-subtle) 20px
     );
     border: 1px dashed var(--ds-color-border-default);
     opacity: 0.8;
@@ -199,8 +199,8 @@
     background: repeating-linear-gradient(
         45deg,
         var(--ds-color-error-bg-strong),
-        var(--ds-color-error-bg-strong) 10px,
-        var(--ds-color-error-bg) 10px,
+        var(--ds-color-error-bg-strong),
+        var(--ds-color-error-bg) 20px,
         var(--ds-color-error-bg) 20px
     );
     border: 1px dashed var(--ds-color-error-border);
