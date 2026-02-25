@@ -1,0 +1,20 @@
+/* Action Header - specific to PlanPage */
+.plan-action-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--ds-space-6);
+    flex-wrap: wrap;
+    gap: var(--ds-space-4);
+}
+
+.plan-action-header h1 {
+    margin: 0;
+}
+
+.plan-action-buttons {
+    display: flex;
+    gap: var(--ds-space-3);
+    flex-wrap: wrap;
+}
+

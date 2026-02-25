@@ -1,0 +1,88 @@
+/* Request Details Section */
+.request-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ds-space-6);
+}
+
+.request-section {
+    border-bottom: 1px solid var(--ds-color-border-subtle);
+    padding-bottom: var(--ds-space-6);
+}
+
+.request-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.request-section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-2);
+    margin-bottom: var(--ds-space-4);
+    font-size: var(--ds-font-size-lg);
+    color: var(--ds-color-text-primary);
+    font-weight: var(--ds-font-weight-semibold);
+}
+
+.request-section-title .material-icon {
+    color: var(--ds-color-accent-primary);
+    font-size: var(--ds-font-size-xl);
+}
+
+.request-specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--ds-space-4);
+}
+
+.spec-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ds-space-1);
+    padding: var(--ds-space-3);
+    background: var(--ds-color-bg-secondary);
+    border-radius: var(--ds-radius-md);
+    border: 1px solid var(--ds-color-border-subtle);
+    transition: all var(--ds-transition-fast);
+}
+
+.spec-item:hover {
+    border-color: var(--ds-color-accent-primary);
+    box-shadow: 0 2px 8px rgba(58, 74, 104, 0.15);
+    transform: translateY(-1px);
+    background: var(--ds-color-surface);
+}
+
+.spec-item-full {
+    grid-column: 1 / -1;
+}
+
+.spec-label {
+    font-size: var(--ds-font-size-xs);
+    color: var(--ds-color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: var(--ds-font-weight-medium);
+}
+
+.spec-value {
+    font-size: var(--ds-font-size-base);
+    font-weight: var(--ds-font-weight-semibold);
+    color: var(--ds-color-text-primary);
+}
+
+.spec-value-mono {
+    font-family: var(--ds-font-family-mono);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .request-specs-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .spec-item-full {
+        grid-column: 1;
+    }
+}
