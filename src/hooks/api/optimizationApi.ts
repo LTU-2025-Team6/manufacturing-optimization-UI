@@ -43,3 +43,13 @@ export function useGetOptimizationPlan() {
 
     return { data, loading, error, callApi };
 }
+
+export function useGetOptimizationRequest() {
+    const { data, loading, error, callApi: callApiBase } = useApi<IOptimizationRequest>();
+
+    const callApi = (requestId: string) => {
+        return callApiBase({ url: `${API_URL}/${requestId}` });
+    };
+
+    return { data, loading, error, callApi };
+}

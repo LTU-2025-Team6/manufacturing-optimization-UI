@@ -1,4 +1,13 @@
 /**
+ * Date and Time Utilities
+ * 
+ * IMPORTANT: All functions work with UTC timestamps stored as ISO 8601 strings.
+ * - Server sends dates in UTC (e.g., "2024-02-24T10:30:00Z")
+ * - These utilities parse UTC strings and display them in the user's local timezone
+ * - Always use these utilities instead of direct Date manipulation for consistency
+ */
+
+/**
  * Converts ISO 8601 UTC datetime string to datetime-local input format
  * datetime-local expects format: "YYYY-MM-DDTHH:mm" in local timezone
  * @param isoString - ISO 8601 datetime string (UTC)
@@ -79,4 +88,44 @@ export function formatDateTime(isoString: string, options?: Intl.DateTimeFormatO
     };
     
     return date.toLocaleString('en-US', defaultOptions);
+}
+
+/**
+ * Formats date-only string (YYYY-MM-DD) for display without timezone conversion
+ * Use this for date strings that don't include time information
+ * @param dateString - Date string in YYYY-MM-DD format
+ * @param options - Optional Intl.DateTimeFormatOptions
+ * @returns Formatted date string
+ */
+export function formatDateOnly(dateString: string, options?: Intl.DateTimeFormatOptions): string {
+    if (!dateString) return 'Not set';
+    
+    // Parse as local date to avoid timezone shifting
+    // dateString format: "YYYY-MM-DD"
+    const parts = dateString.split('-');
+    if (parts.length !== 3) {
+        console.error('Invalid date format:', dateString);
+        return 'Invalid date';
+    }
+    
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1; // months are 0-indexed
+    const day = parseInt(parts[2], 10);
+    
+    const date = new Date(year, month, day);
+    
+    if (isNaN(date.getTime())) {
+        console.error('Invalid date:', dateString);
+        return 'Invalid date';
+    }
+    
+    const defaultOptions: Intl.DateTimeFormatOptions = {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        ...options
+    };
+    
+    return date.toLocaleDateString('en-US', defaultOptions);
 }

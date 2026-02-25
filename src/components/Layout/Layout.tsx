@@ -1,13 +1,45 @@
-import { type ReactElement, useState } from 'react';
+import { type ReactElement, useState, useEffect } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import './Layout.css';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import NotificationHub from '../NotificationHub/NotificationHub';
 
+const HUB_COLLAPSED_KEY = 'notificationHubCollapsed';
+
+/**
+ * Get saved notification hub collapsed state from localStorage
+ * Defaults to false (expanded) if not set
+ */
+const getSavedHubState = (): boolean => {
+    try {
+        const saved = localStorage.getItem(HUB_COLLAPSED_KEY);
+        return saved === 'true';
+    } catch (error) {
+        console.error('Failed to read hub state from localStorage:', error);
+        return false;
+    }
+};
+
+/**
+ * Save notification hub collapsed state to localStorage
+ */
+const saveHubState = (isCollapsed: boolean): void => {
+    try {
+        localStorage.setItem(HUB_COLLAPSED_KEY, String(isCollapsed));
+    } catch (error) {
+        console.error('Failed to save hub state to localStorage:', error);
+    }
+};
+
 const Layout = (): ReactElement => {
-    const [isHubCollapsed, setIsHubCollapsed] = useState(false);
+    const [isHubCollapsed, setIsHubCollapsed] = useState(getSavedHubState);
     const location = useLocation();
     const isNotificationsPage = location.pathname === '/notifications';
+
+    // Save to localStorage whenever state changes
+    useEffect(() => {
+        saveHubState(isHubCollapsed);
+    }, [isHubCollapsed]);
 
     return (
         <div className={`app-container ${isHubCollapsed ? 'hub-collapsed' : 'hub-expanded'} ${isNotificationsPage ? 'hide-hub' : ''}`}>

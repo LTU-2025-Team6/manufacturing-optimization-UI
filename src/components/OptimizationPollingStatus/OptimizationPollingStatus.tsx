@@ -1,73 +1,70 @@
 import { IProblemDetails } from '../../types/IProblemDetails';
 import Alert from '../Alert/Alert';
-import Loading from '../loading/Loading';
+import MaterialIcon from '../MaterialIcon/MaterialIcon';
+import './OptimizationPollingStatus.css';
 
 interface PollingStatusProps {
     requestId: string;
-    status?: string;
     elapsed: number;
-    loading: boolean;
     error: IProblemDetails | null;
     isTimeout: boolean;
-    errorMessage?: string;
 }
 
 export default function OptimizationPollingStatus({ 
-    requestId, 
-    status, 
+    requestId,
     elapsed, 
-    loading, 
     error, 
-    isTimeout, 
-    errorMessage 
+    isTimeout
 }: PollingStatusProps) {
-    return (
-        <>
-            <p>Request ID: {requestId}</p>
-            <p>Elapsed: {(elapsed / 1000).toFixed(0)}s</p>
-            
-            {loading && <Loading message="Polling for updates..." />}
-            
-            {status && (
-                <>
-                    <p>Status: {status}</p>
-                    {getStatusMessage(status)}
-                </>
-            )}
+    const minutes = Math.floor(elapsed / 60000);
+    const seconds = Math.floor((elapsed % 60000) / 1000);
+    const timeDisplay = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
 
+    return (
+        <div className="polling-status">
+            {/* Progress Indicator */}
+            <div className="polling-progress">
+                <div className="polling-pulse-indicator">
+                    <MaterialIcon icon="sync" />
+                    <span className="polling-pulse-text">Processing...</span>
+                </div>
+            </div>
+
+            {/* Request Info Card */}
+            <div className="polling-info-card">
+                <div className="polling-info-row">
+                    <div className="polling-info-item">
+                        <MaterialIcon icon="description" />
+                        <div className="polling-info-content">
+                            <span className="polling-info-label">Request ID</span>
+                            <span className="polling-info-value">{requestId.slice(0, 8)}...</span>
+                        </div>
+                    </div>
+                    <div className="polling-info-item">
+                        <MaterialIcon icon="schedule" />
+                        <div className="polling-info-content">
+                            <span className="polling-info-label">Elapsed Time</span>
+                            <span className="polling-info-value">{timeDisplay}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Error Display */}
             {error && (
                 <Alert variant="error" title={error.title || 'Error'}>
                     {error.detail && <p>{error.detail}</p>}
-                    {error.status && <p>Status code: {error.status}</p>}
+                    {error.status && <p><strong>Status code:</strong> {error.status}</p>}
                 </Alert>
             )}
 
-            {isTimeout && <p style={{ color: 'red' }}>Timeout waiting for plan</p>}
-
-            {status === 'Failed' && (
-                <div style={{ color: 'red', border: '1px solid red', padding: '10px' }}>
-                    <h3>Optimization Failed</h3>
-                    <p>{errorMessage || 'Unknown error'}</p>
-                    <p>Possible reasons:</p>
-                    <ul>
-                        <li>No providers available with required capabilities</li>
-                        <li>Providers did not respond within timeout</li>
-                        <li>No feasible solutions found for the given constraints</li>
-                    </ul>
-                </div>
+            {/* Timeout Warning */}
+            {isTimeout && (
+                <Alert variant="error" title="Request Timeout">
+                    <p>The optimization request is taking longer than expected.</p>
+                    <p>Please check the request status or try again later.</p>
+                </Alert>
             )}
-        </>
+        </div>
     );
-}
-
-function getStatusMessage(status: string) {
-    switch (status) {
-        case 'Draft': return <p>Starting optimization...</p>;
-        case 'MatchingProviders': return <p>Matching providers...</p>;
-        case 'EstimatingCosts': return <p>Getting cost estimates...</p>;
-        case 'GeneratingStrategies': return <p>Generating strategies...</p>;
-        case 'AwaitingStrategySelection': return <p>Strategies ready!</p>;
-        case 'Failed': return <p>Optimization failed</p>;
-        default: return <p>{status}...</p>;
-    }
 }

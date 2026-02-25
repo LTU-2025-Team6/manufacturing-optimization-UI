@@ -2,6 +2,7 @@ import { ReactElement, useState } from 'react';
 import { useGetProviderSchedule } from '../../hooks/api/providerApi';
 import { IProviderScheduleRequest } from '../../types/IProviderScheduleRequest';
 import { IProviderDayScheduleDto } from '../../types/IProviderSchedule';
+import { formatDateOnly } from '../../utils/dateTimeUtils';
 import Button from '../Button/Button';
 import Alert from '../Alert/Alert';
 import DataState from '../DataState/DataState';
@@ -12,12 +13,16 @@ interface ProviderScheduleViewProps {
     providerId: string;
 }
 
-const formatDate = (date: Date): string => date.toISOString().split('T')[0];
+/**
+ * Formats current date to YYYY-MM-DD for date input field
+ * Note: This is only for input field formatting, not for display
+ */
+const formatDateForInput = (date: Date): string => date.toISOString().split('T')[0];
 
 export default function ProviderScheduleView({ providerId }: ProviderScheduleViewProps): ReactElement {
     const { data: scheduleData, loading, error, callApi } = useGetProviderSchedule();
-    const [startDate, setStartDate] = useState(formatDate(new Date()));
-    const [endDate, setEndDate] = useState(formatDate(new Date(new Date().setDate(new Date().getDate() + 7))));
+    const [startDate, setStartDate] = useState(formatDateForInput(new Date()));
+    const [endDate, setEndDate] = useState(formatDateForInput(new Date(new Date().setDate(new Date().getDate() + 7))));
 
     const handleShowSchedule = async () => {
         if (!startDate || !endDate) {
@@ -90,12 +95,7 @@ export default function ProviderScheduleView({ providerId }: ProviderScheduleVie
                                     {schedule.map((daySchedule: IProviderDayScheduleDto) => (
                                         <tr key={daySchedule.date}>
                                             <td className="schedule-date-cell">
-                                                {new Date(daySchedule.date).toLocaleDateString('en-US', {
-                                                    weekday: 'short',
-                                                    month: 'short',
-                                                    day: 'numeric',
-                                                    year: 'numeric'
-                                                })}
+                                                {formatDateOnly(daySchedule.date)}
                                             </td>
                                             <td className="schedule-timeline-cell">
                                                 <Timeline 

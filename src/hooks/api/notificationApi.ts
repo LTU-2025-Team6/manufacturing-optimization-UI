@@ -40,14 +40,16 @@ export function useGetRecentNotifications() {
     return { data, loading, error, callApi };
 }
 
+
 /**
- * Get notifications from the last two weeks
+ * Get notifications since a specific timestamp
+ * @example callApi('2026-02-10T00:00:00Z')
  */
-export function useGetTwoWeekNotifications() {
+export function useGetNotificationsSince() {
     const { data, loading, error, callApi: callApiBase } = useApi<INotification[]>();
 
-    const callApi = () => {
-        return callApiBase({ url: '/api/notifications/two-weeks' });
+    const callApi = (since: string) => {
+        return callApiBase({ url: `/api/notifications/since?since=${encodeURIComponent(since)}` });
     };
 
     return { data, loading, error, callApi };

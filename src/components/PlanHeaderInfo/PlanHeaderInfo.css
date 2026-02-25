@@ -1,0 +1,97 @@
+.plan-header-info {
+    background: var(--ds-color-surface);
+    border: 1px solid var(--ds-color-border-default);
+    border-radius: var(--ds-radius-lg);
+    padding: var(--ds-space-6);
+    margin-bottom: var(--ds-space-6);
+    animation: fadeInUp 0.3s ease-out;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.plan-header-info + * {
+    margin-top: var(--ds-space-6);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.plan-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--ds-space-6);
+}
+
+.plan-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ds-space-2);
+}
+
+.plan-info-label {
+    font-size: var(--ds-font-size-xs);
+    color: var(--ds-color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: var(--ds-font-weight-medium);
+}
+
+.plan-info-value {
+    font-size: var(--ds-font-size-lg);
+    font-weight: var(--ds-font-weight-semibold);
+    color: var(--ds-color-text-primary);
+}
+
+.plan-id-mono {
+    font-family: var(--ds-font-family-mono);
+    font-size: var(--ds-font-size-base);
+}
+
+/* Status badges - matching PlanListPage styles */
+.plan-status-badge {
+    padding: var(--ds-space-1) var(--ds-space-3);
+    border-radius: var(--ds-radius-full);
+    font-size: var(--ds-font-size-xs);
+    font-weight: var(--ds-font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.plan-status-badge.confirmed {
+    background: var(--ds-color-success-bg);
+    color: var(--ds-color-success-text-strong);
+    border: 1px solid var(--ds-color-success-border);
+}
+
+.plan-status-badge.processing,
+.plan-status-badge.ready,
+.plan-status-badge.draft,
+.plan-status-badge.submitted,
+.plan-status-badge.awaitingstrategyselection,
+.plan-status-badge.strategyselected {
+    background: var(--ds-color-warning-bg);
+    color: var(--ds-color-warning-text-strong);
+    border: 1px solid var(--ds-color-warning-border);
+}
+
+.plan-status-badge.failed {
+    background: var(--ds-color-error-bg);
+    color: var(--ds-color-error-text-strong);
+    border: 1px solid var(--ds-color-error-border);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .plan-info-grid {
+        grid-template-columns: 1fr;
+    }
+}

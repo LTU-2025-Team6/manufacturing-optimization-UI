@@ -1,15 +1,18 @@
 import { ReactElement, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { IOptimizationPlan } from '../../types/IOptimizationPlan';
+import { IOptimizationRequest } from '../../types/IOptimizationRequest';
 import { usePollingApi } from '../../hooks/api/usePollingApi';
-import { useSelectStrategy, useConfirmStrategy } from '../../hooks/api/optimizationApi';
-import { formatDateTime } from '../../utils/dateTimeUtils';
+import { useSelectStrategy, useConfirmStrategy, useGetOptimizationRequest } from '../../hooks/api/optimizationApi';
 import StrategyCard from '../../components/StrategyCard/StrategyCard';
 import StrategySelector from '../../components/StrategySelector/StrategySelector';
 import OptimizationPollingStatus from '../../components/OptimizationPollingStatus/OptimizationPollingStatus';
 import Alert from '../../components/Alert/Alert';
 import Button from '../../components/Button/Button';
 import MaterialIcon from '../../components/MaterialIcon/MaterialIcon';
+import RequestDetailsCard from '../../components/RequestDetailsCard/RequestDetailsCard';
+import PlanHeaderInfo from '../../components/PlanHeaderInfo/PlanHeaderInfo';
+import './PlanPage.css';
 
 // Constants
 const POLLING_INTERVAL = 2000; // 2 seconds
@@ -21,6 +24,7 @@ export default function PlanPage(): ReactElement {
     
     // State
     const [plan, setPlan] = useState<IOptimizationPlan | null>(null);
+    const [request, setRequest] = useState<IOptimizationRequest | null>(null);
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const [isSelecting, setIsSelecting] = useState(false);
     const [isConfirming, setIsConfirming] = useState(false);
@@ -30,6 +34,7 @@ export default function PlanPage(): ReactElement {
     // API Hooks
     const { callApi: selectStrategy, loading: selecting, error: selectError } = useSelectStrategy();
     const { data: confirmResult, callApi: confirmStrategy, loading: confirming, error: confirmError } = useConfirmStrategy();
+    const { data: requestData, callApi: fetchRequest } = useGetOptimizationRequest();
 
     // Determine when to stop polling
     const shouldStopPolling = (data: IOptimizationPlan): boolean => {
@@ -102,6 +107,20 @@ export default function PlanPage(): ReactElement {
         }
     };
 
+    // Fetch request details when requestId is available
+    useEffect(() => {
+        if (requestId) {
+            fetchRequest(requestId);
+        }
+    }, [requestId]);
+
+    // Update request state when data is fetched
+    useEffect(() => {
+        if (requestData) {
+            setRequest(requestData);
+        }
+    }, [requestData]);
+
     // Update plan when polling data changes
     useEffect(() => {
         if (!pollingData) return;
@@ -160,12 +179,9 @@ export default function PlanPage(): ReactElement {
                 <h1>Loading Plan</h1>
                 <OptimizationPollingStatus 
                     requestId={requestId || ''}
-                    status={undefined}
                     elapsed={elapsed}
-                    loading={polling}
                     error={pollingError}
                     isTimeout={isTimeout}
-                    errorMessage={undefined}
                 />
             </div>
         );
@@ -175,9 +191,18 @@ export default function PlanPage(): ReactElement {
         return (
             <div>
                 <h1>Optimization Failed</h1>
+                
+                <PlanHeaderInfo
+                    planId={plan.id}
+                    status={plan.status}
+                    createdAt={plan.createdAt}
+                />
+                
                 <Alert variant="error" title="Optimization Failed">
                     <p>{plan.errorMessage || 'The optimization process failed.'}</p>
                 </Alert>
+
+                {request && <RequestDetailsCard request={request} />}
             </div>
         );
     }
@@ -185,9 +210,9 @@ export default function PlanPage(): ReactElement {
     if (plan.status === 'Ready' && plan.selectedStrategy) {
         return (
             <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <div className="plan-action-header">
                     <h1>Ready to Confirm Strategy</h1>
-                    <div style={{ display: 'flex', gap: '1rem' }}>
+                    <div className="plan-action-buttons">
                         <Button
                             variant="secondary"
                             onClick={() => navigate(`/plan/${requestId}/edit`)}
@@ -206,10 +231,13 @@ export default function PlanPage(): ReactElement {
                     </div>
                 </div>
 
-                <p><strong>Plan ID:</strong> {plan.id}</p>
-                <p><strong>Request ID:</strong> {plan.requestId}</p>
-                <p><strong>Status:</strong> <span className="status-warning">{plan.status}</span></p>
-                <p><strong>Created:</strong> {formatDateTime(plan.createdAt, { year: 'numeric' })}</p>
+                <PlanHeaderInfo
+                    planId={plan.id}
+                    status={plan.status}
+                    createdAt={plan.createdAt}
+                />
+
+                {request && <RequestDetailsCard request={request} />}
                 
                 {confirmationErrors && confirmationErrors.length > 0 && (
                     <Alert variant="error" title="Confirmation Errors">
@@ -243,11 +271,14 @@ export default function PlanPage(): ReactElement {
         return (
             <div>
                 <h1>Confirmed Optimization Plan</h1>
-                <p><strong>Plan ID:</strong> {plan.id}</p>
-                <p><strong>Request ID:</strong> {plan.requestId}</p>
-                <p><strong>Status:</strong> <span className="status-success">{plan.status}</span></p>
-                <p><strong>Created:</strong> {formatDateTime(plan.createdAt, { year: 'numeric' })}</p>
-                {plan.confirmedAt && <p><strong>Confirmed:</strong> {formatDateTime(plan.confirmedAt, { year: 'numeric' })}</p>}
+                <PlanHeaderInfo
+                    planId={plan.id}
+                    status={plan.status}
+                    createdAt={plan.createdAt}
+                    confirmedAt={plan.confirmedAt}
+                />
+
+                {request && <RequestDetailsCard request={request} />}
                 
                 <StrategyCard strategy={plan.selectedStrategy} />
 
@@ -266,12 +297,9 @@ export default function PlanPage(): ReactElement {
                     <h1>Processing Strategy Selection</h1>
                     <OptimizationPollingStatus 
                         requestId={requestId || ''}
-                        status={plan.status}
                         elapsed={elapsed}
-                        loading={polling}
                         error={pollingError}
                         isTimeout={isTimeout}
-                        errorMessage={plan.errorMessage}
                     />
                 </div>
             );
@@ -280,6 +308,16 @@ export default function PlanPage(): ReactElement {
         return (
             <div>
                 <h1>Available Optimization Strategies</h1>
+                
+                <PlanHeaderInfo
+                    planId={plan.id}
+                    status={plan.status}
+                    createdAt={plan.createdAt}
+                    strategiesCount={plan.strategies.length}
+                />
+
+                {request && <RequestDetailsCard request={request} />}
+                
                 <StrategySelector 
                     strategies={plan.strategies}
                     onSelect={handleSelectStrategy}
@@ -303,12 +341,9 @@ export default function PlanPage(): ReactElement {
             <h1>Processing Optimization Request</h1>
             <OptimizationPollingStatus 
                 requestId={requestId || ''}
-                status={plan.status}
                 elapsed={elapsed}
-                loading={polling}
                 error={pollingError}
                 isTimeout={isTimeout}
-                errorMessage={plan.errorMessage}
             />
         </div>
     );
