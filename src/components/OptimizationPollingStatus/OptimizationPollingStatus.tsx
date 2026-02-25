@@ -24,9 +24,6 @@ export default function OptimizationPollingStatus({
         <div className="polling-status">
             {/* Progress Indicator */}
             <div className="polling-progress">
-                <div className="polling-progress-bar">
-                    <div className="polling-progress-fill"></div>
-                </div>
                 <div className="polling-pulse-indicator">
                     <MaterialIcon icon="sync" />
                     <span className="polling-pulse-text">Processing...</span>
