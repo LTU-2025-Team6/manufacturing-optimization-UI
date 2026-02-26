@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { IOptimizationPlan } from '../../types/IOptimizationPlan';
 import { IOptimizationRequest } from '../../types/IOptimizationRequest';
 import { usePollingApi } from '../../hooks/api/usePollingApi';
-import { useSelectStrategy, useConfirmStrategy, useGetOptimizationRequest } from '../../hooks/api/optimizationApi';
+import { useSelectStrategy, useConfirmStrategy, useGetOptimizationRequest, useCancelOptimizationPlan, useDeleteOptimizationPlan } from '../../hooks/api/optimizationApi';
 import StrategyCard from '../../components/StrategyCard/StrategyCard';
 import StrategySelector from '../../components/StrategySelector/StrategySelector';
 import OptimizationPollingStatus from '../../components/OptimizationPollingStatus/OptimizationPollingStatus';
@@ -35,6 +35,8 @@ export default function PlanPage(): ReactElement {
     const { callApi: selectStrategy, loading: selecting, error: selectError } = useSelectStrategy();
     const { data: confirmResult, callApi: confirmStrategy, loading: confirming, error: confirmError } = useConfirmStrategy();
     const { data: requestData, callApi: fetchRequest } = useGetOptimizationRequest();
+    const { callApi: cancelPlan, loading: canceling, error: cancelError } = useCancelOptimizationPlan();
+    const { callApi: deletePlan, loading: deleting, error: deleteError } = useDeleteOptimizationPlan();
 
     // Determine when to stop polling
     const shouldStopPolling = (data: IOptimizationPlan): boolean => {
@@ -104,6 +106,40 @@ export default function PlanPage(): ReactElement {
         } catch (err) {
             console.error('Failed to confirm strategy:', err);
             setIsConfirming(false);
+        }
+    };
+
+    // Handle plan cancellation (Confirmed → Ready)
+    const handleCancelPlan = async (): Promise<void> => {
+        if (!plan?.id) return;
+        
+        if (!window.confirm('Are you sure you want to cancel this confirmed plan? This will move it back to Ready status.')) {
+            return;
+        }
+        
+        try {
+            await cancelPlan(plan.id);
+            // Restart polling to fetch updated plan status
+            restartPolling();
+        } catch (err) {
+            console.error('Failed to cancel plan:', err);
+        }
+    };
+
+    // Handle plan deletion
+    const handleDeletePlan = async (): Promise<void> => {
+        if (!plan?.id) return;
+        
+        if (!window.confirm('Are you sure you want to delete this plan? This action cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            await deletePlan(plan.id);
+            // Redirect to plans list after successful deletion
+            navigate('/plans');
+        } catch (err) {
+            console.error('Failed to delete plan:', err);
         }
     };
 
@@ -190,7 +226,19 @@ export default function PlanPage(): ReactElement {
     if (plan.status === 'Failed') {
         return (
             <div>
-                <h1>Optimization Failed</h1>
+                <div className="plan-action-header">
+                    <h1>Optimization Failed</h1>
+                    <div className="plan-action-buttons">
+                        <Button
+                            variant="danger"
+                            onClick={handleDeletePlan}
+                            disabled={deleting}
+                        >
+                            <MaterialIcon icon="delete" />
+                            {deleting ? 'Deleting...' : 'Delete Plan'}
+                        </Button>
+                    </div>
+                </div>
                 
                 <PlanHeaderInfo
                     planId={plan.id}
@@ -201,6 +249,13 @@ export default function PlanPage(): ReactElement {
                 <Alert variant="error" title="Optimization Failed">
                     <p>{plan.errorMessage || 'The optimization process failed.'}</p>
                 </Alert>
+
+                {deleteError && (
+                    <Alert variant="error" title={deleteError.title || 'Delete Failed'}>
+                        {deleteError.detail && <p>{deleteError.detail}</p>}
+                        {deleteError.status && <p>Status code: {deleteError.status}</p>}
+                    </Alert>
+                )}
 
                 {request && <RequestDetailsCard request={request} />}
             </div>
@@ -213,6 +268,14 @@ export default function PlanPage(): ReactElement {
                 <div className="plan-action-header">
                     <h1>Ready to Confirm Strategy</h1>
                     <div className="plan-action-buttons">
+                        <Button
+                            variant="danger"
+                            onClick={handleDeletePlan}
+                            disabled={deleting}
+                        >
+                            <MaterialIcon icon="delete" />
+                            {deleting ? 'Deleting...' : 'Delete Plan'}
+                        </Button>
                         <Button
                             variant="secondary"
                             onClick={() => navigate(`/plan/${requestId}/edit`)}
@@ -256,6 +319,13 @@ export default function PlanPage(): ReactElement {
                         {confirmError.status && <p>Status code: {confirmError.status}</p>}
                     </Alert>
                 )}
+
+                {deleteError && (
+                    <Alert variant="error" title={deleteError.title || 'Delete Failed'}>
+                        {deleteError.detail && <p>{deleteError.detail}</p>}
+                        {deleteError.status && <p>Status code: {deleteError.status}</p>}
+                    </Alert>
+                )}
                 
                 <StrategyCard strategy={plan.selectedStrategy} />
 
@@ -270,7 +340,20 @@ export default function PlanPage(): ReactElement {
     if (plan.status === 'Confirmed' && plan.selectedStrategy) {
         return (
             <div>
-                <h1>Confirmed Optimization Plan</h1>
+                <div className="plan-action-header">
+                    <h1>Confirmed Optimization Plan</h1>
+                    <div className="plan-action-buttons">
+                        <Button
+                            variant="secondary"
+                            onClick={handleCancelPlan}
+                            disabled={canceling}
+                        >
+                            <MaterialIcon icon="cancel" />
+                            {canceling ? 'Canceling...' : 'Cancel Plan'}
+                        </Button>
+                    </div>
+                </div>
+
                 <PlanHeaderInfo
                     planId={plan.id}
                     status={plan.status}
@@ -286,6 +369,54 @@ export default function PlanPage(): ReactElement {
                     <p>Your optimization plan has been confirmed and is ready for execution.</p>
                     <p><strong>Note:</strong> This strategy is now locked and cannot be modified.</p>
                 </Alert>
+
+                {cancelError && (
+                    <Alert variant="error" title={cancelError.title || 'Cancel Failed'}>
+                        {cancelError.detail && <p>{cancelError.detail}</p>}
+                        {cancelError.status && <p>Status code: {cancelError.status}</p>}
+                    </Alert>
+                )}
+            </div>
+        );
+    }
+
+    // Ready status without selected strategy (e.g., after cancellation)
+    if (plan.status === 'Ready' && !plan.selectedStrategy) {
+        return (
+            <div>
+                <div className="plan-action-header">
+                    <h1>Plan Ready</h1>
+                    <div className="plan-action-buttons">
+                        <Button
+                            variant="danger"
+                            onClick={handleDeletePlan}
+                            disabled={deleting}
+                        >
+                            <MaterialIcon icon="delete" />
+                            {deleting ? 'Deleting...' : 'Delete Plan'}
+                        </Button>
+                    </div>
+                </div>
+
+                <PlanHeaderInfo
+                    planId={plan.id}
+                    status={plan.status}
+                    createdAt={plan.createdAt}
+                />
+
+                {request && <RequestDetailsCard request={request} />}
+
+                <Alert variant="warning" title="No Strategy Selected">
+                    <p>This plan is in Ready status but no strategy has been selected yet.</p>
+                    <p>You can delete this plan or wait for a strategy to be selected.</p>
+                </Alert>
+
+                {deleteError && (
+                    <Alert variant="error" title={deleteError.title || 'Delete Failed'}>
+                        {deleteError.detail && <p>{deleteError.detail}</p>}
+                        {deleteError.status && <p>Status code: {deleteError.status}</p>}
+                    </Alert>
+                )}
             </div>
         );
     }
