@@ -1,0 +1,184 @@
+.create-provider-page {
+    max-width: var(--ds-container-lg);
+    margin: 0 auto;
+    padding: var(--ds-space-6);
+}
+
+.create-provider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--ds-space-8);
+    gap: var(--ds-space-4);
+}
+
+.create-provider-header h1 {
+    margin: 0 0 var(--ds-space-2) 0;
+    font-size: var(--ds-font-size-3xl);
+    font-weight: var(--ds-font-weight-bold);
+    color: var(--ds-color-text-primary);
+}
+
+.page-description {
+    margin: 0;
+    font-size: var(--ds-font-size-base);
+    color: var(--ds-color-text-secondary);
+}
+
+.create-provider-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ds-space-8);
+}
+
+.form-section {
+    background: var(--ds-color-surface);
+    border: 1px solid var(--ds-color-border-default);
+    border-radius: var(--ds-radius-lg);
+    padding: var(--ds-space-6);
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-3);
+    margin: 0 0 var(--ds-space-5) 0;
+    font-size: var(--ds-font-size-xl);
+    font-weight: var(--ds-font-weight-semibold);
+    color: var(--ds-color-text-primary);
+    padding-bottom: var(--ds-space-3);
+    border-bottom: 2px solid var(--ds-color-border-default);
+}
+
+.section-title .material-icon {
+    font-size: var(--ds-font-size-2xl);
+    color: var(--ds-color-accent-primary);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--ds-space-5);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ds-space-2);
+}
+
+.form-group label {
+    font-size: var(--ds-font-size-sm);
+    font-weight: var(--ds-font-weight-medium);
+    color: var(--ds-color-text-primary);
+}
+
+.form-input {
+    padding: var(--ds-space-3) var(--ds-space-4);
+    border: 1px solid var(--ds-color-border-default);
+    border-radius: var(--ds-radius-md);
+    font-size: var(--ds-font-size-base);
+    font-family: var(--ds-font-family-base);
+    background: var(--ds-color-bg-primary);
+    color: var(--ds-color-text-primary);
+    transition: all var(--ds-transition-fast);
+}
+
+.form-input:hover {
+    border-color: var(--ds-color-border-hover);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--ds-color-accent-primary);
+    box-shadow: 0 0 0 3px var(--ds-color-accent-bg);
+}
+
+.form-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--ds-color-bg-secondary);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-3);
+    cursor: pointer;
+    font-size: var(--ds-font-size-base);
+    color: var(--ds-color-text-primary);
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--ds-color-accent-primary);
+}
+
+.days-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ds-space-2);
+}
+
+.day-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-2);
+    padding: var(--ds-space-2) var(--ds-space-4);
+    border: 1px solid var(--ds-color-border-default);
+    border-radius: var(--ds-radius-md);
+    cursor: pointer;
+    font-size: var(--ds-font-size-sm);
+    background: var(--ds-color-bg-primary);
+    transition: all var(--ds-transition-fast);
+}
+
+.day-checkbox:hover {
+    background: var(--ds-color-surface-hover);
+    border-color: var(--ds-color-border-hover);
+}
+
+.day-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--ds-color-accent-primary);
+}
+
+.day-checkbox input[type="checkbox"]:checked + span {
+    font-weight: var(--ds-font-weight-semibold);
+    color: var(--ds-color-accent-primary);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--ds-space-4);
+    padding: var(--ds-space-6);
+    background: var(--ds-color-surface);
+    border: 1px solid var(--ds-color-border-default);
+    border-radius: var(--ds-radius-lg);
+    position: sticky;
+    bottom: var(--ds-space-4);
+}
+
+@media (max-width: 768px) {
+    .create-provider-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .form-actions button {
+        width: 100%;
+    }
+}

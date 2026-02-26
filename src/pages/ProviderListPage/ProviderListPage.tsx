@@ -5,6 +5,7 @@ import { IProvider, IProviderPreview } from '../../types/IProvider';
 import DataState from '../../components/DataState/DataState';
 import ProviderDetails from '../../components/ProviderDetails/ProviderDetails';
 import Button from '../../components/Button/Button';
+import MaterialIcon from '../../components/MaterialIcon/MaterialIcon';
 import Alert from '../../components/Alert/Alert';
 import { IProblemDetails } from '../../types/IProblemDetails';
 import './ProviderListPage.css';
@@ -46,7 +47,16 @@ const ProviderListPage = (): ReactElement => {
 
     return (
         <div className='provider-list-view'>
-            <h1>Providers List</h1>
+            <div className="provider-list-page-header">
+                <h1>Providers List</h1>
+                <Button 
+                    variant="primary"
+                    onClick={() => navigate('/providers/create')}
+                >
+                    <MaterialIcon icon="add" />
+                    Create Provider
+                </Button>
+            </div>
 
             {toggleError && (
                 <Alert variant="error">

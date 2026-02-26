@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useGetProvider, useUpdateProvider } from '../../hooks/api/providerApi';
+import { useGetProvider, useUpdateProvider, useDeleteProvider } from '../../hooks/api/providerApi';
 import { 
     IProvider, 
     IUpdateProviderRequest, 
@@ -25,6 +25,7 @@ const ProviderDetailsPage = (): ReactElement => {
     const navigate = useNavigate();
     const { data, loading, error, callApi } = useGetProvider();
     const { loading: saving, error: saveError, callApi: updateProvider } = useUpdateProvider();
+    const { loading: deleting, error: deleteError, callApi: deleteProvider } = useDeleteProvider();
     const [editedProvider, setEditedProvider] = useState<IProvider | null>(null);
     const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -140,23 +141,57 @@ const ProviderDetailsPage = (): ReactElement => {
         updateWorkingHours('breaks', breaks);
     };
 
+    const handleDeleteProvider = async () => {
+        if (!id) return;
+        
+        if (!window.confirm(`Are you sure you want to delete provider "${editedProvider?.name}"? This action cannot be undone.`)) {
+            return;
+        }
+        
+        try {
+            await deleteProvider(id);
+            navigate('/providers');
+        } catch (err) {
+            console.error('Failed to delete provider:', err);
+        }
+    };
+
     return (
         <div className='provider-details-page'>
             <div className="provider-details-header">
-                <Button onClick={() => navigate('/providers')}>
-                    ← Back to Providers
-                </Button>
-                <Button 
-                    onClick={handleSave} 
-                    disabled={!editedProvider}
-                    variant="primary"
-                >
-                    Save Changes
-                </Button>
+                <h1>{editedProvider?.name || 'Provider Details'}</h1>
+                <div className="header-actions">
+                    <Button 
+                        variant="secondary"
+                        onClick={() => navigate('/providers')}
+                    >
+                        ← Back to Providers
+                    </Button>
+                    <Button 
+                        variant="danger"
+                        onClick={handleDeleteProvider} 
+                        disabled={deleting}
+                    >
+                        {deleting ? 'Deleting...' : 'Delete Provider'}
+                    </Button>
+                    <Button 
+                        variant="primary"
+                        onClick={handleSave} 
+                        disabled={!editedProvider || saving}
+                    >
+                        {saving ? 'Saving...' : 'Save Changes'}
+                    </Button>
+                </div>
             </div>
 
             {saveSuccess && (
                 <Alert variant="success">Provider updated successfully!</Alert>
+            )}
+
+            {deleteError && (
+                <Alert variant="error">
+                    Failed to delete: {deleteError.title || deleteError.detail || 'Unknown error'}
+                </Alert>
             )}
 
             {saveError && (

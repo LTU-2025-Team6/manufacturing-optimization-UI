@@ -53,3 +53,23 @@ export function useGetOptimizationRequest() {
 
     return { data, loading, error, callApi };
 }
+
+export function useCancelOptimizationPlan() {
+    const { data, loading, error, callApi: callApiBase } = useApi<void>();
+
+    const callApi = (planId: string) => {
+        return callApiBase({ url: `/api/plans/${planId}/cancel`, method: 'POST' });
+    };
+
+    return { data, loading, error, callApi };
+}
+
+export function useDeleteOptimizationPlan() {
+    const { data, loading, error, callApi: callApiBase } = useApi<void>();
+
+    const callApi = (planId: string) => {
+        return callApiBase({ url: `/api/plans/${planId}`, method: 'DELETE' });
+    };
+
+    return { data, loading, error, callApi };
+}
