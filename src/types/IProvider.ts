@@ -77,3 +77,44 @@ export interface IProviderScheduleRequest {
     start: string;
     end: string;
 }
+
+// Create Provider Types
+export interface ICreateProviderRequest {
+    type: string;
+    name: string;
+    autoStart: boolean;
+    processCapabilities: ICreateProcessCapabilityRequest[];
+    technicalCapabilities: ICreateTechnicalCapabilitiesRequest;
+    workingHours: ICreateWorkingHoursRequest;
+}
+
+export interface ICreateProcessCapabilityRequest {
+    process: string;
+    costPerHour: number;
+    speedMultiplier: number;
+    qualityScore: number;
+    energyConsumptionKwhPerHour: number;
+    carbonIntensityKgCO2PerKwh: number;
+    usesRenewableEnergy: boolean;
+}
+
+export interface ICreateTechnicalCapabilitiesRequest {
+    axisHeight: number;
+    power: number;
+    tolerance: number;
+}
+
+export interface ICreateWorkingHoursRequest {
+    workingDays: string[];
+    workDayStartHour: number;
+    workDayEndHour: number;
+    is24x7: boolean;
+    breaks: ICreateBreakPeriodRequest[];
+}
+
+export interface ICreateBreakPeriodRequest {
+    startHour: number;
+    startMinute: number;
+    durationMinutes: number;
+    name: string;
+}

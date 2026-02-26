@@ -1,3 +1,22 @@
+.provider-list-view {
+    padding: var(--ds-space-6);
+}
+
+.provider-list-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--ds-space-6);
+    gap: var(--ds-space-4);
+}
+
+.provider-list-page-header h1 {
+    margin: 0;
+    font-size: var(--ds-font-size-3xl);
+    font-weight: var(--ds-font-weight-bold);
+    color: var(--ds-color-text-primary);
+}
+
 .provider-list-layout {
     display: grid;
     grid-template-columns: 300px 1fr;

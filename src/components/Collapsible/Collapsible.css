@@ -1,13 +1,19 @@
 .collapsible {
     border: 1px solid var(--ds-color-border-default);
-    border-radius: var(--ds-radius-md);
-    margin-bottom: var(--ds-space-3);
+    border-radius: var(--ds-radius-lg);
+    margin-bottom: var(--ds-space-4);
     overflow: hidden;
     background: var(--ds-color-surface);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: box-shadow var(--ds-transition-fast);
+}
+
+.collapsible:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .collapsible-header {
-    padding: var(--ds-space-3) var(--ds-space-4);
+    padding: var(--ds-space-4) var(--ds-space-5);
     background: var(--ds-color-bg-secondary);
     cursor: pointer;
     display: flex;
@@ -22,14 +28,14 @@
 
 .collapsible-header h3 {
     margin: 0;
-    font-size: var(--ds-font-size-base);
+    font-size: var(--ds-font-size-lg);
     font-weight: var(--ds-font-weight-semibold);
     color: var(--ds-color-text-primary);
 }
 
 .collapsible-icon {
-    font-size: var(--ds-font-size-sm);
-    color: var(--ds-color-text-secondary);
+    font-size: var(--ds-font-size-lg);
+    color: var(--ds-color-accent-primary);
     transition: transform var(--ds-transition-fast);
 }
 
@@ -38,7 +44,7 @@
 }
 
 .collapsible-content {
-    padding: var(--ds-space-4);
+    padding: var(--ds-space-5);
     background: var(--ds-color-surface);
-    border-top: 1px solid var(--ds-color-border-subtle);
+    border-top: 1px solid var(--ds-color-border-default);
 }

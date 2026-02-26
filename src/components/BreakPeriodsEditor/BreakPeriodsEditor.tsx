@@ -41,6 +41,7 @@ const BreakPeriodsEditor = ({ breaks, onChange }: BreakPeriodsEditorProps): Reac
                         <div className="break-period-header">
                             <h5>Break {index + 1}</h5>
                             <Button 
+                                type="button"
                                 onClick={() => removeBreak(index)}
                                 variant="secondary"
                             >
@@ -98,6 +99,7 @@ const BreakPeriodsEditor = ({ breaks, onChange }: BreakPeriodsEditorProps): Reac
             </div>
 
             <Button 
+                type="button"
                 onClick={addBreak}
                 variant="primary"
             >

@@ -65,6 +65,7 @@ const ProcessCapabilitiesEditor = ({ capabilities, onChange }: ProcessCapabiliti
                         ))}
                     </select>
                     <Button 
+                        type="button"
                         onClick={addCapability} 
                         disabled={!selectedProcess}
                         variant="primary"
@@ -89,6 +90,7 @@ const ProcessCapabilitiesEditor = ({ capabilities, onChange }: ProcessCapabiliti
                                         </p>
                                     </div>
                                     <Button 
+                                        type="button"
                                         onClick={() => removeCapability(index)}
                                         variant="secondary"
                                     >
