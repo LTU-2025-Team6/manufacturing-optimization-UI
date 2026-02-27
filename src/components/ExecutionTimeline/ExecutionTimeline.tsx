@@ -52,8 +52,8 @@ export const ExecutionTimeline: React.FC<ExecutionTimelineProps> = ({ steps }) =
                             <div className="step-details-card">
                                 <p><strong>Provider:</strong> {step.selectedProviderName}</p>
                                 
-                                {step.allocatedSlot ? (
-                                    <p><strong>Scheduled:</strong> {formatDateTime(step.allocatedSlot.startTime)} - {formatDateTime(step.allocatedSlot.endTime)}</p>
+                                {step.allocatedSchedule ? (
+                                    <p><strong>Scheduled:</strong> {formatDateTime(step.allocatedSchedule.startWorkingTime)} - {formatDateTime(step.allocatedSchedule.endWorkingTime)}</p>
                                 ) : (
                                     <p className="text-muted">Not scheduled yet</p>
                                 )}

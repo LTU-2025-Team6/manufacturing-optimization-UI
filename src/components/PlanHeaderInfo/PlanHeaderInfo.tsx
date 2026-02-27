@@ -7,6 +7,7 @@ interface PlanHeaderInfoProps {
     status: string;
     createdAt: string;
     confirmedAt?: string;
+    completedAt?: string;
     strategiesCount?: number;
 }
 
@@ -26,12 +27,13 @@ function getStatusBadgeClass(status: string): string {
     return statusLower;
 }
 
-export default function PlanHeaderInfo({ 
-    planId, 
-    status, 
-    createdAt, 
-    confirmedAt, 
-    strategiesCount 
+export default function PlanHeaderInfo({
+    planId,
+    status,
+    createdAt,
+    confirmedAt,
+    completedAt,
+    strategiesCount
 }: PlanHeaderInfoProps): ReactElement {
     return (
         <div className="plan-header-info">
@@ -58,6 +60,12 @@ export default function PlanHeaderInfo({
                     <div className="plan-info-item">
                         <span className="plan-info-label">Confirmed</span>
                         <span className="plan-info-value">{formatDateTime(confirmedAt, { year: 'numeric' })}</span>
+                    </div>
+                )}
+                {completedAt && (
+                    <div className="plan-info-item">
+                        <span className="plan-info-label">Completed</span>
+                        <span className="plan-info-value">{formatDateTime(completedAt, { year: 'numeric' })}</span>
                     </div>
                 )}
             </div>
