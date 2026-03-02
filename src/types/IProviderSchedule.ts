@@ -14,4 +14,5 @@ export interface IProviderScheduleSegment {
     startTime: string;
     endTime: string;
     segmentType: string;
+    executionId?: string; // Optional, may be null if not associated with an execution
 }

@@ -1,10 +1,12 @@
 import { IProviderScheduleSegment } from '../../types/IProviderSchedule';
 import { formatDateTime } from '../../utils/dateTimeUtils';
-import React from 'react';
+import React, { useState } from 'react';
+import ExecutionDetailsModal from '../ExecutionDetailsModal/ExecutionDetailsModal';
 import './Timeline.css';
 
 interface TimelineProps {
     segments: IProviderScheduleSegment[];
+    providerId?: string;
     showTimeLabels?: boolean;
     timeRange?: {
         start: string;
@@ -58,7 +60,9 @@ const getSegmentLabel = (segmentType: string, duration: number): string => {
     return `${duration.toFixed(1)}h`;
 };
 
-export default function Timeline({ segments, showTimeLabels = true, timeRange }: TimelineProps) {
+export default function Timeline({ segments, providerId, showTimeLabels = true, timeRange }: TimelineProps) {
+    const [selectedExecution, setSelectedExecution] = useState<{ providerId: string; executionId: string } | null>(null);
+
     if (!segments || segments.length === 0) {
         return <p className="text-muted">No timeline data available</p>;
     }
@@ -103,16 +107,25 @@ export default function Timeline({ segments, showTimeLabels = true, timeRange }:
                             const width = getPosition(segEnd) - leftPos;
                             const segmentClass = getSegmentClassName(segment.segmentType);
                             const segmentLabel = getSegmentLabel(segment.segmentType, segDuration);
+                            const isClickable = providerId && segment.executionId && segment.segmentType.toLowerCase().includes('occupied');
+
+                            const handleSegmentClick = () => {
+                                console.log('Segment clicked:', segment);
+                                if (isClickable && segment.executionId && providerId) {
+                                    setSelectedExecution({ providerId, executionId: segment.executionId });
+                                }
+                            };
 
                             return (
                                 <div
                                     key={`segment-${index}`}
-                                    className={`timeline-bar ${segmentClass}`}
+                                    className={`timeline-bar ${segmentClass} ${isClickable ? 'timeline-bar-clickable' : ''}`}
                                     style={{
                                         left: `${leftPos}%`,
                                         width: `${width}%`
                                     }}
-                                    title={`${segment.segmentType}: ${formatDateTime(new Date(segStart).toISOString())} - ${formatDateTime(new Date(segEnd).toISOString())} (${segDuration.toFixed(1)}h)`}
+                                    title={`${segment.segmentType}: ${formatDateTime(new Date(segStart).toISOString())} - ${formatDateTime(new Date(segEnd).toISOString())} (${segDuration.toFixed(1)}h)${isClickable ? ' - Click for details' : ''}`}
+                                    onClick={handleSegmentClick}
                                 >
                                     <span className="timeline-bar-text">
                                         {segmentLabel}
@@ -123,6 +136,15 @@ export default function Timeline({ segments, showTimeLabels = true, timeRange }:
                     </div>
                 </div>
             </div>
+
+            {selectedExecution && (
+                <ExecutionDetailsModal
+                    isOpen={true}
+                    onClose={() => setSelectedExecution(null)}
+                    providerId={selectedExecution.providerId}
+                    executionId={selectedExecution.executionId}
+                />
+            )}
         </div>
     );
 }

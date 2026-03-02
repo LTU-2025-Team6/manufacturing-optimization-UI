@@ -79,7 +79,10 @@ export default function ProviderScheduleView({ providerId }: ProviderScheduleVie
                 loading={loading}
                 error={error}
             >
-                {(schedule: IProviderDayScheduleDto[]) => (
+                {(schedule: IProviderDayScheduleDto[]) =>
+                {
+                    console.log('Schedule data:', schedule);
+                    return (
                     <div className="schedule-timeline-container">
                         {schedule.length === 0 ? (
                             <p>No schedule data available for selected dates</p>
@@ -100,6 +103,7 @@ export default function ProviderScheduleView({ providerId }: ProviderScheduleVie
                                             <td className="schedule-timeline-cell">
                                                 <Timeline 
                                                     segments={daySchedule.segments}
+                                                    providerId={providerId}
                                                     showTimeLabels={false}
                                                 />
                                             </td>
@@ -109,7 +113,7 @@ export default function ProviderScheduleView({ providerId }: ProviderScheduleVie
                             </table>
                         )}
                     </div>
-                )}
+                )}}
             </DataState>
         </div>
     );

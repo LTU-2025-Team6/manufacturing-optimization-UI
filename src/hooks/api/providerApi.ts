@@ -2,6 +2,7 @@ import { useApi } from './useApi';
 import { IProvider, IProviderPreview, IUpdateProviderRequest, ICreateProviderRequest } from '../../types/IProvider';
 import { IProviderScheduleRequest } from '../../types/IProviderScheduleRequest';
 import { IProviderDayScheduleDto } from '../../types/IProviderSchedule';
+import { IExecutionDetails } from '../../types/IExecutionDetails';
 
 export function useGetProviders() {
     const { data, loading, error, callApi: callApiBase } = useApi<IProviderPreview[]>();
@@ -85,6 +86,19 @@ export function useDeleteProvider() {
         return callApiBase({ 
             url: `/api/providers/${id}`, 
             method: 'DELETE'
+        });
+    };
+
+    return { data, loading, error, callApi };
+}
+
+export function useGetExecutionDetails() {
+    const { data, loading, error, callApi: callApiBase } = useApi<IExecutionDetails>();
+
+    const callApi = (providerId: string, executionId: string) => {
+        return callApiBase({ 
+            url: `/api/providers/${providerId}/executions/${executionId}`, 
+            method: 'GET'
         });
     };
 
