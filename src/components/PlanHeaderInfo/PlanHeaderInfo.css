@@ -83,10 +83,28 @@
     border: 1px solid var(--ds-color-warning-border);
 }
 
+.plan-status-badge.inprogress {
+    background: var(--ds-color-info-bg);
+    color: var(--ds-color-info-text-strong);
+    border: 1px solid var(--ds-color-info-border);
+    animation: status-pulse 2s ease-in-out infinite;
+}
+
+.plan-status-badge.completed {
+    background: var(--ds-color-success-bg);
+    color: var(--ds-color-success-text-strong);
+    border: 1px solid var(--ds-color-success-border);
+}
+
 .plan-status-badge.failed {
     background: var(--ds-color-error-bg);
     color: var(--ds-color-error-text-strong);
     border: 1px solid var(--ds-color-error-border);
+}
+
+@keyframes status-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
 }
 
 /* Responsive adjustments */

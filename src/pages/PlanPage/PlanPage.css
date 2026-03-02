@@ -16,5 +16,81 @@
     display: flex;
     gap: var(--ds-space-3);
     flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Execution connection badge */
+.execution-connection-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ds-space-2);
+    padding: var(--ds-space-1) var(--ds-space-3);
+    border-radius: var(--ds-radius-full);
+    font-size: var(--ds-font-size-xs);
+    font-weight: var(--ds-font-weight-semibold);
+}
+
+.execution-connection-badge::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.execution-connection-badge.connected {
+    background: var(--ds-color-success-bg);
+    color: var(--ds-color-success-text-strong);
+}
+
+.execution-connection-badge.connected::before {
+    background: var(--ds-color-success-text);
+}
+
+.execution-connection-badge.disconnected {
+    background: var(--ds-color-error-bg);
+    color: var(--ds-color-error-text-strong);
+}
+
+.execution-connection-badge.disconnected::before {
+    background: var(--ds-color-error-text);
+}
+
+/* Execution progress bar */
+.execution-progress-bar {
+    background: var(--ds-color-surface);
+    border: 1px solid var(--ds-color-border-default);
+    border-radius: var(--ds-radius-lg);
+    padding: var(--ds-space-4);
+    margin-top: var(--ds-space-6);
+}
+
+.execution-progress-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--ds-space-2);
+    font-size: var(--ds-font-size-sm);
+    font-weight: var(--ds-font-weight-medium);
+    color: var(--ds-color-text-primary);
+}
+
+.execution-failed-count {
+    color: var(--ds-color-error-text);
+    font-weight: var(--ds-font-weight-semibold);
+}
+
+.execution-progress-track {
+    width: 100%;
+    height: 8px;
+    background: var(--ds-color-bg-tertiary);
+    border-radius: var(--ds-radius-full);
+    overflow: hidden;
+}
+
+.execution-progress-fill {
+    height: 100%;
+    background: var(--ds-color-success-text);
+    border-radius: var(--ds-radius-full);
+    transition: width 0.5s ease;
 }
 

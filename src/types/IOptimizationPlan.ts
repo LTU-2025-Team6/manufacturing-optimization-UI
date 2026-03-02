@@ -1,6 +1,6 @@
 import { IOptimizationStrategy } from './IOptimizationStrategy';
 
-export type OptimizationPlanStatus = 
+export type OptimizationPlanStatus =
     | 'Draft'
     | 'Submitted'
     | 'Processing'
@@ -8,6 +8,8 @@ export type OptimizationPlanStatus =
     | 'StrategySelected'
     | 'Ready'
     | 'Confirmed'
+    | 'InProgress'
+    | 'Completed'
     | 'Failed';
 
 export interface IOptimizationPlanPreview {
@@ -26,6 +28,7 @@ export interface IOptimizationPlan {
     createdAt: string;
     selectedAt?: string;
     confirmedAt?: string;
+    completedAt?: string;
     errorMessage?: string;
 }
 
