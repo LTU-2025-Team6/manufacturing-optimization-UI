@@ -36,6 +36,7 @@ export function usePollingApi<TRes = any>(
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const startTimeRef = useRef<number | null>(null);
     const stoppedRef = useRef(false);
+    const isFirstPollRef = useRef(true);
     const requestRef = useRef(request);
     const intervalRef = useRef(interval);
     const timeoutRef = useRef(timeout);
@@ -72,11 +73,11 @@ export function usePollingApi<TRes = any>(
         }
 
         // Execute request (errors are handled in useApi)
+        // Skip loading state for subsequent polls to prevent re-renders
         let responseData: TRes | undefined;
         try {
-            console.log('Polling API request:', requestRef.current);
-            responseData = await callApi(requestRef.current);
-            console.log('Polling response data:', responseData);
+            responseData = await callApi(requestRef.current, !isFirstPollRef.current);
+            isFirstPollRef.current = false;
         } catch {
             // Error already handled in useApi and stored in error
             // Stop polling on error
@@ -109,6 +110,7 @@ export function usePollingApi<TRes = any>(
     const restart = useCallback(() => {
         stoppedRef.current = false;
         startTimeRef.current = null;
+        isFirstPollRef.current = true;
         setElapsed(0);
         setIsTimeout(false);
         clearTimer();
@@ -125,6 +127,7 @@ export function usePollingApi<TRes = any>(
         // Reset state and start polling
         startTimeRef.current = null;
         stoppedRef.current = false;
+        isFirstPollRef.current = true;
         setElapsed(0);
         setIsTimeout(false);
         

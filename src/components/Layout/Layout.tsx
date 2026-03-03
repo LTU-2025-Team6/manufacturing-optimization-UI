@@ -58,6 +58,7 @@ const Layout = (): ReactElement => {
                     <nav>
                         <NavLink to="/">Home</NavLink>
                         <NavLink to="/plans">Plans</NavLink>
+                        <NavLink to="/executions">Executions</NavLink>
                         <NavLink to="/providers">Registered providers</NavLink>
                         <NavLink to="/optimization-request">Request optimization</NavLink>
                         <NavLink to="/notifications">Notifications</NavLink>

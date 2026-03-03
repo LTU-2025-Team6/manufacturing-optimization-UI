@@ -1,0 +1,108 @@
+.execution-monitor-view {
+    margin: calc(-1 * var(--ds-space-8));
+    height: calc(100% + 2 * var(--ds-space-8));
+    display: flex;
+    flex-direction: column;
+}
+
+.simulation-panel-wrapper {
+    padding: var(--ds-space-6) var(--ds-space-8) 0;
+}
+
+.execution-monitor-header {
+    padding: var(--ds-space-6) var(--ds-space-8);
+    border-bottom: 1px solid var(--ds-color-border-default);
+    background: var(--ds-color-surface);
+}
+
+.execution-monitor-header h1 {
+    margin: 0;
+    font-size: var(--ds-font-size-3xl);
+    font-weight: var(--ds-font-weight-bold);
+    color: var(--ds-color-text-primary);
+}
+
+.execution-monitor-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 0;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.execution-list-sidebar {
+    border-right: 1px solid var(--ds-color-border-default);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: var(--ds-space-4);
+    background: var(--ds-color-bg-secondary);
+}
+
+.execution-details-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: var(--ds-space-6);
+}
+
+.execution-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 500px;
+    background: var(--ds-color-surface);
+    border-radius: var(--ds-radius-lg);
+    border: 2px dashed var(--ds-color-border-default);
+}
+
+.placeholder-content {
+    text-align: center;
+    padding: var(--ds-space-12);
+}
+
+.placeholder-icon {
+    font-size: 4rem;
+    margin-bottom: var(--ds-space-4);
+}
+
+.placeholder-content h3 {
+    margin: 0 0 var(--ds-space-2) 0;
+    font-size: var(--ds-font-size-xl);
+    color: var(--ds-color-text-primary);
+}
+
+.placeholder-content p {
+    margin: 0;
+    color: var(--ds-color-text-secondary);
+}
+
+@media (max-width: 1024px) {
+    .execution-monitor-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .execution-list-sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--ds-color-border-default);
+        padding-bottom: var(--ds-space-4);
+        max-height: 400px;
+    }
+    
+    .execution-placeholder {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .simulation-panel-wrapper {
+        padding: var(--ds-space-4) var(--ds-space-4) 0;
+    }
+    
+    .execution-monitor-header {
+        padding: var(--ds-space-4);
+    }
+    
+    .execution-details-container {
+        padding: var(--ds-space-4);
+    }
+}

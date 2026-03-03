@@ -26,4 +26,29 @@
 body, #root {
   margin: 0;
   padding: 0;
+  overflow: hidden;
+}
+
+/* Global scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ds-color-border-default) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--ds-color-border-default);
+  border-radius: var(--ds-radius-sm);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--ds-color-border-strong);
 }

@@ -1,5 +1,5 @@
-import { ReactElement, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { ReactElement, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useGetProviders, useGetProvider, useToggleProvider } from '../../hooks/api/providerApi';
 import { IProvider, IProviderPreview } from '../../types/IProvider';
 import DataState from '../../components/DataState/DataState';
@@ -7,24 +7,31 @@ import ProviderDetails from '../../components/ProviderDetails/ProviderDetails';
 import Button from '../../components/Button/Button';
 import MaterialIcon from '../../components/MaterialIcon/MaterialIcon';
 import Alert from '../../components/Alert/Alert';
+import StatusBadge from '../../components/StatusBadge/StatusBadge';
 import { IProblemDetails } from '../../types/IProblemDetails';
+import { useState } from 'react';
 import './ProviderListPage.css';
 
 const ProviderListPage = (): ReactElement => {
     const navigate = useNavigate();
+    const { providerId } = useParams<{ providerId: string }>();
     const { data, loading, error, callApi } = useGetProviders();
     const { data: providerDetails, loading: loadingDetails, error: errorDetails, callApi: getProviderDetails } = useGetProvider();
     const { callApi: toggleProvider } = useToggleProvider();
-    const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null);
     const [toggleError, setToggleError] = useState<IProblemDetails | null>(null);
 
     useEffect(() => {
         callApi();
     }, []);
 
+    useEffect(() => {
+        if (providerId) {
+            getProviderDetails(providerId);
+        }
+    }, [providerId]);
+
     const handleProviderClick = (provider: IProviderPreview) => {
-        setSelectedProviderId(provider.id);
-        getProviderDetails(provider.id);
+        navigate(`/providers/list/${provider.id}`);
     };
 
     const handleProviderDoubleClick = (providerId: string) => {
@@ -37,7 +44,7 @@ const ProviderListPage = (): ReactElement => {
         try {
             await toggleProvider(provider.id, !provider.isRunning);
             await callApi(); // Refresh the list
-            if (selectedProviderId === provider.id) {
+            if (providerId === provider.id) {
                 await getProviderDetails(provider.id); // Refresh details if selected
             }
         } catch (err: any) {
@@ -59,9 +66,11 @@ const ProviderListPage = (): ReactElement => {
             </div>
 
             {toggleError && (
-                <Alert variant="error">
-                    Failed to toggle provider: {toggleError.title || toggleError.detail || 'Unknown error'}
-                </Alert>
+                <div className="provider-list-error-banner">
+                    <Alert variant="error">
+                        Failed to toggle provider: {toggleError.title || toggleError.detail || 'Unknown error'}
+                    </Alert>
+                </div>
             )}
             
             <DataState 
@@ -78,7 +87,7 @@ const ProviderListPage = (): ReactElement => {
                             {providers.map(provider => (
                                 <div 
                                     key={provider.id}
-                                    className={`provider-list-item ${selectedProviderId === provider.id ? 'active' : ''} ${!provider.isRunning ? 'disabled' : ''}`}
+                                    className={`provider-list-item ${providerId === provider.id ? 'active' : ''} ${!provider.isRunning ? 'disabled' : ''}`}
                                 >
                                     <div 
                                         className="provider-list-item-content"
@@ -88,7 +97,7 @@ const ProviderListPage = (): ReactElement => {
                                     >
                                         <h3>{provider.name}</h3>
                                         <p>{provider.type}</p>
-                                        {!provider.isRunning && <span className="status-badge">Offline</span>}
+                                        {!provider.isRunning && <StatusBadge status="Offline" variant="offline" />}
                                     </div>
                                     <Button 
                                         onClick={(e) => handleToggleProvider(e, provider)}
@@ -100,7 +109,7 @@ const ProviderListPage = (): ReactElement => {
                             ))}
                         </div>
                         <div className="provider-details-container">
-                            {selectedProviderId ? (
+                            {providerId ? (
                                 <DataState 
                                     loading={loadingDetails} 
                                     error={errorDetails} 

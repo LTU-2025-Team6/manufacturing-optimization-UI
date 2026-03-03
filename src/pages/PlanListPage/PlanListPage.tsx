@@ -5,6 +5,7 @@ import { IOptimizationPlanPreview } from '../../types/IOptimizationPlan';
 import { useGetOptimizationPlans } from '../../hooks/api/planApi';
 import { formatDateTime } from '../../utils/dateTimeUtils';
 import MaterialIcon from '../../components/MaterialIcon/MaterialIcon';
+import StatusBadge from '../../components/StatusBadge/StatusBadge';
 import './PlanListPage.css';
 
 function formatRelativeTime(date: Date): string {
@@ -25,8 +26,10 @@ function formatRelativeTime(date: Date): string {
 
 function getStatusClass(status: string): string {
     const statusLower = status.toLowerCase();
+    if (statusLower.includes('completed')) return 'completed';
     if (statusLower.includes('confirmed')) return 'confirmed';
     if (statusLower.includes('failed')) return 'failed';
+    if (statusLower.includes('inprogress')) return 'inprogress';
     return 'processing';
 }
 
@@ -130,9 +133,7 @@ const PlanListPage = (): ReactElement => {
                                             <div className="plan-card-id">
                                                 #{plan.id.slice(0, 8)}
                                             </div>
-                                            <span className={`plan-status-badge ${getStatusClass(plan.status)}`}>
-                                                {plan.status}
-                                            </span>
+                                            <StatusBadge status={plan.status} />
                                         </div>
 
                                         <div className="plan-card-body">

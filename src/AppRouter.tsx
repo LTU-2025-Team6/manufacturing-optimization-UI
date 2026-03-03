@@ -9,6 +9,7 @@ import App from "./App";
 import PlanListPage from "./pages/PlanListPage/PlanListPage";
 import StrategyEditPage from "./pages/StrategyEditPage/StrategyEditPage";
 import NotificationsPage from "./pages/NotificationsPage/NotificationsPage";
+import ExecutionMonitorPage from "./pages/ExecutionMonitorPage/ExecutionMonitorPage";
 
 export const AppRouter = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ export const AppRouter = createBrowserRouter([
             },
             {
                 path: 'providers',
+                element: <ProviderListPage />
+            },
+            {
+                path: 'providers/list/:providerId',
                 element: <ProviderListPage />
             },
             {
@@ -51,6 +56,14 @@ export const AppRouter = createBrowserRouter([
             {
                 path: 'notifications',
                 element: <NotificationsPage />
+            },
+            {
+                path: 'executions',
+                element: <ExecutionMonitorPage />
+            },
+            {
+                path: 'executions/:planId',
+                element: <ExecutionMonitorPage />
             },
         ],
     }

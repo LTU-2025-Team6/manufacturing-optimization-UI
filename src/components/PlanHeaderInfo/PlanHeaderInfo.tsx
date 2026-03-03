@@ -1,5 +1,6 @@
 import { ReactElement } from 'react';
 import { formatDateTime } from '../../utils/dateTimeUtils';
+import StatusBadge from '../StatusBadge/StatusBadge';
 import './PlanHeaderInfo.css';
 
 interface PlanHeaderInfoProps {
@@ -8,22 +9,6 @@ interface PlanHeaderInfoProps {
     createdAt: string;
     confirmedAt?: string;
     strategiesCount?: number;
-}
-
-// Helper function to get CSS class for status badge
-function getStatusBadgeClass(status: string): string {
-    const statusLower = status.toLowerCase().replace(/\s+/g, '');
-    
-    if (statusLower === 'confirmed') {
-        return 'confirmed';
-    }
-    
-    if (statusLower === 'failed') {
-        return 'failed';
-    }
-    
-    // All other statuses (Draft, Submitted, Processing, AwaitingStrategySelection, StrategySelected, Ready)
-    return statusLower;
 }
 
 export default function PlanHeaderInfo({ 
@@ -42,7 +27,7 @@ export default function PlanHeaderInfo({
                 </div>
                 <div className="plan-info-item">
                     <span className="plan-info-label">Status</span>
-                    <span className={`plan-status-badge ${getStatusBadgeClass(status)}`}>{status}</span>
+                    <StatusBadge status={status} />
                 </div>
                 {strategiesCount !== undefined && (
                     <div className="plan-info-item">

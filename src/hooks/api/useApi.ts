@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { parseApiError } from './apiError';
 import { IProblemDetails } from '../../types/IProblemDetails';
 
@@ -71,20 +71,39 @@ export function useApi<TRes = any>() {
         loading: false,
         error: null,
     });
+    
+    const prevDataRef = useRef<string | null>(null);
+    const isFirstRequestRef = useRef(true);
 
-    const callApi = useCallback(async (req: ApiRequest): Promise<TRes> => {
-        setState({ data: null, loading: true, error: null });
+    const callApi = useCallback(async (req: ApiRequest, skipLoadingState = false): Promise<TRes> => {
+        // Only show loading for first request or when explicitly requested
+        if (!skipLoadingState) {
+            setState(prev => ({ ...prev, loading: true, error: null }));
+        }
 
         try {
             const data = await executeRequest(req);
-            setState({ data, loading: false, error: null });
+            
+            // Only update state if data actually changed
+            const dataString = JSON.stringify(data);
+            if (prevDataRef.current !== dataString) {
+                prevDataRef.current = dataString;
+                setState({ data, loading: false, error: null });
+                isFirstRequestRef.current = false;
+            } else if (!skipLoadingState) {
+                // Data unchanged, just update loading state if it was set
+                setState(prev => ({ ...prev, loading: false }));
+            }
+            // If skipLoadingState=true and data unchanged, don't update state at all
+            
             return data;
         } catch (error: any) {
             const problem = parseApiError(error);
             setState({ data: null, loading: false, error: problem });
+            isFirstRequestRef.current = false;
             throw problem;
         }
     }, []);
 
-    return { ...state, callApi };
+    return { ...state, callApi, isFirstRequest: isFirstRequestRef.current };
 }

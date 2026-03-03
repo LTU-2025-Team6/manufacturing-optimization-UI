@@ -54,6 +54,8 @@ export default function PlanPage(): ReactElement {
         return data.status === 'AwaitingStrategySelection' || 
                data.status === 'Ready' ||
                data.status === 'Confirmed' || 
+               data.status === 'InProgress' ||
+               data.status === 'Completed' ||
                data.status === 'Failed';
     };
 
@@ -169,7 +171,7 @@ export default function PlanPage(): ReactElement {
         }
         
         // Exit confirming mode when done
-        if (isConfirming && (pollingData.status === 'Confirmed' || pollingData.status === 'Failed')) {
+        if (isConfirming && (pollingData.status === 'Confirmed' || pollingData.status === 'InProgress' || pollingData.status === 'Completed' || pollingData.status === 'Failed')) {
             setIsConfirming(false);
         }
     }, [pollingData, isSelecting, isConfirming]);
@@ -374,6 +376,39 @@ export default function PlanPage(): ReactElement {
                     <Alert variant="error" title={cancelError.title || 'Cancel Failed'}>
                         {cancelError.detail && <p>{cancelError.detail}</p>}
                         {cancelError.status && <p>Status code: {cancelError.status}</p>}
+                    </Alert>
+                )}
+            </div>
+        );
+    }
+
+    if ((plan.status === 'InProgress' || plan.status === 'Completed') && plan.selectedStrategy) {
+        return (
+            <div>
+                <div className="plan-action-header">
+                    <h1>{plan.status === 'Completed' ? 'Completed Optimization Plan' : 'Plan In Progress'}</h1>
+                </div>
+
+                <PlanHeaderInfo
+                    planId={plan.id}
+                    status={plan.status}
+                    createdAt={plan.createdAt}
+                    confirmedAt={plan.confirmedAt}
+                />
+
+                {request && <RequestDetailsCard request={request} />}
+                
+                <StrategyCard strategy={plan.selectedStrategy} />
+
+                {plan.status === 'Completed' ? (
+                    <Alert variant="success" title="Plan Execution Completed">
+                        <p>Your optimization plan has been successfully executed and completed.</p>
+                        <p>You can view the execution details in the Executions page.</p>
+                    </Alert>
+                ) : (
+                    <Alert variant="info" title="Plan Execution In Progress">
+                        <p>Your optimization plan is currently being executed.</p>
+                        <p>You can monitor the progress in the Executions page.</p>
                     </Alert>
                 )}
             </div>

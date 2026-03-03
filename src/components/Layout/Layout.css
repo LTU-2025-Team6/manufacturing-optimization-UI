@@ -31,8 +31,7 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 /* ============================================
@@ -148,6 +147,8 @@ main {
     max-width: var(--ds-container-lg);
     margin: 0 auto;
     width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* ============================================
@@ -167,19 +168,28 @@ footer {
    SCROLLBAR STYLING
    ============================================ */
 
+main::-webkit-scrollbar,
+.notification-list::-webkit-scrollbar,
 .main-workspace::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
+    height: 6px;
 }
 
+main::-webkit-scrollbar-track,
+.notification-list::-webkit-scrollbar-track,
 .main-workspace::-webkit-scrollbar-track {
     background: transparent;
 }
 
+main::-webkit-scrollbar-thumb,
+.notification-list::-webkit-scrollbar-thumb,
 .main-workspace::-webkit-scrollbar-thumb {
     background: var(--ds-color-border-default);
     border-radius: var(--ds-radius-sm);
 }
 
+main::-webkit-scrollbar-thumb:hover,
+.notification-list::-webkit-scrollbar-thumb:hover,
 .main-workspace::-webkit-scrollbar-thumb:hover {
     background: var(--ds-color-border-strong);
 }

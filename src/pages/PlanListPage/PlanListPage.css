@@ -97,34 +97,6 @@
     font-weight: var(--ds-font-weight-medium);
 }
 
-.plan-status-badge {
-    padding: var(--ds-space-1) var(--ds-space-3);
-    border-radius: var(--ds-radius-full);
-    font-size: var(--ds-font-size-xs);
-    font-weight: var(--ds-font-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    white-space: nowrap;
-}
-
-.plan-status-badge.confirmed {
-    background: var(--ds-color-success-bg);
-    color: var(--ds-color-success-text-strong);
-    border: 1px solid var(--ds-color-success-border);
-}
-
-.plan-status-badge.processing {
-    background: var(--ds-color-warning-bg);
-    color: var(--ds-color-warning-text-strong);
-    border: 1px solid var(--ds-color-warning-border);
-}
-
-.plan-status-badge.failed {
-    background: var(--ds-color-error-bg);
-    color: var(--ds-color-error-text-strong);
-    border: 1px solid var(--ds-color-error-border);
-}
-
 .plan-card-body {
     margin-bottom: var(--ds-space-4);
 }

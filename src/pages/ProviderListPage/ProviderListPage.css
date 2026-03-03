@@ -1,12 +1,17 @@
 .provider-list-view {
-    padding: var(--ds-space-6);
+    margin: calc(-1 * var(--ds-space-8));
+    height: calc(100% + 2 * var(--ds-space-8));
+    display: flex;
+    flex-direction: column;
 }
 
 .provider-list-page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--ds-space-6);
+    padding: var(--ds-space-6) var(--ds-space-8);
+    border-bottom: 1px solid var(--ds-color-border-default);
+    background: var(--ds-color-surface);
     gap: var(--ds-space-4);
 }
 
@@ -17,16 +22,27 @@
     color: var(--ds-color-text-primary);
 }
 
+.provider-list-error-banner {
+    padding: var(--ds-space-4) var(--ds-space-8);
+    background: var(--ds-color-error-bg);
+    border-bottom: 1px solid var(--ds-color-error-border);
+}
+
 .provider-list-layout {
     display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: var(--ds-space-6);
-    margin-top: var(--ds-space-5);
+    grid-template-columns: 320px 1fr;
+    gap: 0;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .provider-list-sidebar {
     border-right: 1px solid var(--ds-color-border-default);
-    padding-right: var(--ds-space-4);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: var(--ds-space-4);
+    background: var(--ds-color-bg-secondary);
 }
 
 .provider-list-item {
@@ -65,17 +81,6 @@
     opacity: 0.6;
 }
 
-.status-badge {
-    display: inline-block;
-    font-size: var(--ds-font-size-xs);
-    padding: var(--ds-space-1) var(--ds-space-2);
-    background: var(--ds-color-error-text-strong);
-    color: white;
-    border-radius: var(--ds-radius-sm);
-    margin-top: var(--ds-space-1);
-    font-weight: var(--ds-font-weight-semibold);
-}
-
 .provider-list-item-content h3 {
     margin: 0 0 var(--ds-space-1) 0;
     font-size: var(--ds-font-size-base);
@@ -89,7 +94,9 @@
 }
 
 .provider-details-container {
-    padding: var(--ds-space-1);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: var(--ds-space-6);
 }
 
 .provider-list-empty {
@@ -102,4 +109,37 @@
     font-size: var(--ds-font-size-sm);
     margin-top: var(--ds-space-2);
     opacity: 0.7;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .provider-list-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .provider-list-sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--ds-color-border-default);
+        padding-bottom: var(--ds-space-4);
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 640px) {
+    .provider-list-page-header {
+        padding: var(--ds-space-4);
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .provider-details-container {
+        padding: var(--ds-space-4);
+    }
+    
+    .provider-list-sidebar {
+        padding: var(--ds-space-4);
+    }
 }

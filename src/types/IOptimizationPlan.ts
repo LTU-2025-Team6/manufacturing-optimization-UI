@@ -2,12 +2,16 @@ import { IOptimizationStrategy } from './IOptimizationStrategy';
 
 export type OptimizationPlanStatus = 
     | 'Draft'
-    | 'Submitted'
-    | 'Processing'
+    | 'MatchingWorkflow'
+    | 'MatchingProviders'
+    | 'EstimatingCosts'
+    | 'GeneratingStrategies'
     | 'AwaitingStrategySelection'
     | 'StrategySelected'
     | 'Ready'
     | 'Confirmed'
+    | 'InProgress'
+    | 'Completed'
     | 'Failed';
 
 export interface IOptimizationPlanPreview {
