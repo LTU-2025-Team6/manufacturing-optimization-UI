@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, type ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetNotificationsSince, useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/api/notificationApi';
-import { INotification, NotificationType } from '../../types/INotification';
+import { INotification, INotificationPreview, NotificationType } from '../../types';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import './NotificationHub.css';
 
@@ -35,7 +35,7 @@ const NotificationHub = ({ isCollapsed, onToggleCollapse }: NotificationHubProps
     const { data, callApi } = useGetNotificationsSince();
     const { callApi: markAsRead } = useMarkNotificationAsRead();
     const { callApi: markAllAsRead } = useMarkAllNotificationsAsRead();
-    const [notifications, setNotifications] = useState<INotification[]>([]);
+    const [notifications, setNotifications] = useState<INotificationPreview[]>([]);
     const [visibleNotifications, setVisibleNotifications] = useState<Set<string>>(new Set());
     const shownNotificationsRef = useRef<Set<string>>(new Set());
     const isFirstLoadRef = useRef(true);
@@ -48,7 +48,7 @@ const NotificationHub = ({ isCollapsed, onToggleCollapse }: NotificationHubProps
 
     // Update notifications when data changes
     useEffect(() => {
-        if (data) {
+        if (data && data.length >= 0) {
             // Sort notifications by createdAt DESC (newest first)
             const sortedData = [...data].sort((a, b) => 
                 new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -112,7 +112,7 @@ const NotificationHub = ({ isCollapsed, onToggleCollapse }: NotificationHubProps
         }
     }, [isCollapsed, notifications, markAllAsRead]);
 
-    const handleNotificationClick = async (notification: INotification) => {
+    const handleNotificationClick = async (notification: INotificationPreview) => {
         if (!notification.isRead) {
             try {
                 await markAsRead(notification.id);

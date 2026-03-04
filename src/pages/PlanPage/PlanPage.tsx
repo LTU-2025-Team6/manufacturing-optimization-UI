@@ -1,9 +1,8 @@
 import { ReactElement, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { IOptimizationPlan } from '../../types/IOptimizationPlan';
-import { IOptimizationRequest } from '../../types/IOptimizationRequest';
+import { IOptimizationPlan, IOptimizationRequest } from '../../types';
 import { usePollingApi } from '../../hooks/api/usePollingApi';
-import { useSelectStrategy, useConfirmStrategy, useGetOptimizationRequest, useCancelOptimizationPlan, useDeleteOptimizationPlan } from '../../hooks/api/optimizationApi';
+import { useConfirmStrategy, useGetOptimizationRequest, useCancelOptimizationPlan, useDeleteOptimizationPlan } from '../../hooks/api/optimizationApi';
 import StrategyCard from '../../components/StrategyCard/StrategyCard';
 import StrategySelector from '../../components/StrategySelector/StrategySelector';
 import OptimizationPollingStatus from '../../components/OptimizationPollingStatus/OptimizationPollingStatus';
@@ -13,13 +12,14 @@ import MaterialIcon from '../../components/MaterialIcon/MaterialIcon';
 import RequestDetailsCard from '../../components/RequestDetailsCard/RequestDetailsCard';
 import PlanHeaderInfo from '../../components/PlanHeaderInfo/PlanHeaderInfo';
 import './PlanPage.css';
+import { useSelectStrategy } from '../../hooks/api/planApi';
 
 // Constants
 const POLLING_INTERVAL = 2000; // 2 seconds
 const POLLING_TIMEOUT = 600000; // 10 minutes
 
 export default function PlanPage(): ReactElement {
-    const { requestId } = useParams<{ requestId: string }>();
+    const { planId } = useParams<{ planId: string }>();
     const navigate = useNavigate();
     
     // State
@@ -51,8 +51,11 @@ export default function PlanPage(): ReactElement {
         }
         
         // Stop polling for final states
-        return data.status === 'AwaitingStrategySelection' || 
-               data.status === 'Ready' ||
+        if (data.status === 'AwaitingStrategySelection') {
+            // Only stop when strategies are ready to display
+            return (data.strategies?.length ?? 0) > 0;
+        }
+        return data.status === 'Ready' ||
                data.status === 'Confirmed' || 
                data.status === 'InProgress' ||
                data.status === 'Completed' ||
@@ -67,7 +70,7 @@ export default function PlanPage(): ReactElement {
         isTimeout,
         restart: restartPolling
     } = usePollingApi<IOptimizationPlan>(
-        { url: `/api/optimization-requests/${requestId}/plan` },
+        { url: `/api/plans/${planId}` },
         { 
             interval: POLLING_INTERVAL, 
             timeout: POLLING_TIMEOUT, 
@@ -78,7 +81,7 @@ export default function PlanPage(): ReactElement {
 
     // Handle strategy selection
     const handleSelectStrategy = async (index: number): Promise<void> => {
-        if (!plan?.strategies || !requestId) return;
+        if (!plan?.strategies || !planId) return;
         
         setSelectedIndex(index);
         const selectedStrategy = plan.strategies[index];
@@ -86,7 +89,7 @@ export default function PlanPage(): ReactElement {
         try {
             setIsSelecting(true);
             restartPolling();
-            selectStrategy(requestId, selectedStrategy.id).catch(err => {
+            selectStrategy(planId, selectedStrategy.id).catch(err => {
                 console.error('Failed to select strategy:', err);
                 setIsSelecting(false);
             });
@@ -145,12 +148,12 @@ export default function PlanPage(): ReactElement {
         }
     };
 
-    // Fetch request details when requestId is available
+    // Fetch request details when planId is available
     useEffect(() => {
-        if (requestId) {
-            fetchRequest(requestId);
+        if (plan?.requestId) {
+            fetchRequest(plan.requestId);
         }
-    }, [requestId]);
+    }, [plan?.requestId]);
 
     // Update request state when data is fetched
     useEffect(() => {
@@ -179,10 +182,12 @@ export default function PlanPage(): ReactElement {
     // Handle confirmation result
     useEffect(() => {
         if (confirmResult) {
-            if (confirmResult.confirmationErrors && confirmResult.confirmationErrors.length > 0) {
-                setConfirmationErrors(confirmResult.confirmationErrors);
-            } else {
-                setPlan(confirmResult.confirmedPlan);
+            if (!confirmResult.success && confirmResult.errorMessage) {
+                setConfirmationErrors([confirmResult.errorMessage]);
+            } else if (confirmResult.success) {
+                // Refresh plan data after successful confirmation
+                // The polling will pick up the updated plan
+                setConfirmationErrors([]);
             }
         }
     }, [confirmResult]);
@@ -216,7 +221,8 @@ export default function PlanPage(): ReactElement {
             <div>
                 <h1>Loading Plan</h1>
                 <OptimizationPollingStatus 
-                    requestId={requestId || ''}
+                    planId={planId || ''}
+                    status={pollingData?.status}
                     elapsed={elapsed}
                     error={pollingError}
                     isTimeout={isTimeout}
@@ -280,7 +286,7 @@ export default function PlanPage(): ReactElement {
                         </Button>
                         <Button
                             variant="secondary"
-                            onClick={() => navigate(`/plan/${requestId}/edit`)}
+                            onClick={() => navigate(`/plan/${planId}/edit`)}
                         >
                             <MaterialIcon icon="edit" />
                             Edit Strategy
@@ -462,7 +468,8 @@ export default function PlanPage(): ReactElement {
                 <div>
                     <h1>Processing Strategy Selection</h1>
                     <OptimizationPollingStatus 
-                        requestId={requestId || ''}
+                        planId={planId || ''}
+                        status={plan.status}
                         elapsed={elapsed}
                         error={pollingError}
                         isTimeout={isTimeout}
@@ -501,12 +508,13 @@ export default function PlanPage(): ReactElement {
         );
     }
 
-    // Any other status
+    // Any other status (processing steps)
     return (
         <div>
             <h1>Processing Optimization Request</h1>
             <OptimizationPollingStatus 
-                requestId={requestId || ''}
+                planId={planId || ''}
+                status={plan.status}
                 elapsed={elapsed}
                 error={pollingError}
                 isTimeout={isTimeout}

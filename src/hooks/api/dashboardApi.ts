@@ -1,5 +1,5 @@
 import { useApi } from './useApi';
-import { DashboardStats } from '../../types/IDashboard';
+import { IDashboardStats } from '../../types';
 
 const API_URL = '/api/dashboard';
 
@@ -8,7 +8,7 @@ const API_URL = '/api/dashboard';
  * Простой минималистичный endpoint
  */
 export function useGetDashboardStats() {
-    const { data, loading, error, callApi: callApiBase } = useApi<DashboardStats>();
+    const { data, loading, error, callApi: callApiBase } = useApi<IDashboardStats>();
 
     const callApi = () => {
         return callApiBase({ url: `${API_URL}/stats` });

@@ -1,4 +1,4 @@
-import { IOptimizationStrategy } from '../../types/IOptimizationStrategy';
+import { IOptimizationStrategy } from '../../types';
 import StrategyCard from '../StrategyCard/StrategyCard';
 import Button from '../Button/Button';
 import './StrategySelector.css';

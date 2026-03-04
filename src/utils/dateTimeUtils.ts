@@ -1,4 +1,18 @@
 /**
+ * Ensures an ISO datetime string is treated as UTC.
+ * If the string has no timezone suffix (no Z, no +HH:mm), appends Z.
+ * Use this when parsing timestamps received from the server.
+ */
+export function ensureUtc(isoString: string): string {
+    if (!isoString) return isoString;
+    // Already has timezone info
+    if (isoString.endsWith('Z') || /[+-]\d{2}:\d{2}$/.test(isoString)) {
+        return isoString;
+    }
+    return isoString + 'Z';
+}
+
+/**
  * Date and Time Utilities
  * 
  * IMPORTANT: All functions work with UTC timestamps stored as ISO 8601 strings.
@@ -16,7 +30,7 @@
 export function toLocalDateTimeInput(isoString: string): string {
     if (!isoString) return '';
     
-    const date = new Date(isoString);
+    const date = new Date(ensureUtc(isoString));
     
     // Check if date is valid
     if (isNaN(date.getTime())) {
@@ -71,7 +85,7 @@ export function fromLocalDateTimeInput(localDateTimeString: string): string {
 export function formatDateTime(isoString: string, options?: Intl.DateTimeFormatOptions): string {
     if (!isoString) return 'Not set';
     
-    const date = new Date(isoString);
+    const date = new Date(ensureUtc(isoString));
     
     // Check if date is valid
     if (isNaN(date.getTime())) {
@@ -88,6 +102,14 @@ export function formatDateTime(isoString: string, options?: Intl.DateTimeFormatO
     };
     
     return date.toLocaleString('en-US', defaultOptions);
+}
+
+/**
+ * Formats ISO 8601 datetime string for display in UTC (for timeline labels, server-side context).
+ * Use this when you want to show the exact UTC value that is stored on the server.
+ */
+export function formatDateTimeUtc(isoString: string, options?: Intl.DateTimeFormatOptions): string {
+    return formatDateTime(isoString, { timeZone: 'UTC', ...options });
 }
 
 /**

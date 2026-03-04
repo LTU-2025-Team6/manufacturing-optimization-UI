@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import Loading from '../loading/Loading';
 import Alert from '../Alert/Alert';
-import { IProblemDetails } from '../../types/IProblemDetails';
+import { IProblemDetails } from '../../types';
 
 interface DataStateProps<T> {
     loading: boolean;

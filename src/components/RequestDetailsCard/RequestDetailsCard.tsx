@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { IOptimizationRequest } from '../../types/IOptimizationRequest';
+import { IOptimizationRequest } from '../../types';
 import { formatDateTime } from '../../utils/dateTimeUtils';
 import Card from '../Card/Card';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';

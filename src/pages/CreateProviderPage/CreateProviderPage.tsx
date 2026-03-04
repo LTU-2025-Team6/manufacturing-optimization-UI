@@ -6,11 +6,10 @@ import {
     ICreateProcessCapabilityRequest,
     ICreateTechnicalCapabilitiesRequest,
     ICreateWorkingHoursRequest,
-    ICreateBreakPeriodRequest
-} from '../../types/IProvider';
-import { IProcessCapability } from '../../types/IProcessCapability';
-import { IProviderBreakPeriod } from '../../types/IProvider';
-import Button from '../../components/Button/Button';
+    ICreateBreakPeriodRequest,
+    IProcessCapability,
+    IProviderBreakPeriod
+} from '../../types';
 import Alert from '../../components/Alert/Alert';
 import ProcessCapabilitiesEditor from '../../components/ProcessCapabilitiesEditor/ProcessCapabilitiesEditor';
 import BreakPeriodsEditor from '../../components/BreakPeriodsEditor/BreakPeriodsEditor';
@@ -130,17 +129,20 @@ export default function CreateProviderPage(): ReactElement {
     return (
         <div className="create-provider-page">
             <div className="create-provider-header">
-                <div>
-                    <h1>Create New Provider</h1>
-                    <p className="page-description">Configure a new manufacturing provider</p>
+                <div className="header-title-wrapper">
+                    <button 
+                        type="button"
+                        className="header-back-btn"
+                        onClick={() => navigate('/providers')}
+                        title="Back to providers"
+                    >
+                        <MaterialIcon icon="arrow_back" size="M" />
+                    </button>
+                    <div>
+                        <h1>Create New Provider</h1>
+                        <p className="page-description">Configure a new manufacturing provider</p>
+                    </div>
                 </div>
-                <Button 
-                    variant="secondary" 
-                    onClick={() => navigate('/providers')}
-                >
-                    <MaterialIcon icon="arrow_back" />
-                    Cancel
-                </Button>
             </div>
 
             {error && (
@@ -338,21 +340,21 @@ export default function CreateProviderPage(): ReactElement {
 
                 {/* Submit */}
                 <div className="form-actions">
-                    <Button 
+                    <button 
                         type="button"
-                        variant="secondary" 
+                        className="action-btn action-btn-secondary"
                         onClick={() => navigate('/providers')}
                     >
                         Cancel
-                    </Button>
-                    <Button 
+                    </button>
+                    <button 
                         type="submit"
-                        variant="primary"
+                        className="action-btn action-btn-primary"
                         disabled={loading || !formData.name || processCapabilities.length === 0}
                     >
-                        <MaterialIcon icon="add" />
+                        <MaterialIcon icon="add" size="S" />
                         {loading ? 'Creating...' : 'Create Provider'}
-                    </Button>
+                    </button>
                 </div>
             </form>
         </div>

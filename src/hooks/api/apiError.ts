@@ -1,4 +1,4 @@
-import { IProblemDetails } from '../../types/IProblemDetails';
+import { IProblemDetails } from '../../types';
 
 export function parseApiError(error: any): IProblemDetails {
     if (!error)

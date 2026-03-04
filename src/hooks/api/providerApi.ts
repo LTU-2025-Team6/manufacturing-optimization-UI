@@ -1,14 +1,21 @@
 import { useApi } from './useApi';
-import { IProvider, IProviderPreview, IUpdateProviderRequest, ICreateProviderRequest } from '../../types/IProvider';
-import { IProviderScheduleRequest } from '../../types/IProviderScheduleRequest';
-import { IProviderDayScheduleDto } from '../../types/IProviderSchedule';
-import { IExecutionDetails } from '../../types/IExecutionDetails';
+import { 
+  IProvider, 
+  IProviderPreview, 
+  IUpdateProviderRequest, 
+  ICreateProviderRequest,
+  IProviderScheduleRequest,
+  IProviderDaySchedule,
+  IExecutionDetails,
+  PagedResult,
+  DEFAULT_PAGE_SIZE
+} from '../../types';
 
 export function useGetProviders() {
-    const { data, loading, error, callApi: callApiBase } = useApi<IProviderPreview[]>();
+    const { data, loading, error, callApi: callApiBase } = useApi<PagedResult<IProviderPreview>>();
 
-    const callApi = () => {
-        return callApiBase({ url: '/api/providers' });
+    const callApi = (pageNumber: number = 1, pageSize: number = DEFAULT_PAGE_SIZE) => {
+        return callApiBase({ url: `/api/providers?pageNumber=${pageNumber}&pageSize=${pageSize}` });
     };
 
     return { data, loading, error, callApi };
@@ -53,11 +60,11 @@ export function useToggleProvider() {
 }
 
 export function useGetProviderSchedule() {
-    const { data, loading, error, callApi: callApiBase } = useApi<IProviderDayScheduleDto[]>();
+    const { data, loading, error, callApi: callApiBase } = useApi<IProviderDaySchedule[]>();
 
     const callApi = (id: string, request: IProviderScheduleRequest) => {
         return callApiBase({ 
-            url: `/api/providers/${id}/schedule?start=${request.startDate}&end=${request.endDate}`, 
+            url: `/api/providers/${id}/schedule?startDate=${request.startDate}&endDate=${request.endDate}`, 
             method: 'GET'
         });
     };

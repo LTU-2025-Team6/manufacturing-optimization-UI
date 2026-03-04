@@ -1,6 +1,6 @@
-import { IProviderScheduleSegment } from '../../types/IProviderSchedule';
-import { formatDateTime } from '../../utils/dateTimeUtils';
-import React, { useState } from 'react';
+import { IProviderScheduleSegment } from '../../types';
+import { formatDateTimeUtc, ensureUtc } from '../../utils/dateTimeUtils';
+import React, { useState, useRef } from 'react';
 import ExecutionDetailsModal from '../ExecutionDetailsModal/ExecutionDetailsModal';
 import './Timeline.css';
 
@@ -12,6 +12,10 @@ interface TimelineProps {
         start: string;
         end: string;
     };
+    /** Show a vertical cursor marker at this ISO time */
+    cursorTime?: string;
+    /** Called with the ISO time the user clicked on the track */
+    onTrackClick?: (isoTime: string) => void;
 }
 
 type SegmentType = 'FreeSpace' | 'Break' | 'Occupied' | 'WorkingTime';
@@ -60,8 +64,9 @@ const getSegmentLabel = (segmentType: string, duration: number): string => {
     return `${duration.toFixed(1)}h`;
 };
 
-export default function Timeline({ segments, providerId, showTimeLabels = true, timeRange }: TimelineProps) {
+export default function Timeline({ segments, providerId, showTimeLabels = true, timeRange, cursorTime, onTrackClick }: TimelineProps) {
     const [selectedExecution, setSelectedExecution] = useState<{ providerId: string; executionId: string } | null>(null);
+    const trackRef = useRef<HTMLDivElement>(null);
 
     if (!segments || segments.length === 0) {
         return <p className="text-muted">No timeline data available</p>;
@@ -72,13 +77,11 @@ export default function Timeline({ segments, providerId, showTimeLabels = true, 
     let maxTime: number;
     
     if (timeRange) {
-        // Use provided time range
-        minTime = new Date(timeRange.start).getTime();
-        maxTime = new Date(timeRange.end).getTime();
+        minTime = new Date(ensureUtc(timeRange.start)).getTime();
+        maxTime = new Date(ensureUtc(timeRange.end)).getTime();
     } else {
-        // Calculate from segments
-        const startTimes = segments.map(s => new Date(s.startTime).getTime());
-        const endTimes = segments.map(s => new Date(s.endTime).getTime());
+        const startTimes = segments.map(s => new Date(ensureUtc(s.startTime)).getTime());
+        const endTimes = segments.map(s => new Date(ensureUtc(s.endTime)).getTime());
         minTime = Math.min(...startTimes);
         maxTime = Math.max(...endTimes);
     }
@@ -92,16 +95,26 @@ export default function Timeline({ segments, providerId, showTimeLabels = true, 
     return (
         <div className="timeline">
             <div className="timeline-header" style={showTimeLabels ? {} : { display: 'none' }}>
-                <span>{formatDateTime(new Date(minTime).toISOString())}</span>
-                <span>{formatDateTime(new Date(maxTime).toISOString())}</span>
+                <span>{formatDateTimeUtc(new Date(minTime).toISOString())}</span>
+                <span>{formatDateTimeUtc(new Date(maxTime).toISOString())}</span>
             </div>
 
             <div className="timeline-container">
                 <div className="timeline-row">
-                    <div className="timeline-track">
+                    <div
+                        ref={trackRef}
+                        className={`timeline-track ${onTrackClick ? 'timeline-track-clickable' : ''}`}
+                        onClick={onTrackClick ? (e: React.MouseEvent<HTMLDivElement>) => {
+                            const rect = trackRef.current?.getBoundingClientRect();
+                            if (!rect) return;
+                            const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                            const clicked = new Date(minTime + ratio * totalDuration).toISOString();
+                            onTrackClick(clicked);
+                        } : undefined}
+                    >
                         {segments.map((segment, index) => {
-                            const segStart = new Date(segment.startTime).getTime();
-                            const segEnd = new Date(segment.endTime).getTime();
+                            const segStart = new Date(ensureUtc(segment.startTime)).getTime();
+                            const segEnd = new Date(ensureUtc(segment.endTime)).getTime();
                             const segDuration = (segEnd - segStart) / (1000 * 60 * 60);
                             const leftPos = getPosition(segStart);
                             const width = getPosition(segEnd) - leftPos;
@@ -124,7 +137,7 @@ export default function Timeline({ segments, providerId, showTimeLabels = true, 
                                         left: `${leftPos}%`,
                                         width: `${width}%`
                                     }}
-                                    title={`${segment.segmentType}: ${formatDateTime(new Date(segStart).toISOString())} - ${formatDateTime(new Date(segEnd).toISOString())} (${segDuration.toFixed(1)}h)${isClickable ? ' - Click for details' : ''}`}
+                                    title={`${segment.segmentType}: ${formatDateTimeUtc(new Date(segStart).toISOString())} - ${formatDateTimeUtc(new Date(segEnd).toISOString())} (${segDuration.toFixed(1)}h)${isClickable ? ' - Click for details' : ''}`}
                                     onClick={handleSegmentClick}
                                 >
                                     <span className="timeline-bar-text">
@@ -133,6 +146,17 @@ export default function Timeline({ segments, providerId, showTimeLabels = true, 
                                 </div>
                             );
                         })}
+                        {cursorTime && (() => {
+                            const left = getPosition(new Date(cursorTime).getTime());
+                            if (left < 0 || left > 100) return null;
+                            return (
+                                <div
+                                    className="timeline-cursor"
+                                    style={{ left: `${left}%` }}
+                                    title={formatDateTimeUtc(cursorTime)}
+                                />
+                            );
+                        })()}
                     </div>
                 </div>
             </div>

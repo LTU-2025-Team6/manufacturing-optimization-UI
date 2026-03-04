@@ -1,27 +1,27 @@
 import { useApi } from './useApi';
 import { usePollingApi } from './usePollingApi';
-import { IExecutionPlanSummary, IExecutionPlanDetail, IExecutionStep, IExecutionSummary } from '../../types/IExecution';
+import { IExecutionPlanSummary, IExecutionPlanDetail, IExecutionStep, IExecutionSummary, PagedResult, DEFAULT_PAGE_SIZE } from '../../types';
 
 /**
- * Get summary of all execution plans
+ * Get summary of all execution plans - paginated
  */
 export function useGetAllPlans() {
-    const { data, loading, error, callApi: callApiBase } = useApi<IExecutionPlanSummary[]>();
+    const { data, loading, error, callApi: callApiBase } = useApi<PagedResult<IExecutionPlanSummary>>();
 
-    const callApi = () => {
-        return callApiBase({ url: '/api/execution/plans' });
+    const callApi = (pageNumber: number = 1, pageSize: number = DEFAULT_PAGE_SIZE) => {
+        return callApiBase({ url: `/api/execution/plans?pageNumber=${pageNumber}&pageSize=${pageSize}` });
     };
 
     return { data, loading, error, callApi };
 }
 
 /**
- * Get all execution plans with polling
+ * Get all execution plans with polling - paginated
  * @param interval - polling interval in milliseconds (default: 3000)
  */
-export function useAllPlansPolling(interval: number = 3000) {
-    return usePollingApi<IExecutionPlanSummary[]>(
-        { url: '/api/execution/plans' },
+export function useAllPlansPolling(pageNumber: number = 1, pageSize: number = DEFAULT_PAGE_SIZE, interval: number = 3000) {
+    return usePollingApi<PagedResult<IExecutionPlanSummary>>(
+        { url: `/api/execution/plans?pageNumber=${pageNumber}&pageSize=${pageSize}` },
         { 
             interval,
             immediate: true,
@@ -60,25 +60,25 @@ export function usePlanDetailPolling(planId: string, interval: number = 2000) {
 }
 
 /**
- * Get plans currently in progress
+ * Get plans currently in progress - paginated
  */
 export function useGetInProgressPlans() {
-    const { data, loading, error, callApi: callApiBase } = useApi<IExecutionPlanSummary[]>();
+    const { data, loading, error, callApi: callApiBase } = useApi<PagedResult<IExecutionPlanSummary>>();
 
-    const callApi = () => {
-        return callApiBase({ url: '/api/execution/plans/in-progress' });
+    const callApi = (pageNumber: number = 1, pageSize: number = DEFAULT_PAGE_SIZE) => {
+        return callApiBase({ url: `/api/execution/plans/in-progress?pageNumber=${pageNumber}&pageSize=${pageSize}` });
     };
 
     return { data, loading, error, callApi };
 }
 
 /**
- * Get in-progress plans with polling
+ * Get in-progress plans with polling - Now paginated
  * @param interval - polling interval in milliseconds (default: 3000)
  */
-export function useInProgressPlansPolling(interval: number = 3000) {
-    return usePollingApi<IExecutionPlanSummary[]>(
-        { url: '/api/execution/plans/in-progress' },
+export function useInProgressPlansPolling(pageNumber: number = 1, pageSize: number = DEFAULT_PAGE_SIZE, interval: number = 3000) {
+    return usePollingApi<PagedResult<IExecutionPlanSummary>>(
+        { url: `/api/execution/plans/in-progress?pageNumber=${pageNumber}&pageSize=${pageSize}` },
         { 
             interval,
             immediate: true,

@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { parseApiError } from './apiError';
-import { IProblemDetails } from '../../types/IProblemDetails';
+import { IProblemDetails } from '../../types';
 
 const BASE_URL = 'http://localhost:5000';
 

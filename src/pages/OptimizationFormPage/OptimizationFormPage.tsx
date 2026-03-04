@@ -1,9 +1,9 @@
 import { ReactElement, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IOptimizationRequest } from '../../types/IOptimizationRequest';
+import { IOptimizationRequest } from '../../types';
 import { useRequestOptimizationPlan } from '../../hooks/api/optimizationApi';
 import { usePollingApi } from '../../hooks/api/usePollingApi';
-import { IOptimizationPlan } from '../../types/IOptimizationPlan';
+import { IOptimizationPlan } from '../../types';
 import { useSelectStrategy } from '../../hooks/api/optimizationApi';
 import OptimizationRequestForm from '../../components/OptimizationRequestForm/OptimizationRequestForm';
 import OptimizationPollingStatus from '../../components/OptimizationPollingStatus/OptimizationPollingStatus';
@@ -121,7 +121,7 @@ const OptimizationFormPage = (): ReactElement => {
                 <>
                     <h1>Waiting for Plan</h1>
                     <OptimizationPollingStatus 
-                        requestId={requestId}
+                        planId={requestId}
                         status={pollingData?.status}
                         elapsed={elapsed}
                         loading={polling}

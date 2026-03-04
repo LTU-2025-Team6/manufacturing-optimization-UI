@@ -1,7 +1,9 @@
+import { useState, useEffect } from 'react';
 import { useAllPlansPolling } from '../../hooks/api/executionApi';
-import { IExecutionPlanSummary } from '../../types/IExecution';
+import { IExecutionPlanSummary, DEFAULT_PAGE_SIZE } from '../../types';
 import DataState from '../DataState/DataState';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
+import Pagination from '../Pagination/Pagination';
 import StatusBadge from '../StatusBadge/StatusBadge';
 import './ExecutionList.css';
 
@@ -27,37 +29,60 @@ function formatDateRelative(dateString: string | null): string {
 }
 
 export default function ExecutionList({ onSelectExecution, selectedPlanId }: ExecutionListProps) {
-    const { data: plans, loading, error } = useAllPlansPolling(3000);
+    const [page, setPage] = useState(1);
+    const { data: pagedPlans, loading, error, restart } = useAllPlansPolling(page, DEFAULT_PAGE_SIZE, 3000);
+
+    // Restart polling immediately when page changes
+    useEffect(() => {
+        restart();
+    }, [page]);
 
     const handleSelectExecution = (planId: string) => {
         onSelectExecution(planId);
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
     };
 
     return (
         <div className="execution-list">
             <div className="execution-list-header">
                 <h2>Execution Plans</h2>
-                {plans && <span className="execution-count">{plans.length}</span>}
+                {pagedPlans && <span className="execution-count">{pagedPlans.totalCount}</span>}
             </div>
             
             <DataState
                 loading={loading}
                 error={error}
-                data={plans}
+                data={pagedPlans}
                 loadingMessage="Loading execution plans..."
                 emptyMessage="No execution plans found"
             >
-                {(executions: IExecutionPlanSummary[]) => (
-                    <div className="execution-items">
-                        {executions.map((execution) => (
-                            <ExecutionListItem
-                                key={execution.id}
-                                execution={execution}
-                                isSelected={execution.id === selectedPlanId}
-                                onSelect={handleSelectExecution}
+                {(pagedResult) => (
+                    <>
+                        <div className="execution-items">
+                            {pagedResult.items.map((execution: IExecutionPlanSummary) => (
+                                <ExecutionListItem
+                                    key={execution.id}
+                                    execution={execution}
+                                    isSelected={execution.id === selectedPlanId}
+                                    onSelect={handleSelectExecution}
+                                />
+                            ))}
+                        </div>
+                        {pagedResult.totalPages > 1 && (
+                            <Pagination
+                                pageNumber={pagedResult.pageNumber}
+                                totalPages={pagedResult.totalPages}
+                                totalCount={pagedResult.totalCount}
+                                hasPreviousPage={pagedResult.hasPreviousPage}
+                                hasNextPage={pagedResult.hasNextPage}
+                                onPageChange={handlePageChange}
+                                pageSize={DEFAULT_PAGE_SIZE}
                             />
-                        ))}
-                    </div>
+                        )}
+                    </>
                 )}
             </DataState>
         </div>

@@ -1,7 +1,7 @@
 import { ReactElement, useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IOptimizationStrategy } from '../../types/IOptimizationStrategy';
-import { IEditableStrategy, IEditableProcessStep, IUpdateStrategyRequest } from '../../types/IEditableStrategy';
+import { IOptimizationStrategy } from '../../types';
+import { IEditableStrategy, IEditableProcessStep, IUpdateStrategyRequest, IStepUpdate } from '../../types';
 import { useUpdateStrategy } from '../../hooks/api/strategyEditApi';
 import { formatDateTime } from '../../utils/dateTimeUtils';
 import ProcessStepEditor from '../ProcessStepEditor/ProcessStepEditor';
@@ -9,20 +9,18 @@ import Button from '../Button/Button';
 import Alert from '../Alert/Alert';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Timeline from '../Timeline/Timeline';
-import { IProviderScheduleSegment } from '../../types/IProviderSchedule';
+import { IProviderScheduleSegment } from '../../types';
 import './StrategyEditor.css';
 
 interface StrategyEditorProps {
     strategy: IOptimizationStrategy;
-    requestId: string;
+    planId: string;
     onSave?: (updatedStrategy: IOptimizationStrategy) => void;
     onCancel?: () => void;
 }
 
-const StrategyEditor = ({ strategy, requestId, onSave, onCancel }: StrategyEditorProps): ReactElement => {
+const StrategyEditor = ({ strategy, planId, onSave, onCancel }: StrategyEditorProps): ReactElement => {
     const navigate = useNavigate();
-
-    console.log(strategy);
     
     // Convert strategy to editable format
     const [editableStrategy, setEditableStrategy] = useState<IEditableStrategy>(() => ({
@@ -30,28 +28,24 @@ const StrategyEditor = ({ strategy, requestId, onSave, onCancel }: StrategyEdito
         steps: strategy.steps.map(step => ({
             ...step,
             proposedStartTime: undefined,
-            proposedEndTime: undefined
         })),
         isModified: false,
-        originalStrategyId: strategy.id
     }));
 
     const { data: updateResult, loading: saving, error: saveError, callApi: updateStrategy } = useUpdateStrategy();
 
-    // Track modifications
-    const modifications = useMemo(() => {
+    // Track modifications: only steps with proposed times
+    const modifications = useMemo<IStepUpdate[]>(() => {
         return editableStrategy.steps
-            .filter(step => step.proposedStartTime || step.proposedEndTime)
+            .filter(step => step.proposedStartTime)
             .map(step => {
-                const originalStep = strategy.steps.find(s => s.id === step.id);
-                const providerChanged = originalStep && step.selectedProviderId !== originalStep.selectedProviderId;
-                
+                const original = strategy.steps.find(s => s.id === step.id)!;
+                const providerChanged = step.selectedProviderId !== original.selectedProviderId;
                 return {
                     stepId: step.id,
-                    stepNumber: step.stepNumber,
-                    newProviderId: providerChanged ? step.selectedProviderId : undefined,
-                    newStartTime: step.proposedStartTime || step.allocatedSchedule?.startWorkingTime,
-                    newEndTime: step.proposedEndTime || step.allocatedSchedule?.endWorkingTime
+                    providerId: providerChanged ? step.selectedProviderId : undefined,
+                    scheduledStart: step.proposedStartTime ?? step.allocatedSchedule?.startWorkingTime ?? '',
+                    scheduledEnd:   step.allocatedSchedule?.endWorkingTime ?? '',
                 };
             });
     }, [editableStrategy.steps, strategy.steps]);
@@ -100,7 +94,7 @@ const StrategyEditor = ({ strategy, requestId, onSave, onCancel }: StrategyEdito
 
         const previousStep = editableStrategy.steps[stepIndex - 1];
         const currentStartTime = step.proposedStartTime || step.allocatedSchedule?.startWorkingTime;
-        const previousEndTime = previousStep.proposedEndTime || previousStep.allocatedSchedule?.endWorkingTime;
+        const previousEndTime = previousStep.allocatedSchedule?.endWorkingTime;
 
         if (!currentStartTime || !previousEndTime) return true; // Can't validate without times
 
@@ -109,53 +103,41 @@ const StrategyEditor = ({ strategy, requestId, onSave, onCancel }: StrategyEdito
 
     // Save changes
     const handleSave = async () => {
-        if (modifications.length === 0) {
-            alert('No modifications to save');
-            return;
-        }
+        if (modifications.length === 0) return;
 
-        // Prepare update request
         const updateRequest: IUpdateStrategyRequest = {
-            strategyId: strategy.id,
-            updates: modifications
+            stepUpdates: modifications,
         };
 
-        // Call API
-        updateStrategy(strategy.id, updateRequest);
+        updateStrategy(planId, updateRequest);
     };
 
     // Handle update result
     useEffect(() => {
-        if (updateResult) {
-            if (updateResult.validationErrors && updateResult.validationErrors.length > 0) {
-                // Show validation errors if any
-                alert('Validation errors: ' + updateResult.validationErrors.join(', '));
+        if (!updateResult) return;
+
+        if (updateResult.validationErrors && updateResult.validationErrors.length > 0) {
+            alert('Validation errors: ' + updateResult.validationErrors.join(', '));
+        } else {
+            if (onSave) {
+                onSave(updateResult.updatedStrategy);
             } else {
-                // Success
-                if (onSave && updateResult.updatedStrategy) {
-                    onSave(updateResult.updatedStrategy);
-                } else {
-                    // Navigate back to plan view
-                    navigate(`/plan/${requestId}`);
-                }
+                navigate(`/plan/${planId}`);
             }
         }
-    }, [updateResult, onSave, navigate, requestId]);
+    }, [updateResult]);
 
     // Reset changes
     const handleReset = () => {
-        if (confirm('Are you sure you want to reset all changes?')) {
-            setEditableStrategy({
-                ...strategy,
-                steps: strategy.steps.map(step => ({
-                    ...step,
-                    proposedStartTime: undefined,
-                    proposedEndTime: undefined
-                })),
-                isModified: false,
-                originalStrategyId: strategy.id
-            });
-        }
+        if (!confirm('Are you sure you want to reset all changes?')) return;
+        setEditableStrategy({
+            ...strategy,
+            steps: strategy.steps.map(step => ({
+                ...step,
+                proposedStartTime: undefined,
+            })),
+            isModified: false,
+        });
     };
 
     // Generate combined timeline segments with conflict detection
@@ -394,50 +376,30 @@ const StrategyEditor = ({ strategy, requestId, onSave, onCancel }: StrategyEdito
                             </span>
                         )}
                     </h3>
-                    <p className="section-description">
-                        {hasConflicts 
-                            ? 'Red segments indicate scheduling conflicts. Steps must be executed sequentially without time overlaps.'
-                            : 'All steps are scheduled sequentially without conflicts.'}
-                    </p>
-                    
                     {hasConflicts && conflictDetails.length > 0 && (
-                        <Alert variant="error" title="Scheduling Conflicts Detected">
-                            <p>The following issues were found:</p>
-                            <ul className="conflict-details-list">
-                                {conflictDetails.map((conflict) => (
-                                    <li key={conflict.stepNumber}>
-                                        <strong>Step {conflict.stepNumber} ({conflict.stepName})</strong>
-                                        <ul>
-                                            {conflict.conflictsWith.map((other, idx) => {
-                                                if (other.conflictType === 'sequencing') {
-                                                    return (
-                                                        <li key={idx} className="sequencing-conflict">
-                                                            <MaterialIcon icon="arrow_forward" />
-                                                            <strong>Sequencing Issue:</strong> Step {conflict.stepNumber} starts before Step {other.stepNumber} ({other.stepName}) ends
-                                                            <br />
-                                                            <span className="overlap-time">
-                                                                Step {conflict.stepNumber} should start after {formatDateTime(other.overlapEnd)}
-                                                            </span>
-                                                        </li>
-                                                    );
-                                                } else {
-                                                    return (
-                                                        <li key={idx} className="overlap-conflict">
-                                                            <MaterialIcon icon="event_busy" />
-                                                            <strong>Time Overlap:</strong> with Step {other.stepNumber} ({other.stepName})
-                                                            <br />
-                                                            <span className="overlap-time">
-                                                                Overlap period: {formatDateTime(other.overlapStart)} - {formatDateTime(other.overlapEnd)}
-                                                            </span>
-                                                        </li>
-                                                    );
-                                                }
-                                            })}
-                                        </ul>
-                                    </li>
-                                ))}
-                            </ul>
-                        </Alert>
+                        <div className="conflict-summary">
+                            {conflictDetails.flatMap(conflict =>
+                                conflict.conflictsWith.map((other, idx) =>
+                                    other.conflictType === 'sequencing' ? (
+                                        <div key={`${conflict.stepNumber}-${idx}`} className="conflict-row sequencing">
+                                            <MaterialIcon icon="warning" />
+                                            <span>
+                                                <strong>Step {conflict.stepNumber}</strong> starts before <strong>Step {other.stepNumber}</strong> ends
+                                                <span className="conflict-hint"> — move after {formatDateTime(other.overlapEnd)}</span>
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        <div key={`${conflict.stepNumber}-${idx}`} className="conflict-row overlap">
+                                            <MaterialIcon icon="event_busy" />
+                                            <span>
+                                                <strong>Step {conflict.stepNumber}</strong> overlaps <strong>Step {other.stepNumber}</strong>
+                                                <span className="conflict-hint"> {formatDateTime(other.overlapStart)} – {formatDateTime(other.overlapEnd)}</span>
+                                            </span>
+                                        </div>
+                                    )
+                                )
+                            )}
+                        </div>
                     )}
                     
                     <div className="timeline-wrapper">
@@ -460,7 +422,7 @@ const StrategyEditor = ({ strategy, requestId, onSave, onCancel }: StrategyEdito
                             <ProcessStepEditor
                                 key={step.id}
                                 step={step}
-                                strategyId={strategy.id}
+                                planId={planId}
                                 onUpdate={handleStepUpdate}
                                 isSequentialValid={checkSequentialValidity(step)}
                                 strategyStartTime={strategyTimeRange.startTime}
@@ -486,7 +448,7 @@ const StrategyEditor = ({ strategy, requestId, onSave, onCancel }: StrategyEdito
                 <div className="actions-right">
                     <Button
                         variant="secondary"
-                        onClick={onCancel || (() => navigate(`/plan/${requestId}`))}
+                        onClick={onCancel || (() => navigate(`/plan/${planId}`))}
                     >
                         Cancel
                     </Button>

@@ -1,4 +1,4 @@
-import { IExecutionStep, StepExecutionStatus } from '../../types/IExecution';
+import { IExecutionStep, StepExecutionStatus } from '../../types';
 import './ExecutionStepsTimeline.css';
 
 interface ExecutionStepsTimelineProps {
@@ -22,7 +22,7 @@ function getStepStatusClass(status: StepExecutionStatus): string {
     }
 }
 
-function parseDuration(durationStr: string | null): number {
+function parseDuration(durationStr: string | null | undefined): number {
     if (!durationStr) return 0;
     // Parse TimeSpan format like "02:30:00" or "1.05:30:00"
     const parts = durationStr.split(':');
@@ -34,7 +34,7 @@ function parseDuration(durationStr: string | null): number {
     return 0;
 }
 
-function formatDuration(durationStr: string | null): string {
+function formatDuration(durationStr: string | null | undefined): string {
     const hours = parseDuration(durationStr);
     if (hours < 1) {
         return `${Math.round(hours * 60)}min`;
@@ -42,7 +42,7 @@ function formatDuration(durationStr: string | null): string {
     return `${hours.toFixed(1)}h`;
 }
 
-function formatTime(dateString: string | null): string {
+function formatTime(dateString: string | null | undefined): string {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleTimeString('en-US', {
         hour: '2-digit',
@@ -95,6 +95,7 @@ export default function ExecutionStepsTimeline({ steps }: ExecutionStepsTimeline
         <div className="execution-steps-timeline">
             <div className="execution-timeline-container">
                 {validSteps.map((step) => {
+                    console.log('Rendering step:', step);
                     const stepStart = new Date(step.scheduledStart!).getTime();
                     const stepEnd = new Date(step.scheduledEnd!).getTime();
                     const stepDuration = stepEnd - stepStart;

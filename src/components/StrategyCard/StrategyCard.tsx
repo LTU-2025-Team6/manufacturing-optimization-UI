@@ -1,10 +1,9 @@
-import { IOptimizationStrategy } from '../../types/IOptimizationStrategy';
+import { IOptimizationStrategy, IProviderScheduleSegment } from '../../types';
 import { parseDuration } from '../../utils/durationParser';
 import { formatDateTime } from '../../utils/dateTimeUtils';
 import Collapsible from '../Collapsible/Collapsible';
 import Timeline from '../Timeline/Timeline';
 import Card from '../Card/Card';
-import { IProviderScheduleSegment } from '../../types/IProviderSchedule';
 import './StrategyCard.css';
 
 interface StrategyCardProps {

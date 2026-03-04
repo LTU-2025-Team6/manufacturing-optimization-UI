@@ -104,6 +104,51 @@
     position: relative;
 }
 
+.timeline-track-clickable {
+    cursor: crosshair;
+}
+
+.timeline-track-clickable:hover {
+    outline: 2px solid var(--ds-color-accent-primary);
+    outline-offset: 1px;
+}
+
+/* Vertical cursor marker — rendered inside .timeline-track so % is exact */
+.timeline-cursor {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--ds-color-accent-primary);
+    pointer-events: none;
+    z-index: 10;
+    transform: translateX(-50%);
+}
+
+.timeline-cursor::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ds-color-accent-primary);
+}
+
+.timeline-cursor::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ds-color-accent-primary);
+}
+
 .timeline-bar {
     position: absolute;
     height: 100%;

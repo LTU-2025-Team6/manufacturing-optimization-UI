@@ -1,6 +1,5 @@
 import { ReactElement, useState } from 'react';
-import { IProcessCapability } from '../../types/IProcessCapability';
-import { ProcessType, ProcessTypeLabels, ProcessTypeDescriptions } from '../../types/ProcessType';
+import { IProcessCapability, ProcessType, ProcessTypeLabels, ProcessTypeDescriptions } from '../../types';
 import Button from '../Button/Button';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Collapsible from '../Collapsible/Collapsible';

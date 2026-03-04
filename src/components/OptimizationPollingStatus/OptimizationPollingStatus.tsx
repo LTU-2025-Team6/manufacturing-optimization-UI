@@ -1,17 +1,43 @@
-import { IProblemDetails } from '../../types/IProblemDetails';
+import { IProblemDetails } from '../../types';
 import Alert from '../Alert/Alert';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import './OptimizationPollingStatus.css';
 
+const STATUS_STEPS = [
+    { status: 'Draft', label: 'Draft', icon: 'auto_awesome' },
+    { status: 'MatchingWorkflow', label: 'Matching Workflow', icon: 'auto_awesome' },
+    { status: 'MatchingProviders', label: 'Matching Providers', icon: 'auto_awesome' },
+    { status: 'EstimatingCosts', label: 'Estimating Costs', icon: 'auto_awesome' },
+    { status: 'GeneratingStrategies', label: 'Generating Strategies', icon: 'auto_awesome' },
+    { status: 'AwaitingStrategySelection', label: 'Strategy Selection', icon: 'auto_awesome' },
+];
+
+const STATUS_LABELS: Record<string, string> = {
+    Draft: 'Draft',
+    MatchingWorkflow: 'Matching Workflow',
+    MatchingProviders: 'Matching Providers',
+    EstimatingCosts: 'Estimating Costs',
+    GeneratingStrategies: 'Generating Strategies',
+    AwaitingStrategySelection: 'Awaiting Strategy Selection',
+    StrategySelected: 'Strategy Selected',
+    Ready: 'Ready',
+    Confirmed: 'Confirmed',
+    InProgress: 'In Progress',
+    Completed: 'Completed',
+    Failed: 'Failed',
+};
+
 interface PollingStatusProps {
-    requestId: string;
+    planId: string;
+    status?: string;
     elapsed: number;
     error: IProblemDetails | null;
     isTimeout: boolean;
 }
 
 export default function OptimizationPollingStatus({ 
-    requestId,
+    planId,
+    status,
     elapsed, 
     error, 
     isTimeout
@@ -20,24 +46,54 @@ export default function OptimizationPollingStatus({
     const seconds = Math.floor((elapsed % 60000) / 1000);
     const timeDisplay = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
 
+    const currentStepIndex = STATUS_STEPS.findIndex(s => s.status === status);
+
     return (
         <div className="polling-status">
             {/* Progress Indicator */}
             <div className="polling-progress">
                 <div className="polling-pulse-indicator">
                     <MaterialIcon icon="sync" />
-                    <span className="polling-pulse-text">Processing...</span>
+                    <span className="polling-pulse-text">
+                        {status ? STATUS_LABELS[status] || status : 'Processing...'}
+                    </span>
                 </div>
             </div>
 
-            {/* Request Info Card */}
+            {/* Step Progress */}
+            {currentStepIndex >= 0 && (
+                <div className="polling-steps">
+                    {STATUS_STEPS.map((step, index) => (
+                        <div 
+                            key={step.status} 
+                            className={`polling-step ${
+                                index < currentStepIndex ? 'polling-step-done' :
+                                index === currentStepIndex ? 'polling-step-active' :
+                                'polling-step-pending'
+                            }`}
+                        >
+                            <div className="polling-step-icon">
+                                {index < currentStepIndex 
+                                    ? <MaterialIcon icon="check_circle" />
+                                    : index === currentStepIndex
+                                        ? <MaterialIcon icon={step.icon} />
+                                        : <MaterialIcon icon="radio_button_unchecked" />
+                                }
+                            </div>
+                            <span className="polling-step-label">{step.label}</span>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* Plan Info Card */}
             <div className="polling-info-card">
                 <div className="polling-info-row">
                     <div className="polling-info-item">
                         <MaterialIcon icon="description" />
                         <div className="polling-info-content">
-                            <span className="polling-info-label">Request ID</span>
-                            <span className="polling-info-value">{requestId.slice(0, 8)}...</span>
+                            <span className="polling-info-label">Plan ID</span>
+                            <span className="polling-info-value">{planId.slice(0, 8)}...</span>
                         </div>
                     </div>
                     <div className="polling-info-item">

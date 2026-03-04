@@ -1,18 +1,18 @@
 import { ReactElement, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGetProvider, useUpdateProvider, useDeleteProvider } from '../../hooks/api/providerApi';
+import MaterialIcon from '../../components/MaterialIcon/MaterialIcon';
 import { 
     IProvider, 
     IUpdateProviderRequest, 
     IProviderBreakPeriod,
-    IUpdateProcessCapabilitiesRequest,
-    IUpdateProviderTechnicalCapabilitiesRequest,
-    IUpdateProviderWorkingHoursRequest,
-    IUpdateBreakPeriodRequest
-} from '../../types/IProvider';
-import { IProcessCapability } from '../../types/IProcessCapability';
+    IUpdateProcessCapabilityRequest,
+    IUpdateTechnicalCapabilitiesRequest,
+    IUpdateWorkingHoursRequest,
+    IUpdateBreakPeriodRequest,
+    IProcessCapability
+} from '../../types';
 import DataState from '../../components/DataState/DataState';
-import Button from '../../components/Button/Button';
 import Alert from '../../components/Alert/Alert';
 import Collapsible from '../../components/Collapsible/Collapsible';
 import ProcessCapabilitiesEditor from '../../components/ProcessCapabilitiesEditor/ProcessCapabilitiesEditor';
@@ -44,7 +44,7 @@ const ProviderDetailsPage = (): ReactElement => {
     const handleSave = async () => {
         if (!editedProvider || !id) return;
         
-        const processCapabilities: IUpdateProcessCapabilitiesRequest[] = editedProvider.processCapabilities.map(cap => ({
+        const processCapabilities: IUpdateProcessCapabilityRequest[] = editedProvider.processCapabilities.map(cap => ({
             process: cap.process,
             costPerHour: cap.costPerHour,
             speedMultiplier: cap.speedMultiplier,
@@ -54,7 +54,7 @@ const ProviderDetailsPage = (): ReactElement => {
             usesRenewableEnergy: cap.usesRenewableEnergy
         }));
 
-        const technicalCapabilities: IUpdateProviderTechnicalCapabilitiesRequest = {
+        const technicalCapabilities: IUpdateTechnicalCapabilitiesRequest = {
             axisHeight: editedProvider.technicalCapabilities.axisHeight,
             power: editedProvider.technicalCapabilities.power,
             tolerance: editedProvider.technicalCapabilities.tolerance
@@ -67,7 +67,7 @@ const ProviderDetailsPage = (): ReactElement => {
             name: b.name
         }));
 
-        const workingHours: IUpdateProviderWorkingHoursRequest = {
+        const workingHours: IUpdateWorkingHoursRequest = {
             workingDays: editedProvider.workingHours.workingDays,
             workDayStartHour: editedProvider.workingHours.workDayStartHour,
             workDayEndHour: editedProvider.workingHours.workDayEndHour,
@@ -159,28 +159,35 @@ const ProviderDetailsPage = (): ReactElement => {
     return (
         <div className='provider-details-page'>
             <div className="provider-details-header">
-                <h1>{editedProvider?.name || 'Provider Details'}</h1>
-                <div className="header-actions">
-                    <Button 
-                        variant="secondary"
+                <div className="header-title">
+                    <button 
+                        className="header-back-btn"
                         onClick={() => navigate('/providers')}
+                        title="Back to providers"
                     >
-                        ← Back to Providers
-                    </Button>
-                    <Button 
-                        variant="danger"
+                        <MaterialIcon icon="arrow_back" size="M" />
+                    </button>
+                    <h1>{editedProvider?.name || 'Provider Details'}</h1>
+                </div>
+                <div className="header-actions">
+                    <button 
+                        className="action-btn action-btn-danger"
                         onClick={handleDeleteProvider} 
                         disabled={deleting}
+                        title="Delete provider"
                     >
-                        {deleting ? 'Deleting...' : 'Delete Provider'}
-                    </Button>
-                    <Button 
-                        variant="primary"
+                        <MaterialIcon icon="delete" size="S" />
+                        {deleting ? 'Deleting...' : 'Delete'}
+                    </button>
+                    <button 
+                        className="action-btn action-btn-primary"
                         onClick={handleSave} 
                         disabled={!editedProvider || saving}
+                        title="Save changes"
                     >
+                        <MaterialIcon icon="save" size="S" />
                         {saving ? 'Saving...' : 'Save Changes'}
-                    </Button>
+                    </button>
                 </div>
             </div>
 

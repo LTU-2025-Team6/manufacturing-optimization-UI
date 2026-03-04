@@ -101,6 +101,68 @@
     font-family: var(--ds-font-family-mono);
 }
 
+/* Step Progress */
+.polling-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: var(--ds-color-surface);
+    border: 1px solid var(--ds-color-border-default);
+    border-radius: var(--ds-radius-lg);
+    overflow: hidden;
+}
+
+.polling-step {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-3);
+    padding: var(--ds-space-3) var(--ds-space-5);
+    border-bottom: 1px solid var(--ds-color-border-default);
+    transition: background 0.2s;
+}
+
+.polling-step:last-child {
+    border-bottom: none;
+}
+
+.polling-step-done {
+    opacity: 0.6;
+}
+
+.polling-step-done .polling-step-icon .material-icon {
+    color: var(--ds-color-success, #22c55e);
+}
+
+.polling-step-active {
+    background: var(--ds-color-accent-subtle, rgba(58, 74, 104, 0.08));
+}
+
+.polling-step-active .polling-step-icon .material-icon {
+    color: var(--ds-color-accent-primary);
+    animation: rotate 2s linear infinite;
+}
+
+.polling-step-active .polling-step-label {
+    font-weight: var(--ds-font-weight-semibold);
+    color: var(--ds-color-text-primary);
+}
+
+.polling-step-pending {
+    opacity: 0.35;
+}
+
+.polling-step-icon {
+    display: flex;
+    align-items: center;
+    width: 24px;
+    flex-shrink: 0;
+}
+
+.polling-step-label {
+    font-size: var(--ds-font-size-sm);
+    color: var(--ds-color-text-secondary);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .polling-info-row {

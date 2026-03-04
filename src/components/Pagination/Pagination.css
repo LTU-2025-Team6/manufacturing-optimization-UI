@@ -1,0 +1,89 @@
+/* ============================================
+   PAGINATION COMPONENT
+   Controls for navigating paginated data
+   ============================================ */
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--ds-space-4);
+    padding: var(--ds-space-4);
+    background: var(--ds-color-surface);
+    border-top: 1px solid var(--ds-color-border-default);
+}
+
+.pagination-info {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-3);
+}
+
+.pagination-count {
+    font-size: var(--ds-font-size-sm);
+    color: var(--ds-color-text-secondary);
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-3);
+}
+
+.pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--ds-color-border-default);
+    border-radius: var(--ds-radius-md);
+    background: var(--ds-color-surface);
+    color: var(--ds-color-text-primary);
+    cursor: pointer;
+    transition: all var(--ds-transition-fast);
+    font-size: 0;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    border-color: var(--ds-color-border-strong);
+    background: var(--ds-color-surface-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--ds-shadow-sm);
+}
+
+.pagination-btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.pagination-page-info {
+    font-size: var(--ds-font-size-sm);
+    color: var(--ds-color-text-secondary);
+    white-space: nowrap;
+}
+
+.pagination-page-info strong {
+    color: var(--ds-color-text-primary);
+    font-weight: var(--ds-font-weight-semibold);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .pagination {
+        flex-direction: column;
+        gap: var(--ds-space-3);
+    }
+
+    .pagination-info,
+    .pagination-controls {
+        width: 100%;
+        justify-content: center;
+    }
+}

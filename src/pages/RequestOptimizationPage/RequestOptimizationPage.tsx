@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IOptimizationRequest } from '../../types/IOptimizationRequest';
+import { IOptimizationRequest } from '../../types';
 import { useRequestOptimizationPlan } from '../../hooks/api/optimizationApi';
 import OptimizationRequestForm from '../../components/OptimizationRequestForm/OptimizationRequestForm';
 import Alert from '../../components/Alert/Alert';
@@ -25,8 +25,9 @@ const RequestOptimizationPage = (): ReactElement => {
     // Handlers
     const handleSubmit = async (): Promise<void> => {
         try {
-            const id = await submitRequest(request);
-            navigate(`/plan/${id}`);
+            const planId = await submitRequest(request);
+            console.log('Optimization request submitted, received planId:', planId);
+            navigate(`/plan/${planId}`);
         } catch (err) {
             console.error('Failed to submit optimization request:', err);
         }

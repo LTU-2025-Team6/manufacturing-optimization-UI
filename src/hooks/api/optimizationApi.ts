@@ -1,6 +1,5 @@
 import { useApi } from './useApi';
-import { IOptimizationRequest } from '../../types/IOptimizationRequest';
-import { IOptimizationPlan, IOptimizationPlanPreview, IConfirmStrategyResponse } from '../../types/IOptimizationPlan';
+import { IOptimizationRequest, IOptimizationPlan, IOptimizationPlanPreview, IConfirmStrategyResponse } from '../../types';
 
 const API_URL = '/api/optimization-requests';
 
@@ -9,16 +8,6 @@ export function useRequestOptimizationPlan() {
 
     const callApi = (req: IOptimizationRequest) => {
         return callApiBase({ url: API_URL, method: 'POST', body: req });
-    };
-
-    return { data, loading, error, callApi };
-}
-
-export function useSelectStrategy() {
-    const { data, loading, error, callApi: callApiBase } = useApi<void>();
-
-    const callApi = (requestId: string, strategyId: string) => {
-        return callApiBase({ url: `${API_URL}/${requestId}/strategy`, method: 'PUT', body: strategyId });
     };
 
     return { data, loading, error, callApi };

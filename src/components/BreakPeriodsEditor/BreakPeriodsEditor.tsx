@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { IProviderBreakPeriod } from '../../types/IProvider';
+import { IProviderBreakPeriod } from '../../types';
 import Button from '../Button/Button';
 import './BreakPeriodsEditor.css';
 

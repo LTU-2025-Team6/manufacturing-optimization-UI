@@ -1,9 +1,5 @@
 .execution-details {
-    background: var(--ds-color-surface);
-    border-radius: var(--ds-radius-lg);
-    border: 1px solid var(--ds-color-border-subtle);
     overflow: hidden;
-    box-shadow: var(--ds-shadow-sm);
 }
 
 .execution-details-header {
@@ -172,7 +168,7 @@
 .progress-percentage {
     font-size: var(--ds-font-size-lg);
     font-weight: var(--ds-font-weight-bold);
-    color: var(--ds-color-info-text);
+    color: var(--ds-color-accent-primary);
 }
 
 .progress-bar {
@@ -185,7 +181,7 @@
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--ds-color-info-text), var(--ds-color-info-text-strong));
+    background: linear-gradient(90deg, var(--ds-color-accent-primary), var(--ds-color-accent-primary-hover));
     transition: width 0.5s ease;
 }
 

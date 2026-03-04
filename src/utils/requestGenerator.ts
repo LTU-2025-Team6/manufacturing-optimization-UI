@@ -1,4 +1,4 @@
-import { IOptimizationRequest } from '../types/IOptimizationRequest';
+import { IOptimizationRequest } from '../types';
 
 export function generateRandomRequest(): IOptimizationRequest {
     const efficiencyClasses = ['IE1', 'IE2', 'IE3', 'IE4'];

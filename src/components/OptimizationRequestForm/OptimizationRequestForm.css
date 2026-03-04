@@ -1,0 +1,178 @@
+/* ============================================
+   OPTIMIZATION REQUEST FORM
+   Modern card-based form design
+   ============================================ */
+
+.optimization-request-form {
+    width: 100%;
+    max-width: 800px;
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--ds-space-6);
+    padding-bottom: var(--ds-space-4);
+    border-bottom: 2px solid var(--ds-color-border-default);
+}
+
+.form-header h2 {
+    margin: 0;
+    font-size: var(--ds-font-size-2xl);
+    font-weight: var(--ds-font-weight-bold);
+    color: var(--ds-color-text-primary);
+}
+
+.form-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ds-space-6);
+}
+
+.form-section {
+    background: var(--ds-color-surface);
+    border: 1px solid var(--ds-color-border-subtle);
+    border-radius: var(--ds-radius-lg);
+    padding: var(--ds-space-6);
+    box-shadow: var(--ds-shadow-sm);
+    transition: box-shadow var(--ds-transition-fast);
+}
+
+.form-section:hover {
+    box-shadow: var(--ds-shadow-md);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-3);
+    margin-bottom: var(--ds-space-5);
+    padding-bottom: var(--ds-space-3);
+    border-bottom: 1px solid var(--ds-color-border-subtle);
+}
+
+.section-header h3 {
+    margin: 0;
+    font-size: var(--ds-font-size-lg);
+    font-weight: var(--ds-font-weight-semibold);
+    color: var(--ds-color-accent-primary);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--ds-space-4);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ds-space-2);
+}
+
+.form-group label {
+    font-size: var(--ds-font-size-sm);
+    font-weight: var(--ds-font-weight-medium);
+    color: var(--ds-color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-2);
+}
+
+.form-group input,
+.form-group select {
+    padding: var(--ds-space-2) var(--ds-space-3);
+    border: 1px solid var(--ds-color-border-default);
+    border-radius: var(--ds-radius-sm);
+    font-size: var(--ds-font-size-sm);
+    font-family: inherit;
+    background: var(--ds-color-bg-primary);
+    color: var(--ds-color-text-primary);
+    transition: all var(--ds-transition-fast);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--ds-color-accent-primary);
+    box-shadow: 0 0 0 3px var(--ds-color-accent-bg);
+}
+
+.form-group input::placeholder {
+    color: var(--ds-color-text-tertiary);
+    font-style: italic;
+}
+
+.form-group input:disabled,
+.form-group select:disabled {
+    background: var(--ds-color-bg-tertiary);
+    color: var(--ds-color-text-disabled);
+    cursor: not-allowed;
+}
+
+/* Full width form group */
+.form-group-full {
+    grid-column: 1 / -1;
+}
+
+/* Customer ID section - special styling */
+.customer-id-section {
+    background: var(--ds-color-info-bg);
+    border-color: var(--ds-color-info-border);
+}
+
+.customer-id-section .section-header h3 {
+    color: var(--ds-color-info-text-strong);
+}
+
+/* Required field indicator */
+.form-group label.required::after {
+    content: ' *';
+    color: var(--ds-color-error-text-strong);
+}
+
+/* Helper text */
+.form-helper-text {
+    font-size: var(--ds-font-size-xs);
+    color: var(--ds-color-text-tertiary);
+    margin-top: var(--ds-space-1);
+}
+
+.form-helper-text.error {
+    color: var(--ds-color-error-text);
+}
+
+/* Number input styling */
+.form-group input[type="number"] {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Datetime input styling */
+.form-group input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    filter: invert(0.5);
+}
+
+.form-group input[type="datetime-local"]:hover::-webkit-calendar-picker-indicator {
+    opacity: 1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--ds-space-3);
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

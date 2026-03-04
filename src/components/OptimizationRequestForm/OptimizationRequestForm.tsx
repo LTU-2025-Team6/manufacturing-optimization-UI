@@ -1,29 +1,10 @@
 import { useState, useEffect } from 'react';
-import { IOptimizationRequest } from '../../types/IOptimizationRequest';
+import { IOptimizationRequest } from '../../types';
 import { generateRandomRequest } from '../../utils/requestGenerator';
 import { toLocalDateTimeInput, fromLocalDateTimeInput } from '../../utils/dateTimeUtils';
 import Button from '../Button/Button';
-
-function createEmptyRequest(): IOptimizationRequest {
-    return {
-        customerId: '',
-        motorSpecs: {
-            powerKW: 0,
-            axisHeightMM: 0,
-            currentEfficiency: 'IE1',
-            targetEfficiency: 'IE3',
-            malfunctionDescription: ''
-        },
-        constraints: {
-            maxBudget: undefined,
-            timeWindow: {
-                startTime: '',
-                endTime: ''
-            }
-        },
-        createdAt: new Date().toISOString()
-    };
-}
+import MaterialIcon from '../MaterialIcon/MaterialIcon';
+import './OptimizationRequestForm.css';
 
 const EFFICIENCY_CLASSES = ['IE1', 'IE2', 'IE3', 'IE4', 'IE5'];
 
@@ -73,49 +54,76 @@ export default function OptimizationRequestForm({ request, onChange }: Props) {
     };
 
     return (
-        <>
-            <Button type="button" onClick={handleAutoFill} style={{ marginBottom: 12 }}>
-                Autofill Random Data
-            </Button>
+        <div className="optimization-request-form">
+            <div className="form-header">
+                <h2>Optimization Request</h2>
+                <Button type="button" onClick={handleAutoFill} variant="secondary">
+                    <MaterialIcon icon="auto_fix_high" size="S" />
+                    Autofill Random Data
+                </Button>
+            </div>
 
-            <table border={1}>
-                <tbody>
-                    <tr>
-                        <td>Customer ID</td>
-                        <td>
+            <div className="form-sections">
+                {/* Customer Information Section */}
+                <div className="form-section customer-id-section">
+                    <div className="section-header">
+                        <MaterialIcon icon="person" size="M" />
+                        <h3>Customer Information</h3>
+                    </div>
+                    <div className="form-grid">
+                        <div className="form-group form-group-full">
+                            <label className="required">Customer ID</label>
                             <input
                                 type="text"
                                 value={localRequest.customerId}
                                 onChange={e => handleChange('customerId', e.target.value)}
                                 placeholder="Enter customer ID or use autofill"
                             />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Power (kW)</td>
-                        <td>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Motor Specifications Section */}
+                <div className="form-section">
+                    <div className="section-header">
+                        <MaterialIcon icon="settings" size="M" />
+                        <h3>Motor Specifications</h3>
+                    </div>
+                    <div className="form-grid">
+                        <div className="form-group">
+                            <label className="required">
+                                <MaterialIcon icon="bolt" size="S" />
+                                Power (kW)
+                            </label>
                             <input
                                 type="number"
                                 value={localRequest.motorSpecs.powerKW || ''}
                                 onChange={e => handleChange('motorSpecs.powerKW', Number(e.target.value))}
                                 min="0"
+                                step="0.1"
+                                placeholder="e.g. 15.5"
                             />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Axis Height (mm)</td>
-                        <td>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="required">
+                                <MaterialIcon icon="straighten" size="S" />
+                                Axis Height (mm)
+                            </label>
                             <input
                                 type="number"
                                 value={localRequest.motorSpecs.axisHeightMM || ''}
                                 onChange={e => handleChange('motorSpecs.axisHeightMM', Number(e.target.value))}
                                 min="0"
+                                placeholder="e.g. 132"
                             />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Current Efficiency</td>
-                        <td>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="required">
+                                <MaterialIcon icon="trending_down" size="S" />
+                                Current Efficiency
+                            </label>
                             <select
                                 value={localRequest.motorSpecs.currentEfficiency}
                                 onChange={e => handleChange('motorSpecs.currentEfficiency', e.target.value)}
@@ -124,11 +132,13 @@ export default function OptimizationRequestForm({ request, onChange }: Props) {
                                     <option key={ec} value={ec}>{ec}</option>
                                 ))}
                             </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Target Efficiency</td>
-                        <td>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="required">
+                                <MaterialIcon icon="trending_up" size="S" />
+                                Target Efficiency
+                            </label>
                             <select
                                 value={localRequest.motorSpecs.targetEfficiency}
                                 onChange={e => handleChange('motorSpecs.targetEfficiency', e.target.value)}
@@ -137,53 +147,73 @@ export default function OptimizationRequestForm({ request, onChange }: Props) {
                                     <option key={ec} value={ec}>{ec}</option>
                                 ))}
                             </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Malfunction</td>
-                        <td>
+                        </div>
+
+                        <div className="form-group form-group-full">
+                            <label>
+                                <MaterialIcon icon="build" size="S" />
+                                Malfunction Description
+                            </label>
                             <input
                                 type="text"
                                 value={localRequest.motorSpecs.malfunctionDescription || ''}
                                 onChange={e => handleChange('motorSpecs.malfunctionDescription', e.target.value)}
-                                placeholder="Optional"
+                                placeholder="Optional: Describe any issues with the motor"
                             />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Max Budget (€)</td>
-                        <td>
+                            <span className="form-helper-text">Optional field for additional context</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Constraints Section */}
+                <div className="form-section">
+                    <div className="section-header">
+                        <MaterialIcon icon="tune" size="M" />
+                        <h3>Constraints</h3>
+                    </div>
+                    <div className="form-grid">
+                        <div className="form-group">
+                            <label>
+                                <MaterialIcon icon="euro" size="S" />
+                                Maximum Budget (€)
+                            </label>
                             <input
                                 type="number"
                                 value={localRequest.constraints.maxBudget ?? ''}
                                 onChange={e => handleChange('constraints.maxBudget', e.target.value)}
                                 placeholder="No limit"
                                 min="0"
+                                step="1"
                             />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Time Window Start</td>
-                        <td>
+                            <span className="form-helper-text">Leave empty for no budget constraint</span>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="required">
+                                <MaterialIcon icon="event" size="S" />
+                                Time Window Start
+                            </label>
                             <input
                                 type="datetime-local"
                                 value={toLocalDateTimeInput(localRequest.constraints.timeWindow.startTime)}
                                 onChange={e => handleChange('constraints.timeWindow.startTime', fromLocalDateTimeInput(e.target.value))}
                             />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Time Window End</td>
-                        <td>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="required">
+                                <MaterialIcon icon="event_available" size="S" />
+                                Time Window End
+                            </label>
                             <input
                                 type="datetime-local"
                                 value={toLocalDateTimeInput(localRequest.constraints.timeWindow.endTime)}
                                 onChange={e => handleChange('constraints.timeWindow.endTime', fromLocalDateTimeInput(e.target.value))}
                             />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }

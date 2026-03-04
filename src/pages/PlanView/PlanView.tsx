@@ -1,6 +1,6 @@
 import { ReactElement, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { IOptimizationPlan } from '../../types/IOptimizationPlan';
+import { IOptimizationPlan } from '../../types';
 import { formatDateTime } from '../../utils/dateTimeUtils';
 import StrategyCard from '../../components/StrategyCard/StrategyCard';
 import Alert from '../../components/Alert/Alert';

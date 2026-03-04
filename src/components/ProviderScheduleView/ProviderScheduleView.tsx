@@ -1,7 +1,6 @@
 import { ReactElement, useState } from 'react';
 import { useGetProviderSchedule } from '../../hooks/api/providerApi';
-import { IProviderScheduleRequest } from '../../types/IProviderScheduleRequest';
-import { IProviderDayScheduleDto } from '../../types/IProviderSchedule';
+import { IProviderScheduleRequest, IProviderDaySchedule } from '../../types';
 import { formatDateOnly } from '../../utils/dateTimeUtils';
 import Button from '../Button/Button';
 import Alert from '../Alert/Alert';
@@ -79,7 +78,7 @@ export default function ProviderScheduleView({ providerId }: ProviderScheduleVie
                 loading={loading}
                 error={error}
             >
-                {(schedule: IProviderDayScheduleDto[]) =>
+                {(schedule: IProviderDaySchedule[]) =>
                 {
                     console.log('Schedule data:', schedule);
                     return (
@@ -95,7 +94,7 @@ export default function ProviderScheduleView({ providerId }: ProviderScheduleVie
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {schedule.map((daySchedule: IProviderDayScheduleDto) => (
+                                    {schedule.map((daySchedule: IProviderDaySchedule) => (
                                         <tr key={daySchedule.date}>
                                             <td className="schedule-date-cell">
                                                 {formatDateOnly(daySchedule.date)}

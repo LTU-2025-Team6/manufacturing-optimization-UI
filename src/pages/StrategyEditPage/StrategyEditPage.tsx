@@ -1,22 +1,22 @@
 import { ReactElement, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useApi } from '../../hooks/api/useApi';
-import { IOptimizationPlan } from '../../types/IOptimizationPlan';
+import { IOptimizationPlan } from '../../types';
 import StrategyEditor from '../../components/StrategyEditor/StrategyEditor';
 import Loading from '../../components/loading/Loading';
 import Alert from '../../components/Alert/Alert';
 import './StrategyEditPage.css';
 
 export default function StrategyEditPage(): ReactElement {
-    const { requestId } = useParams<{ requestId: string }>();
+    const { planId } = useParams<{ planId: string }>();
     const navigate = useNavigate();
     const { data: plan, loading, error, callApi } = useApi<IOptimizationPlan>();
 
     useEffect(() => {
-        if (requestId) {
-            callApi({ url: `/api/optimization-requests/${requestId}/plan` });
+        if (planId) {
+            callApi({ url: `/api/plans/${planId}` });
         }
-    }, [requestId, callApi]);
+    }, [planId, callApi]);
 
     if (loading) {
         return <Loading message="Loading strategy for editing..." />;
@@ -69,8 +69,8 @@ export default function StrategyEditPage(): ReactElement {
         <div className="strategy-edit-page">
             <StrategyEditor
                 strategy={plan.selectedStrategy}
-                requestId={requestId!}
-                onCancel={() => navigate(`/plan/${requestId}`)}
+                planId={planId!}
+                onCancel={() => navigate(`/plan/${planId}`)}
             />
         </div>
     );

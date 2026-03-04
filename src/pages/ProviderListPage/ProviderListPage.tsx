@@ -1,28 +1,32 @@
 import { ReactElement, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetProviders, useGetProvider, useToggleProvider } from '../../hooks/api/providerApi';
-import { IProvider, IProviderPreview } from '../../types/IProvider';
+import { IProvider, IProviderPreview } from '../../types';
+import { DEFAULT_PAGE_SIZE } from '../../types';
 import DataState from '../../components/DataState/DataState';
 import ProviderDetails from '../../components/ProviderDetails/ProviderDetails';
 import Button from '../../components/Button/Button';
 import MaterialIcon from '../../components/MaterialIcon/MaterialIcon';
 import Alert from '../../components/Alert/Alert';
 import StatusBadge from '../../components/StatusBadge/StatusBadge';
-import { IProblemDetails } from '../../types/IProblemDetails';
+import Pagination from '../../components/Pagination/Pagination';
+import { IProblemDetails } from '../../types';
 import { useState } from 'react';
 import './ProviderListPage.css';
 
 const ProviderListPage = (): ReactElement => {
     const navigate = useNavigate();
     const { providerId } = useParams<{ providerId: string }>();
+    const [page, setPage] = useState(1);
+    const [pageSize] = useState(DEFAULT_PAGE_SIZE);
     const { data, loading, error, callApi } = useGetProviders();
     const { data: providerDetails, loading: loadingDetails, error: errorDetails, callApi: getProviderDetails } = useGetProvider();
     const { callApi: toggleProvider } = useToggleProvider();
     const [toggleError, setToggleError] = useState<IProblemDetails | null>(null);
 
     useEffect(() => {
-        callApi();
-    }, []);
+        callApi(page, pageSize);
+    }, [page, pageSize]);
 
     useEffect(() => {
         if (providerId) {
@@ -34,16 +38,12 @@ const ProviderListPage = (): ReactElement => {
         navigate(`/providers/list/${provider.id}`);
     };
 
-    const handleProviderDoubleClick = (providerId: string) => {
-        navigate(`/providers/${providerId}`);
-    };
-
     const handleToggleProvider = async (e: React.MouseEvent, provider: IProviderPreview) => {
         e.stopPropagation();
         setToggleError(null);
         try {
             await toggleProvider(provider.id, !provider.isRunning);
-            await callApi(); // Refresh the list
+            await callApi(page, pageSize); // Refresh the list
             if (providerId === provider.id) {
                 await getProviderDetails(provider.id); // Refresh details if selected
             }
@@ -80,11 +80,13 @@ const ProviderListPage = (): ReactElement => {
                 loadingMessage="Loading providers..."
                 emptyMessage="No providers available"
             >
-                {(providers) => (
+                {(pagedResult) => (
                     <div className="provider-list-layout">
                         <div className="provider-list-sidebar">
-                            <h3>Providers ({providers.length})</h3>
-                            {providers.map(provider => (
+                            <div className="provider-list-sidebar-header">
+                                <h3>Providers ({pagedResult.totalCount})</h3>
+                            </div>
+                            {pagedResult.items.map(provider => (
                                 <div 
                                     key={provider.id}
                                     className={`provider-list-item ${providerId === provider.id ? 'active' : ''} ${!provider.isRunning ? 'disabled' : ''}`}
@@ -92,21 +94,51 @@ const ProviderListPage = (): ReactElement => {
                                     <div 
                                         className="provider-list-item-content"
                                         onClick={() => handleProviderClick(provider)}
-                                        onDoubleClick={() => handleProviderDoubleClick(provider.id)}
-                                        title="Double-click to open in separate page"
+                                        title="Click to view details"
                                     >
-                                        <h3>{provider.name}</h3>
-                                        <p>{provider.type}</p>
+                                        <div className="provider-list-item-info">
+                                            <h3>{provider.name}</h3>
+                                            <p>{provider.type}</p>
+                                        </div>
                                         {!provider.isRunning && <StatusBadge status="Offline" variant="offline" />}
                                     </div>
-                                    <Button 
-                                        onClick={(e) => handleToggleProvider(e, provider)}
-                                        variant={provider.isRunning ? 'secondary' : 'primary'}
-                                    >
-                                        {provider.isRunning ? 'Stop' : 'Start'}
-                                    </Button>
+                                    <div className="provider-list-item-actions">
+                                        <button 
+                                            className="provider-action-btn provider-action-btn-edit"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                navigate(`/providers/${provider.id}`);
+                                            }}
+                                            title="Edit provider"
+                                        >
+                                            <MaterialIcon icon="edit" size="S" />
+                                        </button>
+                                        <button 
+                                            className={`provider-action-btn ${
+                                                provider.isRunning 
+                                                    ? 'provider-action-btn-stop' 
+                                                    : 'provider-action-btn-start'
+                                            }`}
+                                            onClick={(e) => handleToggleProvider(e, provider)}
+                                            title={provider.isRunning ? 'Stop provider' : 'Start provider'}
+                                        >
+                                            <MaterialIcon 
+                                                icon={provider.isRunning ? 'stop' : 'play_arrow'} 
+                                                size="S" 
+                                            />
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
+                            <Pagination 
+                                pageNumber={pagedResult.pageNumber}
+                                totalPages={pagedResult.totalPages}
+                                totalCount={pagedResult.totalCount}
+                                hasPreviousPage={pagedResult.hasPreviousPage}
+                                hasNextPage={pagedResult.hasNextPage}
+                                onPageChange={setPage}
+                                pageSize={pageSize}
+                            />
                         </div>
                         <div className="provider-details-container">
                             {providerId ? (

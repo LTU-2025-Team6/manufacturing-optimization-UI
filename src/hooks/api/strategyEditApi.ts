@@ -1,76 +1,71 @@
 import { useApi } from './useApi';
-import { 
-    IUpdateStrategyRequest, 
-    IUpdateStrategyResponse, 
+import {
+    IGetAlternativesRequest,
     IAlternativeProvider,
-    IGetAlternativeProvidersRequest,
-    IValidateProcessTimeRequest,
-    IValidateProcessTimeResponse
-} from '../../types/IEditableStrategy';
+    IValidateSlotRequest,
+    IValidateSlotResponse,
+    IUpdateStrategyRequest,
+    IUpdateStrategyResponse,
+} from '../../types';
+
+const base = (planId: string) => `/api/plans/${planId}/strategy`;
 
 /**
- * Hook to get alternative providers for a process step
- * Endpoint: POST /api/strategies/{strategyId}/steps/{stepId}/alternative-providers
+ * POST /api/plans/{planId}/strategy/steps/{stepId}/alternatives
+ *
+ * Backend contract:
+ *   Body:     { scheduleWindowStart, scheduleWindowEnd }
+ *   Response: IAlternativeProvider[]
  */
 export function useGetAlternativeProviders() {
     const { data, loading, error, callApi: callApiBase } = useApi<IAlternativeProvider[]>();
 
-    const callApi = (
-        strategyId: string,
-        stepId: string,
-        request: IGetAlternativeProvidersRequest
-    ) => {
-        return callApiBase({ 
-            url: `/api/strategies/${strategyId}/steps/${stepId}/alternative-providers`,
+    const callApi = (planId: string, stepId: string, request: IGetAlternativesRequest) =>
+        callApiBase({
+            url: `${base(planId)}/steps/${stepId}/alternatives`,
             method: 'POST',
-            body: request
+            body: request,
         });
-    };
 
     return { data, loading, error, callApi };
 }
 
 /**
- * Hook to validate process start time on provider schedule
- * Endpoint: POST /api/strategies/{strategyId}/steps/{stepId}/validate-time
+ * POST /api/plans/{planId}/strategy/steps/{stepId}/validate-slot
+ *
+ * Backend contract:
+ *   Body:     { providerId, requestedStart, durationHours }
+ *   Response: { isValid, allocatedSchedule?, errors? }
  */
-export function useValidateProcessTime() {
-    const { data, loading, error, callApi: callApiBase } = useApi<IValidateProcessTimeResponse>();
+export function useValidateSlot() {
+    const { data, loading, error, callApi: callApiBase } = useApi<IValidateSlotResponse>();
 
-    const callApi = (
-        strategyId: string,
-        stepId: string,
-        request: IValidateProcessTimeRequest
-    ) => {
-        console.log('Validating process time with request:', request);
-        return callApiBase({ 
-            url: `/api/strategies/${strategyId}/steps/${stepId}/validate-time`,
+    const callApi = (planId: string, stepId: string, request: IValidateSlotRequest) =>
+        callApiBase({
+            url: `${base(planId)}/steps/${stepId}/validate-slot`,
             method: 'POST',
-            body: request
+            body: request,
         });
-    };
 
     return { data, loading, error, callApi };
 }
 
 /**
- * Hook to update strategy with manual changes
- * Endpoint: PUT /api/strategies/{strategyId}
+ * PUT /api/plans/{planId}/strategy
+ *
+ * Backend contract:
+ *   Body:     { stepUpdates: [{ stepId, providerId?, scheduledStart, scheduledEnd }] }
+ *   Response: { updatedStrategy, validationErrors? }
  */
 export function useUpdateStrategy() {
     const { data, loading, error, callApi: callApiBase } = useApi<IUpdateStrategyResponse>();
 
-    const callApi = (
-        strategyId: string,
-        request: IUpdateStrategyRequest
-    ) => {
-        return callApiBase({ 
-            url: `/api/strategies/${strategyId}`,
+    const callApi = (planId: string, request: IUpdateStrategyRequest) =>
+        callApiBase({
+            url: base(planId),
             method: 'PUT',
-            body: request
+            body: request,
         });
-    };
 
     return { data, loading, error, callApi };
 }
-

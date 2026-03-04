@@ -1,6 +1,6 @@
 import { useApi } from './useApi';
 import { usePollingApi } from './usePollingApi';
-import { ISimulationTime, ISetSimulationTimeRequest } from '../../types/ISimulationTime';
+import { ISimulationTime, ISetSimulationTimeRequest } from '../../types';
 
 /**
  * Get current simulation time (one-time)

@@ -1,6 +1,5 @@
 import { ReactElement } from 'react';
-import { IExecutionDetails, ProposalStatus } from '../../types/IExecutionDetails';
-import { ProcessTypeLabels } from '../../types/ProcessType';
+import { IExecutionDetails, ProposalStatus, ProcessTypeLabels } from '../../types';
 import { formatDateTime } from '../../utils/dateTimeUtils';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import DataState from '../DataState/DataState';

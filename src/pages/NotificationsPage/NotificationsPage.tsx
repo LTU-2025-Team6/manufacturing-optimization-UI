@@ -1,8 +1,9 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { useGetAllNotifications, useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/api/notificationApi';
-import { INotification, NotificationType } from '../../types/INotification';
+import { useGetAllNotifications, useGetNotification, useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/api/notificationApi';
+import { INotification, INotificationPreview, NotificationType, DEFAULT_PAGE_SIZE } from '../../types';
 import { formatDateTime } from '../../utils/dateTimeUtils';
 import MaterialIcon from '../../components/MaterialIcon/MaterialIcon';
+import Pagination from '../../components/Pagination/Pagination';
 import Card from '../../components/Card/Card';
 import Button from '../../components/Button/Button';
 import Loading from '../../components/loading/Loading';
@@ -11,21 +12,33 @@ import './NotificationsPage.css';
 
 const NotificationsPage = (): ReactElement => {
     const { data, loading, error, callApi } = useGetAllNotifications();
+    const { data: fullNotification, callApi: getNotification } = useGetNotification();
     const { callApi: markAsRead } = useMarkNotificationAsRead();
     const { callApi: markAllAsRead } = useMarkAllNotificationsAsRead();
     
-    const [notifications, setNotifications] = useState<INotification[]>([]);
+    const [notifications, setNotifications] = useState<INotificationPreview[]>([]);
     const [selectedNotification, setSelectedNotification] = useState<INotification | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
 
     useEffect(() => {
-        callApi();
-    }, []);
+        callApi(currentPage, DEFAULT_PAGE_SIZE);
+    }, [currentPage]);
 
     useEffect(() => {
         if (data) {
-            setNotifications(data);
+            setNotifications(data.items);
+            setTotalPages(data.totalPages);
+            setTotalCount(data.totalCount);
         }
     }, [data]);
+
+    useEffect(() => {
+        if (fullNotification) {
+            setSelectedNotification(fullNotification);
+        }
+    }, [fullNotification]);
 
     const handleMarkAsRead = async (id: string) => {
         try {
@@ -55,8 +68,14 @@ const NotificationsPage = (): ReactElement => {
         }
     };
 
-    const handleNotificationClick = (notification: INotification) => {
-        setSelectedNotification(notification);
+    const handlePageChange = (page: number) => {
+        setSelectedNotification(null);
+        setCurrentPage(page);
+    };
+
+    const handleNotificationClick = async (notification: INotificationPreview) => {
+        // Load full notification
+        await getNotification(notification.id);
         if (!notification.isRead) {
             handleMarkAsRead(notification.id);
         }
@@ -128,38 +147,51 @@ const NotificationsPage = (): ReactElement => {
                 <div className="notifications-sidebar">
                     <Card>
                         <div className="notifications-list-container">
-                            <h3>All notifications</h3>
+                            <h3>All notifications {totalCount > 0 && <span className="notifications-total">({totalCount})</span>}</h3>
                             {notifications.length === 0 ? (
                                 <div className="notifications-empty">
                                     <MaterialIcon icon="notifications_none" size="M" />
                                     <p>No notifications</p>
                                 </div>
                             ) : (
-                                <div className="notifications-list">
-                                    {notifications.map((notification) => (
-                                        <div
-                                            key={notification.id}
-                                            className={`notification-list-item ${notification.isRead ? 'read' : 'unread'} ${selectedNotification?.id === notification.id ? 'selected' : ''} type-${getNotificationTypeClass(notification.type)}`}
-                                            onClick={() => handleNotificationClick(notification)}
-                                        >
-                                            <div className="notification-list-icon">
-                                                <MaterialIcon
-                                                    icon={getNotificationIcon(notification.type)}
-                                                    size="S"
-                                                />
-                                            </div>
-                                            <div className="notification-list-content">
-                                                <div className="notification-list-title">{notification.title}</div>
-                                                <div className="notification-list-time">
-                                                    {formatDateTime(notification.createdAt, { year: 'numeric' })}
+                                <>
+                                    <div className="notifications-list">
+                                        {notifications.map((notification) => (
+                                            <div
+                                                key={notification.id}
+                                                className={`notification-list-item ${notification.isRead ? 'read' : 'unread'} ${selectedNotification?.id === notification.id ? 'selected' : ''} type-${getNotificationTypeClass(notification.type)}`}
+                                                onClick={() => handleNotificationClick(notification)}
+                                            >
+                                                <div className="notification-list-icon">
+                                                    <MaterialIcon
+                                                        icon={getNotificationIcon(notification.type)}
+                                                        size="S"
+                                                    />
                                                 </div>
+                                                <div className="notification-list-content">
+                                                    <div className="notification-list-title">{notification.title}</div>
+                                                    <div className="notification-list-time">
+                                                        {formatDateTime(notification.createdAt, { year: 'numeric' })}
+                                                    </div>
+                                                </div>
+                                                {!notification.isRead && (
+                                                    <div className="notification-list-unread-dot" />
+                                                )}
                                             </div>
-                                            {!notification.isRead && (
-                                                <div className="notification-list-unread-dot" />
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
+                                        ))}
+                                    </div>
+                                    {totalPages > 1 && (
+                                        <Pagination
+                                            pageNumber={currentPage}
+                                            totalPages={totalPages}
+                                            totalCount={totalCount}
+                                            hasPreviousPage={currentPage > 1}
+                                            hasNextPage={currentPage < totalPages}
+                                            onPageChange={handlePageChange}
+                                            pageSize={DEFAULT_PAGE_SIZE}
+                                        />
+                                    )}
+                                </>
                             )}
                         </div>
                     </Card>

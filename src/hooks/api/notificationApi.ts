@@ -1,14 +1,14 @@
 import { useApi } from './useApi';
-import { INotification } from '../../types/INotification';
+import { INotification, INotificationPreview, PagedResult, DEFAULT_PAGE_SIZE } from '../../types';
 
 /**
- * Get all notifications
+ * Get all notifications - paginated
  */
 export function useGetAllNotifications() {
-    const { data, loading, error, callApi: callApiBase } = useApi<INotification[]>();
+    const { data, loading, error, callApi: callApiBase } = useApi<PagedResult<INotificationPreview>>();
 
-    const callApi = () => {
-        return callApiBase({ url: '/api/notifications' });
+    const callApi = (pageNumber: number = 1, pageSize: number = DEFAULT_PAGE_SIZE) => {
+        return callApiBase({ url: `/api/notifications?pageNumber=${pageNumber}&pageSize=${pageSize}` });
     };
 
     return { data, loading, error, callApi };
@@ -18,7 +18,7 @@ export function useGetAllNotifications() {
  * Get new (unread) notifications
  */
 export function useGetNewNotifications() {
-    const { data, loading, error, callApi: callApiBase } = useApi<INotification[]>();
+    const { data, loading, error, callApi: callApiBase } = useApi<INotificationPreview[]>();
 
     const callApi = () => {
         return callApiBase({ url: '/api/notifications/new' });
@@ -28,13 +28,13 @@ export function useGetNewNotifications() {
 }
 
 /**
- * Get recent notifications (default: last 10)
+ * Get recent notifications
  */
 export function useGetRecentNotifications() {
-    const { data, loading, error, callApi: callApiBase } = useApi<INotification[]>();
+    const { data, loading, error, callApi: callApiBase } = useApi<INotificationPreview[]>();
 
-    const callApi = (count: number = 10) => {
-        return callApiBase({ url: `/api/notifications/recent?count=${count}` });
+    const callApi = () => {
+        return callApiBase({ url: '/api/notifications/recent' });
     };
 
     return { data, loading, error, callApi };
@@ -43,10 +43,9 @@ export function useGetRecentNotifications() {
 
 /**
  * Get notifications since a specific timestamp
- * @example callApi('2026-02-10T00:00:00Z')
  */
 export function useGetNotificationsSince() {
-    const { data, loading, error, callApi: callApiBase } = useApi<INotification[]>();
+    const { data, loading, error, callApi: callApiBase } = useApi<INotificationPreview[]>();
 
     const callApi = (since: string) => {
         return callApiBase({ url: `/api/notifications/since?since=${encodeURIComponent(since)}` });
@@ -56,7 +55,7 @@ export function useGetNotificationsSince() {
 }
 
 /**
- * Get a single notification by Id
+ * Get a single notification by Id - Returns full notification with message
  */
 export function useGetNotification() {
     const { data, loading, error, callApi: callApiBase } = useApi<INotification>();

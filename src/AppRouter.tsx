@@ -46,11 +46,11 @@ export const AppRouter = createBrowserRouter([
                 element: <PlanListPage />
             },
             {
-                path: 'plan/:requestId',
+                path: 'plan/:planId',
                 element: <PlanPage />
             },
             {
-                path: 'plan/:requestId/edit',
+                path: 'plan/:planId/edit',
                 element: <StrategyEditPage />
             },
             {

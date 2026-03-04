@@ -1,9 +1,27 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSimulationTimePolling, useSetSimulationTime } from '../../hooks/api/simulationTimeApi';
-import { formatDateTime, fromLocalDateTimeInput, toLocalDateTimeInput } from '../../utils/dateTimeUtils';
+import { formatDateTimeUtc, ensureUtc } from '../../utils/dateTimeUtils';
 import Button from '../Button/Button';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import './SimulationTimePanel.css';
+
+/** Convert datetime-local input value to UTC ISO string WITHOUT local timezone offset.
+ *  The input is treated as if the user typed a UTC time directly. */
+function localInputAsUtc(value: string): string {
+    // datetime-local gives "YYYY-MM-DDTHH:mm" — treat it as UTC by appending Z
+    const s = value.length === 16 ? value + ':00' : value;
+    return s + 'Z';
+}
+
+/** Format a UTC ISO string for use in a datetime-local input (shown as UTC to the user). */
+function utcToLocalInput(isoString: string): string {
+    if (!isoString) return '';
+    const utc = ensureUtc(isoString);
+    const d = new Date(utc);
+    if (isNaN(d.getTime())) return '';
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}T${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`;
+}
 
 export default function SimulationTimePanel() {
     const { data: timeData } = useSimulationTimePolling(2000);
@@ -26,8 +44,8 @@ export default function SimulationTimePanel() {
     const handleSetDateTime = async () => {
         if (!dateTimeInput) return;
         try {
-            // Convert datetime-local input (local timezone) to UTC ISO string
-            const utcDate = fromLocalDateTimeInput(dateTimeInput);
+            // Input is shown/entered in UTC — treat value directly as UTC (no local offset)
+            const utcDate = localInputAsUtc(dateTimeInput);
             await setTime({ simulatedUtcNow: utcDate });
             setDateTimeInput('');
         } catch (err) {
@@ -52,12 +70,12 @@ export default function SimulationTimePanel() {
                 <MaterialIcon icon="schedule" size="S" />
                 <h3 className="panel-title">Simulation Time</h3>
                 <div className="time-display">
-                    {formatDateTime(displayData?.simulatedUtcNow || '', {
+                    {formatDateTimeUtc(displayData?.simulatedUtcNow || '', {
                         month: 'short',
                         day: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit'
-                    })}
+                    })} UTC
                 </div>
                 <span className="speed-display">×{displayData?.speedMultiplier ?? 1}</span>
             </div>
@@ -69,12 +87,12 @@ export default function SimulationTimePanel() {
                         type="datetime-local"
                         value={dateTimeInput}
                         onChange={(e) => setDateTimeInput(e.target.value)}
+                        placeholder={displayData?.simulatedUtcNow ? utcToLocalInput(displayData.simulatedUtcNow) : ''}
                         className="time-input"
                         disabled={settingTime}
-                        placeholder="Set date & time"
                     />
                     <Button 
-                        variant="primary" 
+                        variant="secondary" 
                         onClick={handleSetDateTime}
                         disabled={!dateTimeInput || settingTime}
                     >
@@ -95,7 +113,7 @@ export default function SimulationTimePanel() {
                         disabled={settingTime}
                     />
                     <Button 
-                        variant="primary" 
+                        variant="secondary" 
                         onClick={handleSetMultiplier}
                         disabled={!multiplierInput || settingTime}
                     >

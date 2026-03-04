@@ -338,3 +338,9 @@
         gap: var(--ds-space-4);
     }
 }
+
+.notifications-total {
+    font-size: var(--ds-font-size-sm);
+    font-weight: var(--ds-font-weight-normal);
+    color: var(--ds-color-text-secondary);
+}

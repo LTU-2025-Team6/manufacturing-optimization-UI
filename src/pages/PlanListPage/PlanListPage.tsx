@@ -1,11 +1,13 @@
 import { ReactElement, useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DataState from '../../components/DataState/DataState';
-import { IOptimizationPlanPreview } from '../../types/IOptimizationPlan';
+import { IOptimizationPlanPreview } from '../../types';
 import { useGetOptimizationPlans } from '../../hooks/api/planApi';
+import { DEFAULT_PAGE_SIZE } from '../../types';
 import { formatDateTime } from '../../utils/dateTimeUtils';
 import MaterialIcon from '../../components/MaterialIcon/MaterialIcon';
 import StatusBadge from '../../components/StatusBadge/StatusBadge';
+import Pagination from '../../components/Pagination/Pagination';
 import './PlanListPage.css';
 
 function formatRelativeTime(date: Date): string {
@@ -35,38 +37,40 @@ function getStatusClass(status: string): string {
 
 const PlanListPage = (): ReactElement => {
     const navigate = useNavigate();
+    const [page, setPage] = useState(1);
+    const [pageSize] = useState(DEFAULT_PAGE_SIZE);
     const { data, loading, error, callApi } = useGetOptimizationPlans();
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
-        callApi();
-    }, []);
+        callApi(page, pageSize);
+    }, [page, pageSize]);
 
     const handlePlanClick = (plan: IOptimizationPlanPreview) => {
-        navigate(`/plan/${plan.requestId}`);
+        navigate(`/plan/${plan.id}`);
     };
 
     // Filter plans based on search query
     const filteredPlans = useMemo(() => {
-        if (!data || !searchQuery.trim()) return data;
+        if (!data || !searchQuery.trim()) return data?.items || [];
         
         const query = searchQuery.toLowerCase();
-        return data.filter(plan => 
+        return data.items.filter(plan => 
             plan.id.toLowerCase().includes(query) ||
-            plan.requestId.toLowerCase().includes(query) ||
             plan.status.toLowerCase().includes(query)
         );
     }, [data, searchQuery]);
 
-    // Calculate statistics
+    // Calculate statistics from current page data
     const stats = useMemo(() => {
         if (!data) return { total: 0, completed: 0, processing: 0, failed: 0 };
         
+        const items = data.items;
         return {
-            total: data.length,
-            completed: data.filter(p => getStatusClass(p.status) === 'completed').length,
-            processing: data.filter(p => getStatusClass(p.status) === 'processing').length,
-            failed: data.filter(p => getStatusClass(p.status) === 'failed').length,
+            total: data.totalCount, // Total across all pages
+            completed: items.filter(p => getStatusClass(p.status) === 'completed').length,
+            processing: items.filter(p => getStatusClass(p.status) === 'processing').length,
+            failed: items.filter(p => getStatusClass(p.status) === 'failed').length,
         };
     }, [data]);
 
@@ -86,7 +90,7 @@ const PlanListPage = (): ReactElement => {
                 loadingMessage="Loading optimization plans..."
                 emptyMessage="No optimization plans available"
             >
-                {(plans: IOptimizationPlanPreview[]) => (
+                {(pagedResult) => (
                     <>
                         {/* Statistics */}
                         <div className="plan-list-stats">
@@ -145,49 +149,11 @@ const PlanListPage = (): ReactElement => {
                                                 <MaterialIcon icon="event" />
                                                 <span>{formatDateTime(plan.createdAt, { year: 'numeric' })}</span>
                                             </div>
-
-                                            {/* Metrics Section - prepared for future API data */}
-                                            {/* {plan.metrics && (
-                                                <div className="plan-card-metrics">
-                                                    {plan.metrics.totalCost && (
-                                                        <div className="plan-metric">
-                                                            <span className="plan-metric-label">Total Cost</span>
-                                                            <span className="plan-metric-value">
-                                                                ${plan.metrics.totalCost.toLocaleString()}
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                    {plan.metrics.totalDuration && (
-                                                        <div className="plan-metric">
-                                                            <span className="plan-metric-label">Duration</span>
-                                                            <span className="plan-metric-value">
-                                                                {plan.metrics.totalDuration}
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                    {plan.metrics.providerCount !== undefined && (
-                                                        <div className="plan-metric">
-                                                            <span className="plan-metric-label">Providers</span>
-                                                            <span className="plan-metric-value">
-                                                                {plan.metrics.providerCount}
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                    {plan.metrics.stepCount !== undefined && (
-                                                        <div className="plan-metric">
-                                                            <span className="plan-metric-label">Steps</span>
-                                                            <span className="plan-metric-value">
-                                                                {plan.metrics.stepCount}
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )} */}
                                         </div>
 
                                         <div className="plan-card-footer">
                                             <span className="plan-request-id">
-                                                Request: {plan.requestId.slice(0, 8)}...
+                                                Plan ID: {plan.id.slice(0, 8)}...
                                             </span>
                                             <MaterialIcon icon="arrow_forward" />
                                         </div>
@@ -200,6 +166,17 @@ const PlanListPage = (): ReactElement => {
                                 </div>
                             )}
                         </div>
+
+                        {/* Pagination */}
+                        <Pagination 
+                            pageNumber={pagedResult.pageNumber}
+                            totalPages={pagedResult.totalPages}
+                            totalCount={pagedResult.totalCount}
+                            hasPreviousPage={pagedResult.hasPreviousPage}
+                            hasNextPage={pagedResult.hasNextPage}
+                            onPageChange={setPage}
+                            pageSize={pageSize}
+                        />
                     </>
                 )}
             </DataState>

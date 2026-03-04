@@ -172,64 +172,45 @@
     border: 1px solid var(--ds-color-border-subtle);
 }
 
-/* Conflict details list */
-.conflict-details-list {
-    margin: var(--ds-space-2) 0 0 0;
-    padding-left: var(--ds-space-6);
-    list-style-type: none;
-}
-
-.conflict-details-list > li {
-    margin-bottom: var(--ds-space-4);
-}
-
-.conflict-details-list ul {
-    margin: var(--ds-space-2) 0 0 0;
-    padding-left: var(--ds-space-6);
-    list-style-type: none;
-}
-
-.conflict-details-list ul li {
-    margin-bottom: var(--ds-space-3);
+/* Compact conflict summary */
+.conflict-summary {
     display: flex;
     flex-direction: column;
-    gap: var(--ds-space-1);
+    gap: 2px;
+    margin-bottom: var(--ds-space-3);
 }
 
-.sequencing-conflict,
-.overlap-conflict {
-    padding: var(--ds-space-2);
+.conflict-row {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-2);
+    padding: var(--ds-space-1) var(--ds-space-2);
     border-radius: var(--ds-radius-sm);
-    background: var(--ds-color-bg-primary);
+    font-size: var(--ds-font-size-sm);
+    line-height: 1.4;
 }
 
-.sequencing-conflict {
+.conflict-row.sequencing {
+    background: var(--ds-color-warning-bg);
+    color: var(--ds-color-warning-text-strong);
     border-left: 3px solid var(--ds-color-warning-border);
 }
 
-.sequencing-conflict .material-icon {
-    color: var(--ds-color-warning-text-strong);
-    font-size: 18px;
-    vertical-align: middle;
-    margin-right: var(--ds-space-1);
-}
-
-.overlap-conflict {
+.conflict-row.overlap {
+    background: var(--ds-color-error-bg);
+    color: var(--ds-color-error-text-strong);
     border-left: 3px solid var(--ds-color-error-border);
 }
 
-.overlap-conflict .material-icon {
-    color: var(--ds-color-error-text-strong);
-    font-size: 18px;
-    vertical-align: middle;
-    margin-right: var(--ds-space-1);
+.conflict-row .material-icon {
+    font-size: 15px;
+    flex-shrink: 0;
 }
 
-.overlap-time {
-    font-size: var(--ds-font-size-sm);
-    color: var(--ds-color-text-secondary);
-    font-style: italic;
-    margin-left: var(--ds-space-6);
+.conflict-hint {
+    opacity: 0.75;
+    font-size: var(--ds-font-size-xs, 11px);
+    margin-left: 2px;
 }
 
 .section-description {

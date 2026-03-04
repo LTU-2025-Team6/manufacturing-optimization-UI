@@ -144,7 +144,7 @@ nav a:hover {
 main {
     flex: 1;
     padding: var(--ds-space-8);
-    max-width: var(--ds-container-lg);
+    /* max-width: var(--ds-container-lg); */
     margin: 0 auto;
     width: 100%;
     overflow-y: auto;
