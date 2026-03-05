@@ -6,29 +6,6 @@
     margin: 0 auto;
 }
 
-/* Progress Indicator */
-.polling-progress {
-    display: flex;
-    flex-direction: column;
-    gap: var(--ds-space-4);
-    align-items: center;
-}
-
-/* Pulse Indicator */
-.polling-pulse-indicator {
-    display: flex;
-    align-items: center;
-    gap: var(--ds-space-3);
-    padding: var(--ds-space-4) var(--ds-space-6);
-    animation: pulse 2s ease-in-out infinite;
-}
-
-.polling-pulse-indicator .material-icon {
-    font-size: var(--ds-font-size-xl);
-    color: var(--ds-color-accent-primary);
-    animation: rotate 2s linear infinite;
-}
-
 @keyframes rotate {
     from {
         transform: rotate(0deg);
@@ -36,21 +13,6 @@
     to {
         transform: rotate(360deg);
     }
-}
-
-@keyframes pulse {
-    0%, 100% {
-        box-shadow: 0 0 0 0 rgba(58, 74, 104, 0.2);
-    }
-    50% {
-        box-shadow: 0 0 0 8px rgba(58, 74, 104, 0);
-    }
-}
-
-.polling-pulse-text {
-    font-size: var(--ds-font-size-base);
-    font-weight: var(--ds-font-weight-medium);
-    color: var(--ds-color-text-primary);
 }
 
 /* Info Card */

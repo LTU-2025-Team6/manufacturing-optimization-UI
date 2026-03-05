@@ -1,7 +1,7 @@
 ﻿import { ReactElement, useState, useEffect, useRef, useCallback } from 'react';
 import { IEditableProcessStep } from '../../types';
 import { useGetAlternativeProviders, useValidateSlot } from '../../hooks/api/strategyEditApi';
-import { toLocalDateTimeInput, fromLocalDateTimeInput, formatDateTime } from '../../utils/dateTimeUtils';
+import { ensureUtc, formatDateTimeUtc } from '../../utils/dateTimeUtils';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import Button from '../Button/Button';
 import Timeline from '../Timeline/Timeline';
@@ -16,18 +16,21 @@ interface ProcessStepEditorProps {
     strategyEndTime?: string;
 }
 
-/** Split ISO UTC string into local date "YYYY-MM-DD" and time "HH:mm" */
-function splitToLocalParts(iso: string): { date: string; time: string } {
+/** Split ISO UTC string into UTC date "YYYY-MM-DD" and time "HH:mm" */
+function splitToUtcParts(iso: string): { date: string; time: string } {
     if (!iso) return { date: '', time: '' };
-    const s = toLocalDateTimeInput(iso); // "YYYY-MM-DDTHH:mm"
-    const [date, time] = s.split('T');
-    return { date: date ?? '', time: time ?? '' };
+    const d = new Date(ensureUtc(iso));
+    if (isNaN(d.getTime())) return { date: '', time: '' };
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const date = `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+    const time = `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`;
+    return { date, time };
 }
 
-/** Combine local date "YYYY-MM-DD" and time "HH:mm" back to UTC ISO string */
-function combineLocalParts(date: string, time: string): string {
+/** Combine UTC date "YYYY-MM-DD" and time "HH:mm" into a UTC ISO string */
+function combineUtcParts(date: string, time: string): string {
     if (!date || !time) return '';
-    return fromLocalDateTimeInput(`${date}T${time}`);
+    return `${date}T${time}:00Z`;
 }
 
 const ProcessStepEditor = ({
@@ -51,8 +54,8 @@ const ProcessStepEditor = ({
     const [requestedStart, setRequestedStart] = useState(initialStart);
 
     // Split for fine-tune inputs
-    const [localDate, setLocalDate] = useState(() => splitToLocalParts(initialStart).date);
-    const [localTime, setLocalTime] = useState(() => splitToLocalParts(initialStart).time);
+    const [localDate, setLocalDate] = useState(() => splitToUtcParts(initialStart).date);
+    const [localTime, setLocalTime] = useState(() => splitToUtcParts(initialStart).time);
 
     // Derived: selected alternative data
     const selectedAlt = alternatives?.find(a => a.providerId === selectedProviderId) ?? null;
@@ -129,7 +132,7 @@ const ProcessStepEditor = ({
     // Update requestedStart + split inputs + validate (+ re-fetch window if needed)
     const applyNewStart = useCallback((iso: string) => {
         setRequestedStart(iso);
-        const { date, time } = splitToLocalParts(iso);
+        const { date, time } = splitToUtcParts(iso);
         setLocalDate(date);
         setLocalTime(time);
 
@@ -157,14 +160,14 @@ const ProcessStepEditor = ({
     // Fine-tune: date field changed
     const handleDateInput = (date: string) => {
         setLocalDate(date);
-        const iso = combineLocalParts(date, localTime);
+        const iso = combineUtcParts(date, localTime);
         if (iso) applyNewStart(iso);
     };
 
     // Fine-tune: time field changed
     const handleTimeInput = (time: string) => {
         setLocalTime(time);
-        const iso = combineLocalParts(localDate, time);
+        const iso = combineUtcParts(localDate, time);
         if (iso) applyNewStart(iso);
     };
 
@@ -184,7 +187,7 @@ const ProcessStepEditor = ({
     const handleReset = () => {
         setSelectedProviderId(step.selectedProviderId);
         setRequestedStart(initialStart);
-        const { date, time } = splitToLocalParts(initialStart);
+        const { date, time } = splitToUtcParts(initialStart);
         setLocalDate(date);
         setLocalTime(time);
         onUpdate(step.id, { proposedStartTime: undefined });
@@ -297,7 +300,7 @@ const ProcessStepEditor = ({
                                     Schedule
                                     {rangeStart && rangeEnd && (
                                         <span className="timeline-bounds">
-                                            {formatDateTime(rangeStart)} → {formatDateTime(rangeEnd)}
+                                            {formatDateTimeUtc(rangeStart)} → {formatDateTimeUtc(rangeEnd)}
                                         </span>
                                     )}
                                 </span>
@@ -345,7 +348,7 @@ const ProcessStepEditor = ({
                         <div className={`validation-status ${validationResult.isValid ? 'valid' : 'invalid'}`}>
                             <MaterialIcon icon={validationResult.isValid ? 'check_circle' : 'warning'} />
                             {validationResult.isValid ? (
-                                <span>Starts {formatDateTime(requestedStart)} · {selectedAlt?.estimate.duration.toFixed(1) ?? '?'}h</span>
+                                <span>Starts {formatDateTimeUtc(requestedStart)} UTC · {selectedAlt?.estimate.duration.toFixed(1) ?? '?'}h</span>
                             ) : (
                                 <div className="validation-errors">
                                     <span className="validation-errors-title">Scheduling conflict</span>

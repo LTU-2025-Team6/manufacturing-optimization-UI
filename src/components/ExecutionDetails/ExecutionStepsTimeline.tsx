@@ -1,4 +1,7 @@
+import { useEffect, useRef, useState } from 'react';
 import { IExecutionStep, StepExecutionStatus } from '../../types';
+import { useSimulationTimePolling } from '../../hooks/api/simulationTimeApi';
+import { ensureUtc } from '../../utils/dateTimeUtils';
 import './ExecutionStepsTimeline.css';
 
 interface ExecutionStepsTimelineProps {
@@ -61,6 +64,22 @@ function formatDateTime(dateString: string): string {
 }
 
 export default function ExecutionStepsTimeline({ steps }: ExecutionStepsTimelineProps) {
+    const { data: simTime } = useSimulationTimePolling(2000);
+
+    // Fallback to real clock if simulation time not available
+    const [realNow, setRealNow] = useState(() => Date.now());
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    useEffect(() => {
+        if (!simTime) {
+            intervalRef.current = setInterval(() => setRealNow(Date.now()), 10000);
+        }
+        return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+    }, [simTime]);
+
+    const nowMs = simTime?.simulatedUtcNow
+        ? new Date(ensureUtc(simTime.simulatedUtcNow)).getTime()
+        : realNow;
+
     if (!steps || steps.length === 0) {
         return <div className="execution-timeline-empty">No steps to display</div>;
     }
@@ -73,11 +92,16 @@ export default function ExecutionStepsTimeline({ steps }: ExecutionStepsTimeline
     }
 
     // Calculate timeline range
-    const startTimes = validSteps.map(s => new Date(s.scheduledStart!).getTime());
-    const endTimes = validSteps.map(s => new Date(s.scheduledEnd!).getTime());
+    const startTimes = validSteps.map(s => new Date(ensureUtc(s.scheduledStart!)).getTime());
+    const endTimes = validSteps.map(s => new Date(ensureUtc(s.scheduledEnd!)).getTime());
     const minTime = Math.min(...startTimes);
     const maxTime = Math.max(...endTimes);
     const totalDuration = maxTime - minTime;
+
+    // Current-time indicator position (null if outside range)
+    const nowPercent = nowMs >= minTime && nowMs <= maxTime
+        ? ((nowMs - minTime) / totalDuration) * 100
+        : null;
 
     // Generate time axis labels (5 evenly spaced points)
     const timeLabels = [];
@@ -124,6 +148,13 @@ export default function ExecutionStepsTimeline({ steps }: ExecutionStepsTimeline
                                         {step.providerName} ({formatDuration(step.estimatedDuration)})
                                     </span>
                                 </div>
+                                {nowPercent !== null && (
+                                    <div
+                                        className="execution-now-line"
+                                        style={{ left: `${nowPercent}%` }}
+                                        title={`Now: ${formatTime(new Date(nowMs).toISOString())}`}
+                                    />
+                                )}
                             </div>
                         </div>
                     );

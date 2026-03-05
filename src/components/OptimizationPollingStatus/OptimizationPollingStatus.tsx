@@ -50,16 +50,6 @@ export default function OptimizationPollingStatus({
 
     return (
         <div className="polling-status">
-            {/* Progress Indicator */}
-            <div className="polling-progress">
-                <div className="polling-pulse-indicator">
-                    <MaterialIcon icon="sync" />
-                    <span className="polling-pulse-text">
-                        {status ? STATUS_LABELS[status] || status : 'Processing...'}
-                    </span>
-                </div>
-            </div>
-
             {/* Step Progress */}
             {currentStepIndex >= 0 && (
                 <div className="polling-steps">

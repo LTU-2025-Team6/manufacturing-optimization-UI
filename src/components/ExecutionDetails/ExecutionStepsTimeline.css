@@ -131,23 +131,58 @@
 
 /* Status color classes using design system variables */
 .execution-status-pending {
-    background-color: var(--ds-color-text-secondary);
+    background: repeating-linear-gradient(
+        45deg,
+        var(--ds-color-border-strong),
+        var(--ds-color-border-strong),
+        var(--ds-color-border-subtle) 20px,
+        var(--ds-color-border-subtle) 20px
+    );
+    border: 1px dashed var(--ds-color-border-default);
 }
 
 .execution-status-inprogress {
-    background-color: var(--ds-color-warning-text-strong);
+    background: repeating-linear-gradient(
+        45deg,
+        var(--ds-color-info-bg-strong),
+        var(--ds-color-info-bg-strong),
+        var(--ds-color-info-bg) 20px,
+        var(--ds-color-info-bg) 20px
+    );
+    border: 1px dashed var(--ds-color-info-border);
 }
 
 .execution-status-completed {
-    background-color: var(--ds-color-success-text-strong);
+    background: repeating-linear-gradient(
+        45deg,
+        var(--ds-color-success-bg-strong),
+        var(--ds-color-success-bg-strong),
+        var(--ds-color-success-bg) 20px,
+        var(--ds-color-success-bg) 20px
+    );
+    border: 1px dashed var(--ds-color-success-border);
 }
 
 .execution-status-failed {
-    background-color: var(--ds-color-error-text-strong);
+    background: repeating-linear-gradient(
+        45deg,
+        var(--ds-color-error-bg-strong),
+        var(--ds-color-error-bg-strong),
+        var(--ds-color-error-bg) 20px,
+        var(--ds-color-error-bg) 20px
+    );
+    border: 1px dashed var(--ds-color-border-default);
 }
 
 .execution-status-cancelled {
-    background-color: var(--ds-color-border-strong);
+    background: repeating-linear-gradient(
+        45deg,
+        var(--ds-color-warning-bg-strong),
+        var(--ds-color-warning-bg-strong),
+        var(--ds-color-warning-bg) 20px,
+        var(--ds-color-warning-bg) 20px
+    );
+    border: 1px dashed var(--ds-color-warning-border);
 }
 
 .execution-timeline-empty {
@@ -156,18 +191,27 @@
     color: var(--ds-color-text-secondary);
 }
 
+/* ── Current-time "now" indicator ── */
+.execution-now-line {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    width: 2px;
+    background: var(--ds-color-warning-text-strong);
+    transform: translateX(-50%);
+    z-index: 10;
+    pointer-events: none;
+    animation: now-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes now-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
 @media (max-width: 768px) {
     .execution-timeline-row {
         grid-template-columns: 1fr;
         gap: var(--ds-space-2);
-    }
-    
-    .execution-timeline-bar-label {
-        font-size: 0.65rem;
-    }
-    
-    .execution-timeline-legend {
-        flex-wrap: wrap;
-        gap: var(--ds-space-3);
     }
 }
