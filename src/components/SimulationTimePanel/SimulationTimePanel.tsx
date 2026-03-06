@@ -1,23 +1,19 @@
-import { useState, useRef, useEffect } from 'react';
+﻿import { useState, useRef, useEffect } from 'react';
 import { useSimulationTimePolling, useSetSimulationTime } from '../../hooks/api/simulationTimeApi';
 import { formatDateTimeUtc, ensureUtc } from '../../utils/dateTimeUtils';
-import Button from '../Button/Button';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import './SimulationTimePanel.css';
 
-/** Convert datetime-local input value to UTC ISO string WITHOUT local timezone offset.
- *  The input is treated as if the user typed a UTC time directly. */
+const SPEED_PRESETS = [1, 500, 1000, 5000, 10000];
+
 function localInputAsUtc(value: string): string {
-    // datetime-local gives "YYYY-MM-DDTHH:mm" — treat it as UTC by appending Z
     const s = value.length === 16 ? value + ':00' : value;
     return s + 'Z';
 }
 
-/** Format a UTC ISO string for use in a datetime-local input (shown as UTC to the user). */
 function utcToLocalInput(isoString: string): string {
     if (!isoString) return '';
-    const utc = ensureUtc(isoString);
-    const d = new Date(utc);
+    const d = new Date(ensureUtc(isoString));
     if (isNaN(d.getTime())) return '';
     const pad = (n: number) => String(n).padStart(2, '0');
     return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}T${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`;
@@ -26,101 +22,80 @@ function utcToLocalInput(isoString: string): string {
 export default function SimulationTimePanel() {
     const { data: timeData } = useSimulationTimePolling(2000);
     const { callApi: setTime, loading: settingTime } = useSetSimulationTime();
-    
-    // Keep last valid data to prevent flickering
+
     const lastValidDataRef = useRef(timeData);
-    
-    useEffect(() => {
-        if (timeData) {
-            lastValidDataRef.current = timeData;
-        }
-    }, [timeData]);
-    
+    useEffect(() => { if (timeData) lastValidDataRef.current = timeData; }, [timeData]);
     const displayData = timeData || lastValidDataRef.current;
 
     const [dateTimeInput, setDateTimeInput] = useState('');
-    const [multiplierInput, setMultiplierInput] = useState('');
+    const [selectedSpeed, setSelectedSpeed] = useState<number | null>(null);
 
-    const handleSetDateTime = async () => {
-        if (!dateTimeInput) return;
+    const currentSpeed = displayData?.speedMultiplier ?? 1;
+    const activeSpeed = selectedSpeed ?? currentSpeed;
+
+    const handleSet = async () => {
+        const payload: { simulatedUtcNow?: string; speedMultiplier?: number } = {};
+        if (dateTimeInput) payload.simulatedUtcNow = localInputAsUtc(dateTimeInput);
+        if (selectedSpeed !== null && selectedSpeed !== currentSpeed) payload.speedMultiplier = selectedSpeed;
+        if (!payload.simulatedUtcNow && payload.speedMultiplier === undefined) return;
         try {
-            // Input is shown/entered in UTC — treat value directly as UTC (no local offset)
-            const utcDate = localInputAsUtc(dateTimeInput);
-            await setTime({ simulatedUtcNow: utcDate });
+            await setTime(payload);
             setDateTimeInput('');
+            setSelectedSpeed(null);
         } catch (err) {
-            console.error('Failed to set time:', err);
+            console.error('Failed to set simulation time:', err);
         }
     };
 
-    const handleSetMultiplier = async () => {
-        const multiplier = parseFloat(multiplierInput);
-        if (isNaN(multiplier) || multiplier <= 0) return;
-        try {
-            await setTime({ speedMultiplier: multiplier });
-            setMultiplierInput('');
-        } catch (err) {
-            console.error('Failed to set multiplier:', err);
-        }
-    };
+    const hasChanges = !!dateTimeInput || (selectedSpeed !== null && selectedSpeed !== currentSpeed);
 
     return (
-        <div className="simulation-time-panel">
-            <div className="panel-header">
+        <div className="sim-panel">
+            <div className="sim-panel-status">
                 <MaterialIcon icon="schedule" size="S" />
-                <h3 className="panel-title">Simulation Time</h3>
-                <div className="time-display">
+                <span className="sim-panel-time">
                     {formatDateTimeUtc(displayData?.simulatedUtcNow || '', {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
+                        month: 'short', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
                     })} UTC
-                </div>
-                <span className="speed-display">×{displayData?.speedMultiplier ?? 1}</span>
+                </span>
+                <span className="sim-panel-speed">×{currentSpeed}</span>
             </div>
 
-            <div className="panel-body">
-                {/* Set Date/Time */}
-                <div className="control-section">
-                    <input
-                        type="datetime-local"
-                        value={dateTimeInput}
-                        onChange={(e) => setDateTimeInput(e.target.value)}
-                        placeholder={displayData?.simulatedUtcNow ? utcToLocalInput(displayData.simulatedUtcNow) : ''}
-                        className="time-input"
-                        disabled={settingTime}
-                    />
-                    <Button 
-                        variant="secondary" 
-                        onClick={handleSetDateTime}
-                        disabled={!dateTimeInput || settingTime}
-                    >
-                        Set
-                    </Button>
-                </div>
+            <div className="sim-panel-divider" />
 
-                {/* Speed Multiplier */}
-                <div className="control-section">
-                    <input
-                        type="number"
-                        value={multiplierInput}
-                        onChange={(e) => setMultiplierInput(e.target.value)}
-                        placeholder="Speed multiplier"
-                        className="multiplier-input"
-                        min="0.1"
-                        step="0.1"
+            <input
+                type="datetime-local"
+                className="sim-panel-dt-input"
+                value={dateTimeInput}
+                onChange={e => setDateTimeInput(e.target.value)}
+                placeholder={displayData?.simulatedUtcNow ? utcToLocalInput(displayData.simulatedUtcNow) : 'Set time…'}
+                disabled={settingTime}
+                title="Enter time in UTC"
+            />
+
+            <div className="sim-panel-speeds">
+                {SPEED_PRESETS.map(speed => (
+                    <button
+                        key={speed}
+                        className={`sim-speed-btn ${activeSpeed === speed ? 'active' : ''}`}
+                        onClick={() => setSelectedSpeed(speed === currentSpeed && selectedSpeed === null ? null : speed)}
                         disabled={settingTime}
-                    />
-                    <Button 
-                        variant="secondary" 
-                        onClick={handleSetMultiplier}
-                        disabled={!multiplierInput || settingTime}
+                        title={`Set speed ×${speed}`}
                     >
-                        Set
-                    </Button>
-                </div>
+                        ×{speed >= 1000 ? `${speed / 1000}k` : speed}
+                    </button>
+                ))}
             </div>
+
+            <button
+                className={`sim-panel-set-btn ${hasChanges ? 'ready' : ''}`}
+                onClick={handleSet}
+                disabled={!hasChanges || settingTime}
+                title="Apply changes"
+            >
+                {settingTime ? <MaterialIcon icon="hourglass_empty" size="S" /> : 'Set'}
+            </button>
         </div>
     );
 }

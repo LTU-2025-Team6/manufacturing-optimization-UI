@@ -1,66 +1,59 @@
 /* ============================================
-   SIMULATION TIME PANEL
-   Control panel for simulation time and speed
+   SIMULATION TIME PANEL — compact single row
    ============================================ */
 
-.simulation-time-panel {
+.sim-panel {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-2);
+    padding: var(--ds-space-2) var(--ds-space-3);
     background: var(--ds-color-surface);
     border: 1px solid var(--ds-color-border-default);
     border-radius: var(--ds-radius-md);
     box-shadow: var(--ds-shadow-sm);
     margin-bottom: var(--ds-space-4);
+    flex-wrap: wrap;
+    min-height: 40px;
 }
 
-.panel-header {
+/* ── Current status ── */
+.sim-panel-status {
     display: flex;
     align-items: center;
-    gap: var(--ds-space-2);
-    padding: var(--ds-space-2) var(--ds-space-4);
-    background: var(--ds-color-bg-secondary);
-    border-bottom: 1px solid var(--ds-color-border-subtle);
+    gap: var(--ds-space-1);
+    flex-shrink: 0;
 }
 
-.panel-title {
-    margin: 0;
-    font-size: var(--ds-font-size-sm);
-    font-weight: var(--ds-font-weight-semibold);
-    color: var(--ds-color-text-primary);
-}
-
-.time-display {
-    margin-left: auto;
+.sim-panel-time {
     font-size: var(--ds-font-size-sm);
     font-weight: var(--ds-font-weight-medium);
     color: var(--ds-color-text-primary);
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
 }
 
-.speed-display {
-    font-size: var(--ds-font-size-sm);
+.sim-panel-speed {
+    font-size: var(--ds-font-size-xs);
     font-weight: var(--ds-font-weight-bold);
     color: var(--ds-color-accent-primary);
-    padding-left: var(--ds-space-3);
-    border-left: 1px solid var(--ds-color-border-subtle);
+    background: var(--ds-color-accent-bg);
+    border-radius: var(--ds-radius-sm);
+    padding: 1px 6px;
+    white-space: nowrap;
 }
 
-.panel-body {
-    padding: var(--ds-space-3) var(--ds-space-4);
-    display: flex;
-    gap: var(--ds-space-3);
-    align-items: center;
+/* ── Divider ── */
+.sim-panel-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--ds-color-border-subtle);
+    flex-shrink: 0;
+    margin: 0 var(--ds-space-1);
 }
 
-.control-section {
-    display: flex;
-    gap: var(--ds-space-2);
-    align-items: center;
-    flex: 1;
-}
-
-.time-input,
-.multiplier-input {
-    flex: 1;
-    padding: var(--ds-space-1) var(--ds-space-2);
+/* ── Datetime input ── */
+.sim-panel-dt-input {
+    padding: 3px 8px;
     border: 1px solid var(--ds-color-border-default);
     border-radius: var(--ds-radius-sm);
     font-size: var(--ds-font-size-sm);
@@ -68,51 +61,105 @@
     background: var(--ds-color-bg-primary);
     color: var(--ds-color-text-primary);
     transition: border-color var(--ds-transition-fast);
-    min-width: 0;
+    height: 28px;
+    min-width: 170px;
 }
 
-/* Ensure datetime-local calendar button is visible */
-.time-input::-webkit-calendar-picker-indicator {
-    cursor: pointer;
-    opacity: 0.6;
-    filter: invert(0.5);
-    padding: 0;
-    margin: 0;
-}
-
-.time-input:hover::-webkit-calendar-picker-indicator {
-    opacity: 1;
-}
-
-.time-input::-webkit-datetime-edit-fields-wrapper {
-    padding: 0;
-}
-
-.time-input::-webkit-datetime-edit {
-    padding: 0;
-}
-
-.time-input:focus,
-.multiplier-input:focus {
+.sim-panel-dt-input:focus {
     outline: none;
     border-color: var(--ds-color-accent-primary);
     box-shadow: 0 0 0 2px var(--ds-color-accent-bg);
 }
 
-.time-input:disabled,
-.multiplier-input:disabled {
+.sim-panel-dt-input:disabled {
     background: var(--ds-color-bg-tertiary);
     color: var(--ds-color-text-disabled);
     cursor: not-allowed;
 }
 
-@media (max-width: 768px) {
-    .panel-body {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .control-section {
-        width: 100%;
-    }
+.sim-panel-dt-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.5;
+    filter: invert(0.4);
+    padding: 0;
+    margin-left: 2px;
+}
+
+.sim-panel-dt-input:hover::-webkit-calendar-picker-indicator {
+    opacity: 0.9;
+}
+
+/* ── Speed preset buttons ── */
+.sim-panel-speeds {
+    display: flex;
+    gap: 3px;
+    flex-shrink: 0;
+}
+
+.sim-speed-btn {
+    padding: 3px 8px;
+    height: 28px;
+    font-size: var(--ds-font-size-xs);
+    font-weight: var(--ds-font-weight-semibold);
+    font-family: inherit;
+    border: 1px solid var(--ds-color-border-default);
+    border-radius: var(--ds-radius-sm);
+    background: var(--ds-color-bg-primary);
+    color: var(--ds-color-text-secondary);
+    cursor: pointer;
+    transition: all var(--ds-transition-fast);
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.sim-speed-btn:hover:not(:disabled) {
+    border-color: var(--ds-color-accent-primary);
+    color: var(--ds-color-accent-primary);
+    background: var(--ds-color-accent-bg);
+}
+
+.sim-speed-btn.active {
+    background: var(--ds-color-accent-primary);
+    border-color: var(--ds-color-accent-primary);
+    color: #fff;
+}
+
+.sim-speed-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ── Set button ── */
+.sim-panel-set-btn {
+    padding: 3px 14px;
+    height: 28px;
+    font-size: var(--ds-font-size-sm);
+    font-weight: var(--ds-font-weight-semibold);
+    font-family: inherit;
+    border-radius: var(--ds-radius-sm);
+    border: 1px solid var(--ds-color-border-default);
+    background: var(--ds-color-bg-primary);
+    color: var(--ds-color-text-disabled);
+    cursor: not-allowed;
+    transition: all var(--ds-transition-fast);
+    flex-shrink: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sim-panel-set-btn.ready {
+    background: var(--ds-color-accent-primary);
+    border-color: var(--ds-color-accent-primary);
+    color: #fff;
+    cursor: pointer;
+}
+
+.sim-panel-set-btn.ready:hover {
+    filter: brightness(1.1);
+}
+
+.sim-panel-set-btn:disabled:not(.ready) {
+    opacity: 0.5;
 }

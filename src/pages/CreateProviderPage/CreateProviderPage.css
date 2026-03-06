@@ -1,7 +1,6 @@
 .create-provider-page {
     max-width: var(--ds-container-lg);
     margin: 0 auto;
-    padding: var(--ds-space-6);
 }
 
 .create-provider-header {

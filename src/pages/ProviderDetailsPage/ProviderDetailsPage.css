@@ -1,7 +1,6 @@
 .provider-details-page {
     max-width: var(--ds-container-xl);
     margin: 0 auto;
-    padding: var(--ds-space-6);
 }
 
 .provider-details-header {
