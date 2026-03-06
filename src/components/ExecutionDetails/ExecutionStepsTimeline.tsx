@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { IExecutionStep, StepExecutionStatus } from '../../types';
 import { useSimulationTimePolling } from '../../hooks/api/simulationTimeApi';
-import { ensureUtc } from '../../utils/dateTimeUtils';
+import { ensureUtc, formatDateTimeUtc } from '../../utils/dateTimeUtils';
 import './ExecutionStepsTimeline.css';
 
 interface ExecutionStepsTimelineProps {
@@ -47,20 +47,20 @@ function formatDuration(durationStr: string | null | undefined): string {
 
 function formatTime(dateString: string | null | undefined): string {
     if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleTimeString('en-US', {
+    return new Date(ensureUtc(dateString)).toLocaleTimeString('en-US', {
         hour: '2-digit',
-        minute: '2-digit'
-    });
+        minute: '2-digit',
+        timeZone: 'UTC'
+    }) + ' UTC';
 }
 
 function formatDateTime(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
+    return formatDateTimeUtc(dateString, {
         month: 'short',
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
-    });
+    }) + ' UTC';
 }
 
 export default function ExecutionStepsTimeline({ steps }: ExecutionStepsTimelineProps) {
@@ -120,8 +120,8 @@ export default function ExecutionStepsTimeline({ steps }: ExecutionStepsTimeline
             <div className="execution-timeline-container">
                 {validSteps.map((step) => {
                     console.log('Rendering step:', step);
-                    const stepStart = new Date(step.scheduledStart!).getTime();
-                    const stepEnd = new Date(step.scheduledEnd!).getTime();
+                    const stepStart = new Date(ensureUtc(step.scheduledStart!)).getTime();
+                    const stepEnd = new Date(ensureUtc(step.scheduledEnd!)).getTime();
                     const stepDuration = stepEnd - stepStart;
                     
                     const leftPercent = ((stepStart - minTime) / totalDuration) * 100;

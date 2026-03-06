@@ -1,6 +1,6 @@
 import { IOptimizationStrategy, IProviderScheduleSegment } from '../../types';
 import { parseDuration } from '../../utils/durationParser';
-import { formatDateTime } from '../../utils/dateTimeUtils';
+import { formatDateTime, ensureUtc } from '../../utils/dateTimeUtils';
 import Collapsible from '../Collapsible/Collapsible';
 import Timeline from '../Timeline/Timeline';
 import Card from '../Card/Card';
@@ -23,8 +23,8 @@ export default function StrategyCard({ strategy }: StrategyCardProps) {
         
         const allTimes = stepsWithSchedule.flatMap(step => 
             step.allocatedSchedule!.segments.map(s => ({
-                start: new Date(s.startTime).getTime(),
-                end: new Date(s.endTime).getTime()
+                start: new Date(ensureUtc(s.startTime)).getTime(),
+                end: new Date(ensureUtc(s.endTime)).getTime()
             }))
         );
         
@@ -46,8 +46,8 @@ export default function StrategyCard({ strategy }: StrategyCardProps) {
             .sort((a, b) => a.stepNumber - b.stepNumber)
             .map(step => {
                 const segments = step.allocatedSchedule!.segments.filter(s => s.segmentType.toLowerCase() === 'workingtime');
-                const startTimes = segments.map(s => new Date(s.startTime).getTime());
-                const endTimes = segments.map(s => new Date(s.endTime).getTime());
+                const startTimes = segments.map(s => new Date(ensureUtc(s.startTime)).getTime());
+                const endTimes = segments.map(s => new Date(ensureUtc(s.endTime)).getTime());
                 
                 return {
                     startTime: new Date(Math.min(...startTimes)).toISOString(),

@@ -4,7 +4,7 @@ import DataState from '../../components/DataState/DataState';
 import { IOptimizationPlanPreview } from '../../types';
 import { useGetOptimizationPlans } from '../../hooks/api/planApi';
 import { DEFAULT_PAGE_SIZE } from '../../types';
-import { formatDateTime } from '../../utils/dateTimeUtils';
+import { formatDateTime, ensureUtc } from '../../utils/dateTimeUtils';
 import MaterialIcon from '../../components/MaterialIcon/MaterialIcon';
 import StatusBadge from '../../components/StatusBadge/StatusBadge';
 import Pagination from '../../components/Pagination/Pagination';
@@ -143,7 +143,7 @@ const PlanListPage = (): ReactElement => {
                                         <div className="plan-card-body">
                                             <div className="plan-card-meta">
                                                 <MaterialIcon icon="schedule" />
-                                                <span>Created {formatRelativeTime(new Date(plan.createdAt))}</span>
+                                                <span>Created {formatRelativeTime(new Date(ensureUtc(plan.createdAt)))}</span>
                                             </div>
                                             <div className="plan-card-meta">
                                                 <MaterialIcon icon="event" />

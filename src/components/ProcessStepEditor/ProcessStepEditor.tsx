@@ -185,12 +185,16 @@ const ProcessStepEditor = ({
 
     // ── Reset ──────────────────────────────────────────────────────────────
     const handleReset = () => {
+        const originalStart = step.allocatedSchedule?.startWorkingTime || '';
         setSelectedProviderId(step.selectedProviderId);
-        setRequestedStart(initialStart);
-        const { date, time } = splitToUtcParts(initialStart);
+        setRequestedStart(originalStart);
+        const { date, time } = splitToUtcParts(originalStart);
         setLocalDate(date);
         setLocalTime(time);
         onUpdate(step.id, { proposedStartTime: undefined });
+        // Re-validate with original provider + original time using existing alternatives
+        // — same as if the user manually restored the select back to the original value.
+        validate(step.selectedProviderId, originalStart);
     };
 
     const isModified = step.proposedStartTime !== undefined;
@@ -348,7 +352,11 @@ const ProcessStepEditor = ({
                         <div className={`validation-status ${validationResult.isValid ? 'valid' : 'invalid'}`}>
                             <MaterialIcon icon={validationResult.isValid ? 'check_circle' : 'warning'} />
                             {validationResult.isValid ? (
-                                <span>Starts {formatDateTimeUtc(requestedStart)} UTC · {selectedAlt?.estimate.duration.toFixed(1) ?? '?'}h</span>
+                                <span>Starts {formatDateTimeUtc(
+                                    validationResult.allocatedSchedule?.segments
+                                        ?.find(s => s.segmentType.toLowerCase().includes('workingtime'))
+                                        ?.startTime ?? requestedStart
+                                )} UTC · {selectedAlt?.estimate.duration.toFixed(1) ?? '?'}h</span>
                             ) : (
                                 <div className="validation-errors">
                                     <span className="validation-errors-title">Scheduling conflict</span>

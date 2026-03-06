@@ -1,13 +1,10 @@
 /**
  * Current simulation time information.
+ * Matches backend SimulationTimeDto exactly.
  */
 export interface ISimulationTime {
-  simulatedUtcNow: string;
-  realUtcNow: string;
+  simulatedUtcNow: string; // UTC ISO string, always ends with Z
   speedMultiplier: number;
-  isAccelerated: boolean;
-  formattedSimulatedTime: string;
-  formattedRealTime: string;
 }
 
 /**

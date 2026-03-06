@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { IOptimizationStrategy } from '../../types';
 import { IEditableStrategy, IEditableProcessStep, IUpdateStrategyRequest, IStepUpdate } from '../../types';
 import { useUpdateStrategy } from '../../hooks/api/strategyEditApi';
-import { formatDateTime } from '../../utils/dateTimeUtils';
+import { formatDateTime, ensureUtc } from '../../utils/dateTimeUtils';
 import ProcessStepEditor from '../ProcessStepEditor/ProcessStepEditor';
 import Button from '../Button/Button';
 import Alert from '../Alert/Alert';
@@ -31,6 +31,9 @@ const StrategyEditor = ({ strategy, planId, onSave, onCancel }: StrategyEditorPr
         })),
         isModified: false,
     }));
+
+    // Incremented on reset to force ProcessStepEditor re-mount (clears local state)
+    const [resetKey, setResetKey] = useState(0);
 
     const { data: updateResult, loading: saving, error: saveError, callApi: updateStrategy } = useUpdateStrategy();
 
@@ -78,8 +81,8 @@ const StrategyEditor = ({ strategy, planId, onSave, onCancel }: StrategyEditorPr
             };
         }
 
-        const startTimes = stepsWithSchedule.map(s => new Date(s.allocatedSchedule!.startWorkingTime).getTime());
-        const endTimes = stepsWithSchedule.map(s => new Date(s.allocatedSchedule!.endWorkingTime).getTime());
+        const startTimes = stepsWithSchedule.map(s => new Date(ensureUtc(s.allocatedSchedule!.startWorkingTime)).getTime());
+        const endTimes = stepsWithSchedule.map(s => new Date(ensureUtc(s.allocatedSchedule!.endWorkingTime)).getTime());
 
         return {
             startTime: new Date(Math.min(...startTimes)).toISOString(),
@@ -98,7 +101,7 @@ const StrategyEditor = ({ strategy, planId, onSave, onCancel }: StrategyEditorPr
 
         if (!currentStartTime || !previousEndTime) return true; // Can't validate without times
 
-        return new Date(currentStartTime).getTime() >= new Date(previousEndTime).getTime();
+        return new Date(ensureUtc(currentStartTime)).getTime() >= new Date(ensureUtc(previousEndTime)).getTime();
     };
 
     // Save changes
@@ -138,6 +141,7 @@ const StrategyEditor = ({ strategy, planId, onSave, onCancel }: StrategyEditorPr
             })),
             isModified: false,
         });
+        setResetKey(k => k + 1); // force ProcessStepEditor re-mount → resets local provider state
     };
 
     // Generate combined timeline segments with conflict detection
@@ -163,8 +167,8 @@ const StrategyEditor = ({ strategy, planId, onSave, onCancel }: StrategyEditorPr
         // Check for overlaps and sequencing issues
         for (let i = 0; i < stepsWithSchedule.length; i++) {
             const currentStep = stepsWithSchedule[i];
-            const currentStart = new Date(currentStep.allocatedSchedule!.startWorkingTime).getTime();
-            const currentEnd = new Date(currentStep.allocatedSchedule!.endWorkingTime).getTime();
+            const currentStart = new Date(ensureUtc(currentStep.allocatedSchedule!.startWorkingTime)).getTime();
+            const currentEnd = new Date(ensureUtc(currentStep.allocatedSchedule!.endWorkingTime)).getTime();
             
             const conflictsList: Array<{ 
                 stepNumber: number; 
@@ -177,7 +181,7 @@ const StrategyEditor = ({ strategy, planId, onSave, onCancel }: StrategyEditorPr
             // Check against previous step for sequencing
             if (i > 0) {
                 const prevStep = stepsWithSchedule[i - 1];
-                const prevEnd = new Date(prevStep.allocatedSchedule!.endWorkingTime).getTime();
+                const prevEnd = new Date(ensureUtc(prevStep.allocatedSchedule!.endWorkingTime)).getTime();
                 
                 // Sequencing violation: current step starts before previous step ends
                 if (currentStart < prevEnd) {
@@ -199,8 +203,8 @@ const StrategyEditor = ({ strategy, planId, onSave, onCancel }: StrategyEditorPr
                 if (i === j) continue;
                 
                 const otherStep = stepsWithSchedule[j];
-                const otherStart = new Date(otherStep.allocatedSchedule!.startWorkingTime).getTime();
-                const otherEnd = new Date(otherStep.allocatedSchedule!.endWorkingTime).getTime();
+                const otherStart = new Date(ensureUtc(otherStep.allocatedSchedule!.startWorkingTime)).getTime();
+                const otherEnd = new Date(ensureUtc(otherStep.allocatedSchedule!.endWorkingTime)).getTime();
                 
                 // Check if times overlap (and it's not the previous step we already checked)
                 if (currentStart < otherEnd && currentEnd > otherStart) {
@@ -262,24 +266,21 @@ const StrategyEditor = ({ strategy, planId, onSave, onCancel }: StrategyEditorPr
         const avgQuality = editableStrategy.steps.reduce((sum, step) => sum + step.estimate.qualityScore, 0) / editableStrategy.steps.length;
         const totalEmissions = editableStrategy.steps.reduce((sum, step) => sum + step.estimate.emissionsKgCO2, 0);
 
-        // Helper: calculate total time from first step start to last step end
-        const calculateTotalTime = (steps: IEditableProcessStep[]): number => {
-            const stepsWithSchedule = steps.filter(s => s.allocatedSchedule?.startWorkingTime && s.allocatedSchedule?.endWorkingTime);
-            if (stepsWithSchedule.length === 0) return 0;
-            
-            const times = stepsWithSchedule.map(s => ({
-                start: new Date(s.allocatedSchedule!.startWorkingTime).getTime(),
-                end: new Date(s.allocatedSchedule!.endWorkingTime).getTime()
-            }));
-            
-            const firstStepStart = Math.min(...times.map(t => t.start));
-            const lastStepEnd = Math.max(...times.map(t => t.end));
-            
-            return (lastStepEnd - firstStepStart) / (1000 * 60 * 60); // hours
+        // Total time = span from first WorkingTime segment start to last WorkingTime segment end
+        const getWorkingTimeSpan = (steps: IEditableProcessStep[]): number => {
+            const workingSegments = steps.flatMap(s =>
+                (s.allocatedSchedule?.segments ?? []).filter(seg =>
+                    seg.segmentType.toLowerCase().includes('workingtime')
+                )
+            );
+            if (workingSegments.length === 0) return 0;
+            const starts = workingSegments.map(seg => new Date(ensureUtc(seg.startTime)).getTime());
+            const ends   = workingSegments.map(seg => new Date(ensureUtc(seg.endTime)).getTime());
+            return (Math.max(...ends) - Math.min(...starts)) / (1000 * 60 * 60);
         };
 
-        const originalTotalTime = calculateTotalTime(strategy.steps);
-        const currentTotalTime = calculateTotalTime(editableStrategy.steps);
+        const originalTotalTime = getWorkingTimeSpan(strategy.steps);
+        const currentTotalTime  = getWorkingTimeSpan(editableStrategy.steps);
 
         return {
             totalCost,
@@ -317,7 +318,7 @@ const StrategyEditor = ({ strategy, planId, onSave, onCancel }: StrategyEditorPr
             </div>
 
             {/* Metrics Comparison */}
-            {hasModifications && (
+            {editableStrategy.isModified && (
                 <div className="metrics-comparison">
                     <h3>Impact Preview</h3>
                     <div className="metrics-grid">
@@ -403,7 +404,7 @@ const StrategyEditor = ({ strategy, planId, onSave, onCancel }: StrategyEditorPr
                     )}
                     
                     <div className="timeline-wrapper">
-                        <Timeline segments={timelineSegments} showTimeLabels={true} />
+                        <Timeline key={resetKey} segments={timelineSegments} showTimeLabels={true} />
                     </div>
                 </div>
             )}
@@ -420,7 +421,7 @@ const StrategyEditor = ({ strategy, planId, onSave, onCancel }: StrategyEditorPr
                         .sort((a, b) => a.stepNumber - b.stepNumber)
                         .map(step => (
                             <ProcessStepEditor
-                                key={step.id}
+                                key={`${step.id}-${resetKey}`}
                                 step={step}
                                 planId={planId}
                                 onUpdate={handleStepUpdate}

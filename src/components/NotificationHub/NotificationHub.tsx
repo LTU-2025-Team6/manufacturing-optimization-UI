@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, type ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetNotificationsSince, useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/api/notificationApi';
 import { INotification, INotificationPreview, NotificationType } from '../../types';
+import { ensureUtc } from '../../utils/dateTimeUtils';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import './NotificationHub.css';
 
@@ -51,7 +52,7 @@ const NotificationHub = ({ isCollapsed, onToggleCollapse }: NotificationHubProps
         if (data && data.length >= 0) {
             // Sort notifications by createdAt DESC (newest first)
             const sortedData = [...data].sort((a, b) => 
-                new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                new Date(ensureUtc(b.createdAt)).getTime() - new Date(ensureUtc(a.createdAt)).getTime()
             );
             
             setNotifications(sortedData);

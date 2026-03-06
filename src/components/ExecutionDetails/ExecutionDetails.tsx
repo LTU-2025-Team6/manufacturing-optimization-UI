@@ -1,4 +1,5 @@
 import { usePlanDetailPolling } from '../../hooks/api/executionApi';
+import { ensureUtc } from '../../utils/dateTimeUtils';
 import DataState from '../DataState/DataState';
 import MaterialIcon from '../MaterialIcon/MaterialIcon';
 import StatusBadge from '../StatusBadge/StatusBadge';
@@ -12,7 +13,7 @@ interface ExecutionDetailsProps {
 
 function formatDate(dateString: string | null): string {
     if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleString('en-US', {
+    return new Date(ensureUtc(dateString)).toLocaleString('en-US', {
         dateStyle: 'medium',
         timeStyle: 'short'
     });
